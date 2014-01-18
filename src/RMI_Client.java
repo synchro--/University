@@ -37,12 +37,7 @@ public class RMI_Client {
 			RMI_interfaceFile serverRMI = (RMI_interfaceFile) Naming.lookup(complete); 
 			
 			System.out.println("Client RMI: Servizio \"" + serviceName + "\" connesso");
-      
-	
-	
-	 
-	
-			
+ 		
       
       System.out.println("Scegli il metodo di scaricamento: "); 
       System.out.println("C = Client richiede la connessione " +
@@ -64,7 +59,7 @@ public class RMI_Client {
                         	dirList = new ArrayList<String>();
                         	dirList = serverRMI.listDirectory(); 
                             System.out.println("\nLe directory disponibili sul server sono: " + dirList);
-                            System.out.println("Scegli la directory da scaricare");
+                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
                             
                             //controllo che la directory scelta esista
                             nomeDir = stdIn.readLine(); 
@@ -76,13 +71,17 @@ public class RMI_Client {
                             	 nomeDir = stdIn.readLine(); 
                             }
                             
-                        	fileList = serverRMI.listFiles(nomeDir); 
+                        	fileList = serverRMI.listFiles(nomeDir); //questa chiamata avvia il PutFileServerConThread
                         	//N.B. fileList contiene sia l'endpoint che le informazioni sui file	
                         	System.out.println("Server host: "+fileList.getHost() + 
                         			"\tserver port: " + fileList.getPort());
                         	
                         	PutFileClientThread client = new PutFileClientThread(nomeDir,fileList);
                         	client.start(); 
+                        	
+                        	System.out.println("\nLe directory disponibili sul server sono: " + dirList);
+                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
+                        	nomeDir = stdIn.readLine();
                         	
                             }
                         }

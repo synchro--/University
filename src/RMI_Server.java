@@ -63,10 +63,13 @@ public RemoteInfo listFiles(String directory) throws RemoteException {
 			res.addFile(new FileInfo(currentNameFile, currentFileBytes));
 		}
 	}
+	
+	System.out.println("Avvio il Thread server");
 	//creazione socket 
-		@SuppressWarnings("unused")
-		PutFileServerConThread server = new PutFileServerConThread(directory,REGISTRYPORT);	
-		
+	PutFileServerConThread server = new PutFileServerConThread(directory,REGISTRYPORT);	
+	server.start();
+	
+	System.out.println("Inviato l'endpoint al Client");	
 	return res; 
 }
 	

@@ -50,8 +50,6 @@ try {
    } catch (IOException ioe) {
      System.out.println("Problemi nella creazione degli stream su socket: ");
      ioe.printStackTrace();
-     System.out
-         .print("\n^D(Unix)/^Z(Win)+invio per uscire, solo invio per continuare: ");
      // il client esce in modo anomalo
      System.exit(1);
    } catch (Exception e) {
@@ -61,6 +59,8 @@ try {
      System.exit(2);
    }
 
+     
+     socket.shutdownOutput(); // il client non deve inviare nulla
      File fileCorr = null;
      FileInfo[] filesToReceive = this.remoteInfo.getFileList(); 
      
@@ -68,7 +68,7 @@ try {
 	     System.out.println("Client ricevo file..."); 
         
    try{
-    	//creo il direttorio in cui salvare i file che mi invia  il server
+    	//creo il direttorio in cui salvare i file che mi invia il server
     				
                      File dir = new File(directory); 
     				 if(dir.mkdir())
@@ -107,8 +107,7 @@ try {
 //    			           outFileCorr.close();
 //    			           }
 //						  
-//						  /****** NON RIESCE AD USCIRE DAL CICLO, NON LEGGE L'EOF BOH!! *******/  
-//						 
+//						  
 //						 } // while
 //					
 //    	               /* quando la readUTF riceve un EOF lancia un eccezione
@@ -119,6 +118,8 @@ try {
     				 FileOutputStream outFileCorr;
     			     for(FileInfo fileInfo : filesToReceive)
     			     {
+    			    	 System.out.println("Ricezione del file " + fileInfo.getFileName()
+    			    			 + " di lunghezza " + fileInfo.getFileBytes() + " bytes");
     			    	 fileCorr = new File(dir.getName() + "/" +fileInfo.getFileName());
     			    	 long numBytes = fileInfo.getFileBytes(); 
     			    	 outFileCorr = new FileOutputStream(fileCorr);
@@ -224,7 +225,7 @@ try {
 			 
 
    // finita l'interazione chiudo la comunicazione col server
-   socket.close();
+   socket.shutdownInput();
    System.out.println("Chiusa comunicazione col server.\nBye, bye!");
 
  }
@@ -236,6 +237,6 @@ try {
    e.printStackTrace();
    System.err.println("Chiudo!");
    System.exit(4);
- }
-} // main
+  }
+ } //run
 } // PutFileClientThread

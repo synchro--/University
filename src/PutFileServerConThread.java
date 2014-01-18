@@ -175,8 +175,9 @@ public void run(String[] args) throws IOException {
      // servizio delegato ad un nuovo thread a cui passo anche la lista dei file da inviare
      try {
     	 
-       //passo al thread la directory da aprire con tutti i dati sui file da inviare già pronti	 
+       //passo al thread la directory da aprire 	 
        new PutFileServerThread(clientSocket, directory).start();
+       
      } catch (Exception e) {
        System.err.println("Server: problemi nel server thread: "
            + e.getMessage());
