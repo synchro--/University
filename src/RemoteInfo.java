@@ -38,7 +38,7 @@ public class RemoteInfo implements Serializable {
 	{
 		for(FileInfo currentfile: remoteFiles)
 		{
-			//se è libera la riempio
+			//se libera la riempio
 			if(currentfile.getFileName().equals("L"))
 			{
 			    currentfile = f; 

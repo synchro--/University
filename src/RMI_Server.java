@@ -13,15 +13,18 @@ public class RMI_Server extends UnicastRemoteObject implements RMI_interfaceFile
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static int REGISTRYPORT; 
+	private static String registryHost; 
         
         //costruttore
 	public RMI_Server() throws RemoteException {
 		super();
 	}
 
-             //implementazione metodi
 	
-
+             //implementazione metodi
+		
 @Override
 public ArrayList<String> listDirectory() throws RemoteException {
 	
@@ -41,7 +44,30 @@ public ArrayList<String> listDirectory() throws RemoteException {
 @Override
 public RemoteInfo listFiles(String directory) throws RemoteException {
 	
-	return null;
+	String currentNameFile = null; 
+	long currentFileBytes = -1; 
+	File dir = new File(directory); 
+	File[] list;
+	         
+	list  = dir.listFiles(); 
+	
+	RemoteInfo res = new RemoteInfo(registryHost, REGISTRYPORT, list.length);
+	
+	for(File f: list)
+	{
+		if(f.isFile())
+		{
+			currentNameFile = f.getName(); 
+			currentFileBytes = f.length(); 
+			
+			res.addFile(new FileInfo(currentNameFile, currentFileBytes));
+		}
+	}
+	//creazione socket 
+		@SuppressWarnings("unused")
+		PutFileServerConThread server = new PutFileServerConThread(directory,REGISTRYPORT);	
+		
+	return res; 
 }
 	
 	
@@ -49,8 +75,8 @@ public RemoteInfo listFiles(String directory) throws RemoteException {
 
 public static void main(String[] args)
 {
-	 int REGISTRYPORT = 1099; 
-	 String registryHost = "localhost"; 
+	  REGISTRYPORT = 1099; 
+	  registryHost = "localhost"; 
 	 String serviceName = "server"; 
 	 
 	 // Controllo dei parametri della riga di comando
@@ -78,6 +104,9 @@ public static void main(String[] args)
 		 Naming.rebind(complete, serverRMI); 
 		 
 		 System.out.println("Server avviato");
+		 
+		 
+		 
 	 }
 	 catch(Exception e )
 	 { System.out.println("Vi sono i seguenti errori: "); 
