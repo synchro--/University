@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.net.InetAddress;
 
 /*struttura che contiene l'endpoint 
  * e la lista dei file con le rispettive lunghezze 
@@ -14,12 +15,12 @@ public class RemoteInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	//endpoint
-	private String host; 
+	private InetAddress host; 
 	private int port; 
     
 	private FileInfo[] remoteFiles; 
 	
-	public RemoteInfo(String host, int port, int numFiles)
+	public RemoteInfo(InetAddress host, int port, int numFiles)
 	{
 		this.host = host; 
 		this.port = port;
@@ -49,7 +50,7 @@ public class RemoteInfo implements Serializable {
 		return false; 
 	}
 	
-	public String getHost()
+	public InetAddress getHost()
 	{
 		return host; 
 	}

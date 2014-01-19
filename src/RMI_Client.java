@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.util.ArrayList;
 
@@ -48,6 +50,7 @@ public class RMI_Client {
       String service = null; 
       RemoteInfo fileList = null; 
       ArrayList<String> dirList = null; 
+      int mode = -1; 
 				
       
                 //FINO A ESAURIMENTO INPUT UTENTE
@@ -73,13 +76,14 @@ public class RMI_Client {
                             
                         	fileList = serverRMI.listFiles(nomeDir); //questa chiamata avvia il PutFileServerConThread
                         	//N.B. fileList contiene sia l'endpoint che le informazioni sui file	
-                        	System.out.println("Server host: "+fileList.getHost() + 
+                        	System.out.println("Server host: "+fileList.getHost().toString() + 
                         			"\tserver port: " + fileList.getPort());
                         	
-                        	System.out.println("Ecco la lista dei file");
-                        	System.out.println(fileList.getFileList().toString());
+//                        	System.out.println("Ecco la lista dei file");
+//                        	System.out.println(fileList.getFileList().toString());
                         	
-                        	PutFileClientThread client = new PutFileClientThread(nomeDir,fileList);
+                        	mode = 0; //client attivo
+                        	GetFileClientThread client = new GetFileClientThread(nomeDir,fileList,mode);
                         	client.start(); 
                         	
                         	System.out.println("\nLe directory disponibili sul server sono: " + dirList);
@@ -91,7 +95,32 @@ public class RMI_Client {
 
                         if(service.equals("S"))
                         {
-                        	
+                        	dirList = new ArrayList<String>();
+                        	dirList = serverRMI.listDirectory(); 
+                            System.out.println("\nLe directory disponibili sul server sono: " + dirList);
+                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
+                            
+                            //controllo che la directory scelta esista
+                            nomeDir = stdIn.readLine(); 
+                            while(nomeDir != null)
+                         {
+                            while(!dirList.contains(nomeDir))
+                            {
+                            	System.out.println("Scegli una directory corretta");
+                            	 nomeDir = stdIn.readLine(); 
+                            }
+                             
+                             InetAddress localHost = InetAddress.getLocalHost();
+                             fileList = serverRMI.listFiles(nomeDir, localHost, REGISTRYPORT);
+                            
+                       	    mode = 1; //server attivo
+                       	    GetFileServerConThread client = new GetFileServerConThread(nomeDir, fileList, mode);
+                       	    client.start();
+                            System.out.println("\nLe directory disponibili sul server sono: " + dirList);
+                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
+                            
+                         }
+                            
                         }
                         
                         else System.out.println("Servizio non disponibile"); 
@@ -105,6 +134,12 @@ public class RMI_Client {
 			
 		}
 		
+		catch(UnknownHostException unk)
+		{
+			System.out.println("Host sconosciuto");
+			unk.printStackTrace(); 
+			System.exit(-2);
+		}
 		catch(Exception e )
 		{
 			System.out.println("Vi sono i seguenti errori: "); 
