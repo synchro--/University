@@ -108,7 +108,7 @@ public RemoteInfo listFiles(String directory, InetAddress host, int port)
 		}
 	}
 	
-	/* Per avere un server attivo anzichè creare un'altra classe identica a GetFileClientThread 
+	/* Per avere un server attivo anziche' creare un'altra classe identica a GetFileClientThread 
 	 * utilizziamo questa ma con valore discriminante 1
 	 */
 	
