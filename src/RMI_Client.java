@@ -64,7 +64,7 @@ public class RMI_Client {
                             //controllo che la directory scelta esista
                             nomeDir = stdIn.readLine(); 
                             while(nomeDir != null)
-                            {
+                         {
                             while(!dirList.contains(nomeDir))
                             {
                             	System.out.println("Scegli una directory corretta");
@@ -76,6 +76,9 @@ public class RMI_Client {
                         	System.out.println("Server host: "+fileList.getHost() + 
                         			"\tserver port: " + fileList.getPort());
                         	
+                        	System.out.println("Ecco la lista dei file");
+                        	System.out.println(fileList.getFileList().toString());
+                        	
                         	PutFileClientThread client = new PutFileClientThread(nomeDir,fileList);
                         	client.start(); 
                         	
@@ -83,10 +86,20 @@ public class RMI_Client {
                             System.out.println("Scegli la directory da scaricare, EOF per terminare");
                         	nomeDir = stdIn.readLine();
                         	
-                            }
+                            } 
                         }
 
-                            
+                        if(service.equals("S"))
+                        {
+                        	
+                        }
+                        
+                        else System.out.println("Servizio non disponibile"); 
+                        
+                        System.out.println("Scegli il metodo di scaricamento: "); 
+                        System.out.println("C = Client richiede la connessione " +
+                        		"S = server richiede la connessione");
+                        
                        }
 			
 			

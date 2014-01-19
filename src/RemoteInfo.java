@@ -36,12 +36,12 @@ public class RemoteInfo implements Serializable {
 	
 	public boolean addFile(FileInfo f)
 	{
-		for(FileInfo currentfile: remoteFiles)
+		for(int i=0; i < remoteFiles.length; i++)
 		{
 			//se libera la riempio
-			if(currentfile.getFileName().equals("L"))
+			if(remoteFiles[i].getFileName().equals("L"))
 			{
-			    currentfile = f; 
+			    remoteFiles[i] = f;
 			    return true; 
 			}
 		}

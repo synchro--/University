@@ -47,20 +47,21 @@ public RemoteInfo listFiles(String directory) throws RemoteException {
 	String currentNameFile = null; 
 	long currentFileBytes = -1; 
 	File dir = new File(directory); 
-	File[] list;
+	File[] list = null;
 	         
-	list  = dir.listFiles(); 
+	list  = dir.listFiles();
 	
 	RemoteInfo res = new RemoteInfo(registryHost, REGISTRYPORT, list.length);
 	
 	for(File f: list)
 	{
+		//se la directory contiene un'altra directory questa non viene inclusa
 		if(f.isFile())
 		{
 			currentNameFile = f.getName(); 
 			currentFileBytes = f.length(); 
-			
-			res.addFile(new FileInfo(currentNameFile, currentFileBytes));
+			if(!res.addFile(new FileInfo(currentNameFile, currentFileBytes)))
+			 System.err.println("Errore nel completamento della lista dei file");
 		}
 	}
 	
