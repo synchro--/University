@@ -48,16 +48,19 @@ public RemoteInfo listFiles(String directory) throws RemoteException, UnknownHos
 	
 	String currentNameFile = null; 
 	long currentFileBytes = -1; 
+	int length = 0; 
 	File dir = new File(directory); 
 	File[] list = null;
 	         
 	list  = dir.listFiles();
 	InetAddress host = InetAddress.getByName(registryHost);
-	RemoteInfo res = new RemoteInfo(host, REGISTRYPORT, list.length);
+	for(File f:list) if(f.isFile()) length++;
+	
+	RemoteInfo res = new RemoteInfo(host, REGISTRYPORT, length);
 	
 	for(File f: list)
 	{
-		//se la directory contiene un'altra directory questa non viene inclusa
+		//vengono inclusi solamente i file regolari
 		if(f.isFile())
 		{
 			currentNameFile = f.getName(); 
@@ -81,11 +84,14 @@ public RemoteInfo listFiles(String directory) throws RemoteException, UnknownHos
 @Override
 public RemoteInfo listFiles(String directory, InetAddress host, int port)
 		throws RemoteException {
+	
 	String currentNameFile = null; 
 	long currentFileBytes = -1; 
-	File dir = new File(directory); 
+	int length = 0;
+	File dir = null;  
 	File[] list = null;
-	         
+	
+	dir = new File(directory);
 	list  = dir.listFiles();
 	
 	/* In questo caso dobbiamo inviare al client solo una lista di File. Per non dichiarare altre variabili
@@ -94,11 +100,13 @@ public RemoteInfo listFiles(String directory, InetAddress host, int port)
 	 * utilizzato dal server in modalita' attiva
 	 */
 	
-	RemoteInfo res = new RemoteInfo(host, port, list.length);
+    for(File f:list) if(f.isFile()) length++;
+    
+	RemoteInfo res = new RemoteInfo(host, port, length);
 	
 	for(File f: list)
 	{
-		//se la directory contiene un'altra directory questa non viene inclusa
+		//vengono inclusi solamente i file regolari 
 		if(f.isFile())
 		{
 			currentNameFile = f.getName(); 

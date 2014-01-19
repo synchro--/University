@@ -116,7 +116,7 @@ DataInputStream inSock;
     }
    }
    
-   else if(mode == 1) //UTILIZZATO DAL CLIENT
+   else if(mode == 1) //UTILIZZATO DAL CLIENT   
    {
 
 		try{

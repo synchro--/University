@@ -23,8 +23,6 @@ public void run() {
 	
  InetAddress addr  = null;
  addr = this.remoteInfo.getHost();
-
-
  int port = this.remoteInfo.getPort();
 
 
@@ -114,39 +112,24 @@ if(mode == 0)
      //mode = 1 questa classe viene utilizzata dal server per inviare i file
     else if(mode == 1)
     {
-
- 	   while(true){
  	  
  	   fileCorr = null; 
  	  
  	   try {
  	       File dirCorr = new File(directory);
+ 	       System.out.println("Apertura della direc  " + directory);
  	         File[] files = dirCorr.listFiles();
  	         for (int i = 0; i < files.length; i++) {
  	           fileCorr = files[i];
  	           System.out.println("File con nome: " + fileCorr.getName());
  	           if (fileCorr.isFile()) {
-// 	             // Trasmissione: nome file
-// 	             outSock.writeUTF(fileCorr.getName());
-// 	             result = inSock.readUTF();
-// 	             if (!result.equals("attiva")) System.out
-// 	                 .println("Il file "
-// 	                     + fileCorr.getName()
-// 	                     + "era gia' presente sul Client e non e' stato sovrascritto");
-// 	             else {
-// 	               System.out.println("Il file " + fileCorr.getName()
-// 	                   + " NON e' presente sul client: inizio il trasferimento");
- 	               // lunghezza
-// 	               outSock.writeLong(fileCorr.length());
- 	               // trasferimento dati
  	               FileUtility.trasferisci_N_byte_file_binario(
  	                   new DataInputStream(new FileInputStream(fileCorr
  	                       .getAbsolutePath())), outSock, fileCorr.length());
- 	            // }
  	           }
  	         
  	         // fine invio dei file nella cartella
- 	       }	  
+ 	        }	  
  		  }
  	     /*
  	      * NOTA: in caso di raggiungimento dell'EOF, la readUTF lancia una
@@ -171,7 +154,6 @@ if(mode == 0)
  	       // il client esce in modo anomalo
  	       System.exit(3);
  	     }
-     }
    } //else 
 
    // finita l'interazione chiudo la comunicazione col server
