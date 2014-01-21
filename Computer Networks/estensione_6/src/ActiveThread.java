@@ -35,13 +35,13 @@ public void run() {
 
  try {
 	 
-	 sleep(500);
+	// sleep(500); //per sicurezza aspetto che il pari crei una socket di ascolto 
    // creazione socket e stream di input/output su socket, unica per tutta la
    // sessione
    try {
      socket = new Socket(addr, port);
-     // setto il timeout per non bloccare indefinitivamente il client
-     socket.setSoTimeout(300000);
+     // setto il timeout 
+     socket.setSoTimeout(30000);
      System.out.println("Creata la socket: " + socket);
      inSock = new DataInputStream(socket.getInputStream());
      outSock = new DataOutputStream(socket.getOutputStream());
@@ -135,15 +135,11 @@ if(mode == 0)
  	         // fine invio dei file nella cartella
  	        }	  
  		  }
-// 	     catch (EOFException e) {
-// 	       System.out.println("EOF exception, chiudo.. ");
-// 	       // e.printStackTrace();
-// 	       // finito il ciclo di ricezioni termino la comunicazione
-// 	       socket.close();
-// 	       // Esco con indicazione di successo
-// 	       System.out.println("ActiveThread: termino...");
-// 	       System.exit(0);
-// 	     }
+         catch (SocketTimeoutException ste) {
+    			     System.out.println("Timeout scattato: ");
+    			     ste.printStackTrace();
+    			     socket.close();
+    			   }
  	     catch (Exception e) {
  	       System.out.println("Problemi nell'invio di " + fileCorr.getName()
  	           + ": ");

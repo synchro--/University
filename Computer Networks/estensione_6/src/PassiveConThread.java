@@ -72,22 +72,17 @@ DataInputStream inSock;
 	         // fine invio dei file nella cartella
 	       }	  
 		  }
-	     catch (EOFException e) {
-	       System.out.println("Raggiunta la fine delle ricezioni, chiudo...");
-	       // e.printStackTrace();
-	       // finito il ciclo di ricezioni termino la comunicazione
-	       clientSocket.close();
-	       // Esco con indicazione di successo
-	       System.out.println("PassiveThread: termino...");
-	       System.exit(0);
-	     }
-	      //altri errori
+	     catch (SocketTimeoutException ste) {
+	    			     System.out.println("Timeout scattato: ");
+	    			     ste.printStackTrace();
+	    			     clientSocket.close();
+	    			   }
 	     catch (Exception e) {
 	       System.out.println("Problemi nell'invio di " + fileCorr.getName()
 	           + ": ");
 	       e.printStackTrace();
 	       clientSocket.close();
-	       // il client esce in modo anomalo
+	       // esce in modo anomalo
 	       System.exit(3);
 	     }
     }
@@ -100,9 +95,7 @@ DataInputStream inSock;
 	                     File dir = new File(directory); 
 	    				 if(dir.mkdir())
 	    					 System.out.println("Creato direttorio " + directory); 
-	    				 /*else {   System.out.print("Problemi nella creazione del direttorio " + nomeDirettorio); 
-						          System.out.println("forse direttorio già esistente?"); }*/
-	    			     
+	    			 
 	    				 FileOutputStream outFileCorr;
 	    			     for(FileInfo fileInfo : this.list)
 	    			     {
@@ -194,8 +187,7 @@ public void run() {
        // bloccante finche non avviene una connessione
        clientSocket = serverSocket.accept();
        clientSocket.setSoTimeout(60000);
-       // anche se il server e' concorrente e' comunque meglio evitare che
-       // un blocco indefinito
+       // anche se e' concorrente e' comunque meglio evitare un blocco indefinito
        System.out.println("PassiveThreadCon: connessione accettata: " + clientSocket);
      } catch (Exception e) {
        System.err
@@ -203,7 +195,7 @@ public void run() {
                + e.getMessage());
        e.printStackTrace();
      }
-     // servizio delegato ad un nuovo thread a cui passo anche la lista dei file da inviare
+     // servizio delegato ad un nuovo thread
      try {
     	 
        //passo al thread la directory da aprire e la lista dei file in caso di mode = 1
