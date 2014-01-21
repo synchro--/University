@@ -1,11 +1,15 @@
-//PutFileServer Concorrente
+/*Thread passivo Concorrente che rimane in ascolto utilizzando ServerSocket e quando accetta 
+ * una connessione genera un figlio per soddisfare la richiesta. Utilizzato dal pari si mette in ascolto.
+ * N.B: Si sarebbe potuto creare un unico thread che riceve le richiesta e le attua in modo sequenziale
+ * pero' ho preferito mantenere la stessa struttura dell'esercitazione n.2 
+ */
 
 import java.io.*;
 import java.net.*;
 
-//Thread lanciato per ogni richiesta accettata
+//Thread lanciato dal PassiveConThread per ogni richiesta accettata
 //versione per il trasferimento di file binari
-class GetFileServerThread extends Thread {
+class PassiveThread extends Thread {
 
 private Socket clientSocket = null;
 private String directory = null; 
@@ -14,7 +18,7 @@ private int mode; // vedi sotto
 
 
 // costruttore
-public GetFileServerThread(Socket clientSocket, String directory, FileInfo[] list, int mode) {
+public PassiveThread(Socket clientSocket, String directory, FileInfo[] list, int mode) {
  this.clientSocket = clientSocket;
  this.directory = directory; 
  this.list = list; 
@@ -53,10 +57,6 @@ DataInputStream inSock;
 
    if(mode == 0)
    {
-	  // while(true){
-	  
-	  
-	  
 	   try {
 	       File dirCorr = new File(directory);
 	         File[] files = dirCorr.listFiles();
@@ -64,40 +64,21 @@ DataInputStream inSock;
 	           fileCorr = files[i];
 	           System.out.println("File con nome: " + fileCorr.getName());
 	           if (fileCorr.isFile()) {
-//	             // Trasmissione: nome file
-//	             outSock.writeUTF(fileCorr.getName());
-//	             result = inSock.readUTF();
-//	             if (!result.equals("attiva")) System.out
-//	                 .println("Il file "
-//	                     + fileCorr.getName()
-//	                     + "era gia' presente sul Client e non e' stato sovrascritto");
-//	             else {
-//	               System.out.println("Il file " + fileCorr.getName()
-//	                   + " NON e' presente sul client: inizio il trasferimento");
-	               // lunghezza
-//	               outSock.writeLong(fileCorr.length());
-	               // trasferimento dati
 	               FileUtility.trasferisci_N_byte_file_binario(
 	                   new DataInputStream(new FileInputStream(fileCorr
 	                       .getAbsolutePath())), outSock, fileCorr.length());
-	            // }
 	           }
 	         
 	         // fine invio dei file nella cartella
 	       }	  
 		  }
-	     /*
-	      * NOTA: in caso di raggiungimento dell'EOF, la readUTF lancia una
-	      * eccezione che viene gestita qui sotto chiudendo la socket e
-	      * terminando il client con successo.
-	      */
 	     catch (EOFException e) {
 	       System.out.println("Raggiunta la fine delle ricezioni, chiudo...");
 	       // e.printStackTrace();
 	       // finito il ciclo di ricezioni termino la comunicazione
 	       clientSocket.close();
 	       // Esco con indicazione di successo
-	       System.out.println("PutFileServerThread: termino...");
+	       System.out.println("PassiveThread: termino...");
 	       System.exit(0);
 	     }
 	      //altri errori
@@ -110,15 +91,12 @@ DataInputStream inSock;
 	       System.exit(3);
 	     }
     }
-  // }
    
    else if(mode == 1) //UTILIZZATO DAL CLIENT   
    {
 
 		try{
 	    	//creo il direttorio in cui salvare i file che mi invia il server
-		   
-		   
 	                     File dir = new File(directory); 
 	    				 if(dir.mkdir())
 	    					 System.out.println("Creato direttorio " + directory); 
@@ -138,14 +116,13 @@ DataInputStream inSock;
 	    			     }
 		   }
 	   
-	    			 
 	    			 catch (EOFException eof) {
 	    			     System.out.println("Raggiunta la fine delle ricezioni, chiudo...");
 	    			     // e.printStackTrace();
 	    			     // finito il ciclo di ricezioni termino la comunicazione
 	    			     clientSocket.close();
 	    			     // Esco con indicazione di successo
-	    			     System.out.println("GetFileClientThread: termino...");
+	    			     System.out.println("PassiveThread: termino...");
 	    			   } catch (SocketTimeoutException ste) {
 	    			     System.out.println("Timeout scattato: ");
 	    			     ste.printStackTrace();
@@ -162,7 +139,7 @@ DataInputStream inSock;
    e.printStackTrace();
    // chiusura di stream e socket
    System.out
-       .println("Errore irreversibile, PutFileServerThread: termino...");
+       .println("Errore irreversibile, PassiveThread: termino...");
  }
  
  System.out.println("Terminazione figlio: "
@@ -170,7 +147,10 @@ DataInputStream inSock;
  
 } // run
 
-} // PutFileServerThread
+} // PassiveThread
+
+
+
 
 public class PassiveConThread extends Thread{
 	
@@ -197,7 +177,7 @@ public void run() {
  try {
    serverSocket = new ServerSocket(port);
    serverSocket.setReuseAddress(true); 
-   System.out.println("PutFileServerConThread: avviato ");
+   System.out.println("PassiveConThread: avviato ");
    System.out.println("Server: creata la server socket: " + serverSocket);
  } catch (Exception e) {
    System.err
@@ -208,8 +188,6 @@ public void run() {
  }
 
  try {
-
-//  while (true) {
      System.out.println("Server: in attesa di richieste...\n");
 
      try {
@@ -218,10 +196,10 @@ public void run() {
        clientSocket.setSoTimeout(60000);
        // anche se il server e' concorrente e' comunque meglio evitare che
        // un blocco indefinito
-       System.out.println("Server: connessione accettata: " + clientSocket);
+       System.out.println("PassiveThreadCon: connessione accettata: " + clientSocket);
      } catch (Exception e) {
        System.err
-           .println("Server: problemi nella accettazione della connessione: "
+           .println("PassiveThreadCon: problemi nella accettazione della connessione: "
                + e.getMessage());
        e.printStackTrace();
      }
@@ -230,22 +208,20 @@ public void run() {
     	 
        //passo al thread la directory da aprire e la lista dei file in caso di mode = 1
        FileInfo[] list = this.remoteInfo.getFileList();
-       new GetFileServerThread(clientSocket, directory,list,mode).start();
+       new PassiveThread(clientSocket, directory,list,mode).start();
        
      } catch (Exception e) {
-       System.err.println("Server: problemi nel server thread: "
+       System.err.println("PassiveThreadCon: problemi nel server thread: "
            + e.getMessage());
        e.printStackTrace();
      }
-
- // } // while
  }
  // qui catturo le eccezioni non catturate all'interno del while
  // in seguito alle quali il server termina l'esecuzione
  catch (Exception e) {
    e.printStackTrace();
    // chiusura di stream e socket
-   System.out.println("PutFileServerCon: termino...");
+   System.out.println("PassiveThreadCon: termino...");
    System.exit(2);
  }
 
@@ -257,4 +233,4 @@ try {
 } 
 
 }
-} // PutFileServerConThread
+} // PassiveConThread

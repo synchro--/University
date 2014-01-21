@@ -98,8 +98,8 @@ public RemoteInfo listFiles(String directory, InetAddress host, int port)
 	
 	/* In questo caso dobbiamo inviare al client solo una lista di File. Per non dichiarare altre variabili
 	 * utilizzeremo sempre un oggetto RemoteInfo che contiene la lista + endpoint del client.
-	 * L'endpoint del client viene ignorato dal client (a cui interessa solo la lista) ma viene invece
-	 * utilizzato dal server in modalita' attiva
+	 * L'endpoint del client viene ignorato dal client (a cui interessa solo la lista ovviamente) ma viene invece
+	 * utilizzato dal server in modalita' attiva per richiedere la connessione
 	 */
 	
     for(File f:list) if(f.isFile()) length++;
@@ -118,9 +118,7 @@ public RemoteInfo listFiles(String directory, InetAddress host, int port)
 		}
 	}
 	
-	/* Per avere un server attivo anziche' creare un'altra classe identica a GetFileClientThread 
-	 * utilizziamo questa ma con valore discriminante 1
-	 */
+	// Per avere un server attivo utilizziamo un ActiveThread ma con valore discriminante 1
 	
 	int mode = 1; //server attivo
 	ActiveThread server = new ActiveThread(directory, res, mode);

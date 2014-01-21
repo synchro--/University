@@ -1,4 +1,6 @@
-//PutFileClient.java
+/*ActiveThread viene usato sia dal client che dal server a seconda di chi è il pari 
+ * attivo che richiede la connessione
+ */
 
 import java.net.*;
 import java.io.*;
@@ -70,8 +72,6 @@ if(mode == 0)
    
 	try{
     	//creo il direttorio in cui salvare i file che mi invia il server
-	   
-	   
                      File dir = new File(directory); 
     				 if(dir.mkdir())
     					 System.out.println("Creato direttorio " + directory); 
@@ -98,7 +98,7 @@ if(mode == 0)
     			     // finito il ciclo di ricezioni termino la comunicazione
     			     socket.close();
     			     // Esco con indicazione di successo
-    			     System.out.println("GetFileClientThread: termino...");
+    			     System.out.println("ActiveThread: termino...");
     			   } catch (SocketTimeoutException ste) {
     			     System.out.println("Timeout scattato: ");
     			     ste.printStackTrace();
@@ -135,21 +135,15 @@ if(mode == 0)
  	         // fine invio dei file nella cartella
  	        }	  
  		  }
- 	     /*
- 	      * NOTA: in caso di raggiungimento dell'EOF, la readUTF lancia una
- 	      * eccezione che viene gestita qui sotto chiudendo la socket e
- 	      * terminando il client con successo.
- 	      */
- 	     catch (EOFException e) {
- 	       System.out.println("Raggiunta la fine delle ricezioni, chiudo...");
- 	       // e.printStackTrace();
- 	       // finito il ciclo di ricezioni termino la comunicazione
- 	       socket.close();
- 	       // Esco con indicazione di successo
- 	       System.out.println("PutFileServerThread: termino...");
- 	       System.exit(0);
- 	     }
- 	      //altri errori
+// 	     catch (EOFException e) {
+// 	       System.out.println("EOF exception, chiudo.. ");
+// 	       // e.printStackTrace();
+// 	       // finito il ciclo di ricezioni termino la comunicazione
+// 	       socket.close();
+// 	       // Esco con indicazione di successo
+// 	       System.out.println("ActiveThread: termino...");
+// 	       System.exit(0);
+// 	     }
  	     catch (Exception e) {
  	       System.out.println("Problemi nell'invio di " + fileCorr.getName()
  	           + ": ");
@@ -162,12 +156,9 @@ if(mode == 0)
 
    // finita l'interazione chiudo la comunicazione col server
    socket.close();
-   System.out.println("Chiusa comunicazione col server.\nBye, bye!");
+   System.out.println("Chiusa comunicazione col pari.\nBye, bye!");
 
  }
- // qui catturo le eccezioni non catturate all'interno del while
- // quali per esempio la caduta della connessione con il server
- // in seguito alle quali il client termina l'esecuzione
  catch (Exception e) {
    System.err.println("Errore irreversibile, il seguente: ");
    e.printStackTrace();
@@ -175,4 +166,4 @@ if(mode == 0)
    System.exit(4);
   }
  } //run
-} // PutFileClientThread
+} // ActiveThread

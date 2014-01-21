@@ -15,7 +15,7 @@ public interface RMI_interfaceFile extends Remote {
 	
 	//invio di lista file e endpoint server attivo
 	RemoteInfo listFiles(String directory) throws RemoteException, UnknownHostException; 
-	//invio di lista file client attivo
+	//invio di lista file client attivo (l'endpoint del client viene passato come parametro)
 	RemoteInfo listFiles(String directory, InetAddress host, int port) throws RemoteException; 
 	
 	 
