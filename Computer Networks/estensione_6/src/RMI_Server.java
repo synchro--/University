@@ -43,6 +43,7 @@ public ArrayList<String> listDirectory() throws RemoteException {
 	return res; 
 }
 
+//client attivo
 @Override
 public RemoteInfo listFiles(String directory) throws RemoteException, UnknownHostException {
 	
@@ -54,10 +55,10 @@ public RemoteInfo listFiles(String directory) throws RemoteException, UnknownHos
 	         
 	list  = dir.listFiles();
 	InetAddress host = InetAddress.getByName(registryHost);
+	System.out.println(InetAddress.getLocalHost() + " " + InetAddress.getByName(registryHost));
 	for(File f:list) if(f.isFile()) length++;
 	
-	RemoteInfo res = new RemoteInfo(host, REGISTRYPORT, length);
-	
+	RemoteInfo res = new RemoteInfo(host, 5000, length); //porta a caso
 	for(File f: list)
 	{
 		//vengono inclusi solamente i file regolari
@@ -73,7 +74,7 @@ public RemoteInfo listFiles(String directory) throws RemoteException, UnknownHos
 	System.out.println("Avvio il Thread server");
 	//creazione socket 
 	int mode = 0; //client attivo
-	GetFileServerConThread server = new GetFileServerConThread(directory,res,mode);	
+	PassiveConThread server = new PassiveConThread(directory,res,mode);	
 	server.start();
 	
 	System.out.println("Inviato l'endpoint al Client");	
@@ -81,6 +82,7 @@ public RemoteInfo listFiles(String directory) throws RemoteException, UnknownHos
 }
 
 
+//server attivo
 @Override
 public RemoteInfo listFiles(String directory, InetAddress host, int port)
 		throws RemoteException {
@@ -121,7 +123,7 @@ public RemoteInfo listFiles(String directory, InetAddress host, int port)
 	 */
 	
 	int mode = 1; //server attivo
-	GetFileClientThread server = new GetFileClientThread(directory, res, mode);
+	ActiveThread server = new ActiveThread(directory, res, mode);
 	server.start();
 	
 	return res;

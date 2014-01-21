@@ -62,7 +62,8 @@ public class RMI_Client {
                         	dirList = new ArrayList<String>();
                         	dirList = serverRMI.listDirectory(); 
                             System.out.println("\nLe directory disponibili sul server sono: " + dirList);
-                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
+                            System.out.println("Scegli la directory da scaricare, EOF per tornare " +
+                            		" alla scelta tra client attivo/server attivo");
                             
                             //controllo che la directory scelta esista
                             nomeDir = stdIn.readLine(); 
@@ -83,11 +84,13 @@ public class RMI_Client {
 //                        	System.out.println(fileList.getFileList().toString());
                         	
                         	mode = 0; //client attivo
-                        	GetFileClientThread client = new GetFileClientThread(nomeDir,fileList,mode);
+                        	ActiveThread client = new ActiveThread(nomeDir,fileList,mode);
                         	client.start(); 
+                        	Thread.sleep(5000); //attesa per le printf
                         	
                         	System.out.println("\nLe directory disponibili sul server sono: " + dirList);
-                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
+                            System.out.println("Scegli la directory da scaricare, EOF per tornare " +
+                            		" alla scelta tra client attivo/server attivo");
                         	nomeDir = stdIn.readLine();
                         	
                             } 
@@ -98,8 +101,8 @@ public class RMI_Client {
                         	dirList = new ArrayList<String>();
                         	dirList = serverRMI.listDirectory(); 
                             System.out.println("\nLe directory disponibili sul server sono: " + dirList);
-                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
-                            
+                            System.out.println("Scegli la directory da scaricare, EOF per tornare " +
+                            		" alla scelta tra client attivo/server attivo");
                             //controllo che la directory scelta esista
                             nomeDir = stdIn.readLine(); 
                             while(nomeDir != null)
@@ -110,14 +113,20 @@ public class RMI_Client {
                             	 nomeDir = stdIn.readLine(); 
                             }
                              
-                             InetAddress localHost = InetAddress.getLocalHost();
-                             fileList = serverRMI.listFiles(nomeDir, localHost, REGISTRYPORT);
+                             InetAddress localHost = InetAddress.getByName(registryHost);
+                             fileList = serverRMI.listFiles(nomeDir, localHost, 7868); //porta a caso
+                             
+                             System.out.println(fileList.getPort());
                             
                        	    mode = 1; //server attivo
-                       	    GetFileServerConThread client = new GetFileServerConThread(nomeDir, fileList, mode);
+                       	    PassiveConThread client = new PassiveConThread(nomeDir, fileList, mode);
                        	    client.start();
+                       	    
+                       	 	Thread.sleep(5000); //attesa per le printf
                             System.out.println("\nLe directory disponibili sul server sono: " + dirList);
-                            System.out.println("Scegli la directory da scaricare, EOF per terminare");
+                            System.out.println("Scegli la directory da scaricare, EOF per tornare " +
+                            		" alla scelta tra client attivo/server attivo");
+                            nomeDir = stdIn.readLine();
                             
                          }
                             
