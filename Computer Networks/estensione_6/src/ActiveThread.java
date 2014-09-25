@@ -1,4 +1,4 @@
-/*ActiveThread viene usato sia dal client che dal server a seconda di chi � il pari 
+/*ActiveThread viene usato sia dal client che dal server a seconda di chi è il pari 
  * attivo che richiede la connessione
  */
 
@@ -73,22 +73,22 @@ if(mode == 0)
 	try{
     	//creo il direttorio in cui salvare i file che mi invia il server
                      File dir = new File(directory); 
-    				 if(dir.mkdir())
-    					 System.out.println("Creato direttorio " + directory); 
+    		if(dir.mkdir())
+    		   System.out.println("Creato direttorio " + directory); 
     				 /*else {   System.out.print("Problemi nella creazione del direttorio " + nomeDirettorio); 
-					          System.out.println("forse direttorio già esistente?"); }*/
+					          System.out.println("forse direttorio giÃ  esistente?"); }*/
     			     
-    				 FileOutputStream outFileCorr;
-    			     for(FileInfo fileInfo : fileToReceive)
-    			     {
-    			    	 System.out.println("Ricezione del file " + fileInfo.getFileName()
-    			    			 + " di lunghezza " + fileInfo.getFileBytes() + " bytes");
-    			    	 fileCorr = new File(dir.getName() + "/" +fileInfo.getFileName());
-    			    	 long numBytes = fileInfo.getFileBytes(); 
-    			    	 outFileCorr = new FileOutputStream(fileCorr);
-    			    	 FileUtility.trasferisci_N_byte_file_binario(inSock, new DataOutputStream(outFileCorr),
-    			    			numBytes);
-    			     }
+    		    FileOutputStream outFileCorr;
+    			 for(FileInfo fileInfo : fileToReceive)
+    			{
+    			  System.out.println("Ricezione del file " + fileInfo.getFileName()
+    			    	      + " di lunghezza " + fileInfo.getFileBytes() + " bytes");
+    			    fileCorr = new File(dir.getName() + "/" +fileInfo.getFileName());
+    			    long numBytes = fileInfo.getFileBytes(); 
+    			    outfileCorr = new FileOutputStream(fileCorr);
+    			    FileUtility.trasferisci_N_byte_file_binario(inSock, new DataOutputStream(outFileCorr),
+    			    		numBytes);
+    			}
 	   }
    
     			 
