@@ -1,4 +1,4 @@
-<h1> Digit Classifier </h1>
+<h2> Digit Classifier </h2>
 
 Here's the digit classifier from Clement Farabet (https://github.com/torch/demos)
 with some little changes to make the user see the result of the training. 
