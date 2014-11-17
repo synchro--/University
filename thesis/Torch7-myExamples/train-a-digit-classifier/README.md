@@ -7,7 +7,7 @@ For gfx just do:
 > luarocks install gfx.js 
 
 
-<h2> Usage <h2>
+<h2> Usage </h2>
 First of all you have to train the network. 
 Training: 
 > th train-on-mnist.lua
