@@ -3,7 +3,7 @@ with some little changes to make the user see with hands the result of the train
 You will need Lua and Torch7 framework (torch.ch) in order to run the example above. 
 
 N.B. You will also need all the rocks required, in particularly : gfx.js for the visualization. The other comes preinstalled with Torch7. 
-For gfx just do: 
+For gfx just do: (see https://github.com/clementfarabet/gfx.js)
 > luarocks install gfx.js 
 
 
