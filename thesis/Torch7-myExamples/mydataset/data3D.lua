@@ -101,7 +101,7 @@ local labelsAll = torch.Tensor(total)
 
 os.execute('cd' ..folders[i])
    
---function perfect 
+--function ok
 
 for i=1,#classes do 
    --load images
