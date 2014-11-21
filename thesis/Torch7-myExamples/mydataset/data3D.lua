@@ -97,7 +97,15 @@ local labelsAll = torch.Tensor(total)
 
 os.execute('cd' ..folders[i])
    
---function ok
+--function for loading all the images for all the folders 
+
+--[[function loadImg() 
+      local count = getNumber('.') -- retrieving total number of photos 
+      for j=1,count do 
+       imagesAll[{  {(i*count), (i*count+j)}  }] = image.load(folders[j]..j..'.png') --person.1.png, person.2.png
+         labelsAll[{  {(i*count), (i*count+j)}  }] = classes[i] --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
+      end
+end]]-- 
 
 for i=1,#classes do 
    --load images
