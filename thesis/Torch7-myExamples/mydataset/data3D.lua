@@ -16,6 +16,22 @@ require 'image'   -- for color transforms
 require 'gfx.js'  -- to visualize the dataset
 require 'nn'      -- provides a normalization operator
 
+
+--[[ function getFiles(dir)
+   local folders = {}
+   local tmpfile = '/tmp/stmp.txt'
+   os.execute('ls -l'..dir..' > '..tmpfile)
+   local f = io.open(tmpfile)
+   if not f then return files end  
+   local k = 1
+   for line in f:lines() do
+      folders[k] = line
+      k = k + 1
+   end
+   f:close()
+   return folders
+ end]] -- 
+
 ----------------------------------------------------------------------
 -- parse command line arguments
 if not opt then
@@ -32,15 +48,46 @@ end
 
 ----------------------------------------------------------------------
 
-print(sys.COLORS.red ..  '==> searching dataset...')
+print(sys.COLORS.red ..  '==> searching datasets...')
 
---if the dataset does not exist, exits. 
-local res = os.execute('ls *apple*')
-if not paths.dirp('apple-dataset') then 
-   print('apple-dataset not found. Be sure the name is "apple-dataset" ')
-   print('exiting...')
-   os.exit()
+--check that the number of folders correspond to the number of classes: 
+function getNumber()
+   os.execute('ls -l |grep -v "total" | wc -l > dirCount')
+   local f = io.open('dirCount')
+   count = f:line()
+   f:close()
+   return count
 end 
+
+  function getNames(dir)
+   local folders = {}
+   local tmpfile = 'list.txt'
+   os.execute('ls -l | grep -v total'..dir..' > '..tmpfile)
+   local f = io.open(tmpfile)
+   if not f then return files end  
+   local k = 1
+   for line in f:lines() do
+      folders[k] = line
+      k = k + 1
+   end
+   f:close()
+   return folders
+ end
+ 
+ function getNumber()
+   local count=0
+   os.execute('
+ 
+ --classes GLOBAL VAR
+classes = {'person','tree','stairs','ecc'}
+local count = getNumber('.') -- recupero il numero delle subdirectories quindi dei dataset 
+
+if count != #classes
+   print ('missing some data... exit')
+   os.exit(-1)
+end 
+
+folders = getNames('.')
 
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> loading dataset')
@@ -48,26 +95,23 @@ print(sys.COLORS.red ..  '==> loading dataset')
 torch.setdefaulttensortype('torch.FloatTensor') -- preprocessing requires a floating point representation 
 
 --we load data from disk 
---number of apples or backgrounds are specified in the option: opt.applesNum opt.bgNum
-local all = opt.applesNum + opt.bgNum
-local imagesAll = torch.Tensor(all,3,32,32)
-local labelsAll = torch.Tensor(all)
+local total = 5000
+local imagesAll = torch.Tensor(total,3,32,32)
+local labelsAll = torch.Tensor(total)
 
---classes GLOBAL VAR
-classes = {'apple','background'}
+os.execute('cd' ..folders[i])
+   
+--function perfect 
 
-os.execute('cd apple')
---load apples 
-for i,opt.applesNum do 
-   imagesAll[i] = image.load('apple'..i..'.png') --apple.1.png, apple.2.png , usare lo script "naming_images.sh" per cambiare i nomi
-   labelsAll[i] = classes[1] --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
+for i=1,#classes do 
+   --load images
+   local count = getNumber('.') -- retrieving total number of photos 
+   for j=1,count do 
+      imagesAll[{  {(i*count), (i*count+j)}  }] = image.load(folders[j]..j..'.png') --person.1.png, person.2.png
+      labelsAll[{  {(i*count), (i*count+j)}  }] = classes[i] --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
 end 
-
-os.execute('cd ../bg')
-for i,opt.bgNum do 
-   imagesAll[i] = image.load('bg'..i..'.png')
-   labelsAll[i] = classes[2] 
-end 
+  os.execute('cd ../'..folders[i+1]) -- next directory 
+end  
 
 -- shuffle dataset: get shuffled indices in this variable:
 local labelsShuffle = torch.randperm((#labelsAll)[1]) -- mescola gli indici ma mantiene le corrispondenze: 
