@@ -74,10 +74,6 @@ end
    return folders
  end
  
- function getNumber()
-   local count=0
-   os.execute('
- 
  --classes GLOBAL VAR
 classes = {'person','tree','stairs','ecc'}
 local count = getNumber('.') -- recupero il numero delle subdirectories quindi dei dataset 
