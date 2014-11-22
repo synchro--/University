@@ -15,7 +15,7 @@ Training:
 > th train-on-mnist.lua
 
 Running with visualization: 
-First of all open a terminal tab and do : 
+Firs, open a terminal tab and do : 
 > luajit -l gfx.go
 
 this will launch gfx.js server for the image rendering (needed)
