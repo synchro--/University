@@ -1,16 +1,18 @@
 University
 ==========
 
-Some exercises related to my exams of computer engineering degree.
+Some exercises related to my BSc in computer engineering.
 
 Subjects: 
--Operating System 
--Computer Networks 
--Java Threads 
--SQL
--XML 
--Web Development: HTML, CSS, JavaScript 
--J2EE: Servlet, JSP, Hibernate
--SysAdmin: snmp, LDAP, and others bash scripts. 
-
+<ul> 
+   <li> Operating System </li>
+   <li> Computer Networks </li>
+   <li> Java Threads </li> 
+   <li> SQL </li> 
+   <li> XML </li>
+   <li> Web Development: HTML, CSS, JavaScript </li>
+   <li> J2EE: Servlet, JSP, Hibernate </li> 
+   <li> SysAdmin: snmp, LDAP, and others bash scripts. </li> 
+</ul> 
+<hb> 
 N.B. The repo is incomplete and should be updated soon 
