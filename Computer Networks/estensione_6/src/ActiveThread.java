@@ -45,12 +45,14 @@ public void run() {
      System.out.println("Creata la socket: " + socket);
      inSock = new DataInputStream(socket.getInputStream());
      outSock = new DataOutputStream(socket.getOutputStream());
-   } catch (IOException ioe) {
+   } 
+   catch (IOException ioe) {
      System.out.println("GetFileActiveThread Problemi nella creazione degli stream su socket: ");
      ioe.printStackTrace();
      // il client esce in modo anomalo
      System.exit(1);
-   } catch (Exception e) {
+   }
+   catch (Exception e) {
      System.out.println("Problemi nella creazione della socket: ");
      e.printStackTrace();
      // il client esce in modo anomalo
@@ -58,8 +60,8 @@ public void run() {
    }
 
      
-     File fileCorr = null;
-     FileInfo[] fileToReceive = this.remoteInfo.getFileList(); 
+ File fileCorr = null;
+ FileInfo[] fileToReceive = this.remoteInfo.getFileList(); 
      
      
 	    
@@ -72,17 +74,17 @@ if(mode == 0)
    
 	try{
     	//creo il direttorio in cui salvare i file che mi invia il server
-                     File dir = new File(directory); 
+         File dir = new File(directory); 
     		if(dir.mkdir())
     		   System.out.println("Creato direttorio " + directory); 
     				 /*else {   System.out.print("Problemi nella creazione del direttorio " + nomeDirettorio); 
 					          System.out.println("forse direttorio giÃ  esistente?"); }*/
     			     
     		    FileOutputStream outFileCorr;
-    			 for(FileInfo fileInfo : fileToReceive)
-    			{
+    			 for(FileInfo fileInfo : fileToReceive) {
     			  System.out.println("Ricezione del file " + fileInfo.getFileName()
     			    	      + " di lunghezza " + fileInfo.getFileBytes() + " bytes");
+    			    	      
     			    fileCorr = new File(dir.getName() + "/" +fileInfo.getFileName());
     			    long numBytes = fileInfo.getFileBytes(); 
     			    outfileCorr = new FileOutputStream(fileCorr);
@@ -92,24 +94,28 @@ if(mode == 0)
 	   }
    
     			 
-    			 catch (EOFException eof) {
+      catch (EOFException eof) {
     			     System.out.println("Raggiunta la fine delle ricezioni, chiudo...");
     			     // e.printStackTrace();
     			     // finito il ciclo di ricezioni termino la comunicazione
     			     socket.close();
     			     // Esco con indicazione di successo
     			     System.out.println("ActiveThread: termino...");
-    			   } catch (SocketTimeoutException ste) {
+    			   } 
+    			   
+    			   catch (SocketTimeoutException ste) {
     			     System.out.println("Timeout scattato: ");
     			     ste.printStackTrace();
     			     socket.close();
-    			   } catch (Exception e) {
+    			   } 
+    			   
+    			   catch (Exception e) {
     			     System.out.println("Problemi, i seguenti : ");
     			     e.printStackTrace();
     			     System.out.println("Chiudo ed esco...");
     			     socket.close();
     			   } 
-   }
+}
     		
      //mode = 1 questa classe viene utilizzata dal server per inviare i file
     else if(mode == 1)
@@ -117,17 +123,17 @@ if(mode == 0)
  	  
        System.out.println("Server: invio file...");
        socket.shutdownInput(); //il server non deve ricevere nulla
- 	   fileCorr = null; 
+ 	    fileCorr = null; 
  	  
  	   try {
  	       File dirCorr = new File(directory);
- 	       System.out.println("Apertura della direc  " + directory);
- 	         File[] files = dirCorr.listFiles();
- 	         for (int i = 0; i < files.length; i++) {
- 	           fileCorr = files[i];
- 	           System.out.println("File con nome: " + fileCorr.getName());
- 	           if (fileCorr.isFile()) {
- 	               FileUtility.trasferisci_N_byte_file_binario(
+ 	       System.out.println("Apertura della directory " + directory);
+ 	       File[] files = dirCorr.listFiles();
+ 	       for (int i = 0; i < files.length; i++) {
+ 	          fileCorr = files[i];
+ 	          System.out.println("File con nome: " + fileCorr.getName());
+ 	          if (fileCorr.isFile()) {
+ 	              FileUtility.trasferisci_N_byte_file_binario(
  	                   new DataInputStream(new FileInputStream(fileCorr
  	                       .getAbsolutePath())), outSock, fileCorr.length());
  	           }
@@ -135,11 +141,13 @@ if(mode == 0)
  	         // fine invio dei file nella cartella
  	        }	  
  		  }
+         
          catch (SocketTimeoutException ste) {
     			     System.out.println("Timeout scattato: ");
     			     ste.printStackTrace();
     			     socket.close();
     			   }
+    			   
  	     catch (Exception e) {
  	       System.out.println("Problemi nell'invio di " + fileCorr.getName()
  	           + ": ");
@@ -155,6 +163,7 @@ if(mode == 0)
    System.out.println("Chiusa comunicazione col pari.\nBye, bye!");
 
  }
+ 
  catch (Exception e) {
    System.err.println("Errore irreversibile, il seguente: ");
    e.printStackTrace();

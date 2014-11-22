@@ -59,8 +59,8 @@ DataInputStream inSock;
    {
 	   try {
 	       File dirCorr = new File(directory);
-	         File[] files = dirCorr.listFiles();
-	         for (int i = 0; i < files.length; i++) {
+	       File[] files = dirCorr.listFiles();
+	       for (int i = 0; i < files.length; i++) {
 	           fileCorr = files[i];
 	           System.out.println("File con nome: " + fileCorr.getName());
 	           if (fileCorr.isFile()) {
@@ -77,6 +77,7 @@ DataInputStream inSock;
 	    			     ste.printStackTrace();
 	    			     clientSocket.close();
 	    			   }
+	    			   
 	     catch (Exception e) {
 	       System.out.println("Problemi nell'invio di " + fileCorr.getName()
 	           + ": ");
@@ -90,23 +91,23 @@ DataInputStream inSock;
    else if(mode == 1) //UTILIZZATO DAL CLIENT   
    {
 
-		try{
+		  try{
 	    	//creo il direttorio in cui salvare i file che mi invia il server
 	                     File dir = new File(directory); 
 	    				 if(dir.mkdir())
 	    					 System.out.println("Creato direttorio " + directory); 
 	    			 
 	    				 FileOutputStream outFileCorr;
-	    			     for(FileInfo fileInfo : this.list)
-	    			     {
+	    			  for(FileInfo fileInfo : this.list)
+	    			 {
 	    			    	 System.out.println("Ricezione del file " + fileInfo.getFileName()
 	    			    			 + " di lunghezza " + fileInfo.getFileBytes() + " bytes");
 	    			    	 fileCorr = new File(dir.getName() + "/" +fileInfo.getFileName());
 	    			    	 long numBytes = fileInfo.getFileBytes(); 
 	    			    	 outFileCorr = new FileOutputStream(fileCorr);
 	    			    	 FileUtility.trasferisci_N_byte_file_binario(inSock, new DataOutputStream(outFileCorr),
-	    			    			numBytes);
-	    			     }
+	    			    		numBytes);
+	    			 }
 		   }
 	   
 	    			 catch (EOFException eof) {
@@ -149,7 +150,7 @@ public class PassiveConThread extends Thread{
 	
 	private String directory; 
 	private RemoteInfo remoteInfo; 
-    private int mode; /*se mode = 0 allora client attivo --> il server usa questa classe per inviare file
+ private int mode; /*se mode = 0 allora client attivo --> il server usa questa classe per inviare file
                       se mode = 1 allora server attivo --> il client usa questa classe per ricevere file*/
 	
 	public PassiveConThread(String directory, RemoteInfo remoteInfo, int mode)
@@ -219,10 +220,10 @@ public void run() {
 
 try {
 	serverSocket.close();
-} catch (IOException e) {
+  } catch (IOException e) {
 	System.out.println("Errore nella chiusura server socket");
 	e.printStackTrace();
-} 
+ } 
 
-}
+ }
 } // PassiveConThread

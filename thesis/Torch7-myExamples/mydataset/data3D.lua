@@ -119,7 +119,7 @@ end
 
 -- shuffle dataset: get shuffled indices in this variable:
 local labelsShuffle = torch.randperm((#labelsAll)[1]) -- mescola gli indici ma mantiene le corrispondenze: 
---[[ anzichÃ¨ avere una corrispondenza ordinata, la si mescola : 
+--[[ anzichè avere una corrispondenza ordinata, la si mescola : 
      1-apple               23-apple          
      2-apple               17599-bg
      .          ==>        .
@@ -178,7 +178,7 @@ print(sys.COLORS.red ..  '==> preprocessing data')
 
 local channels = {'y','u','v'}
 
---convert all to yuv
+--convert all to yuv, this step can be undone if you prefer to keep it similar to our biological process
 
 for i=1,trsize do 
   trainData.data[i] = image.rgb2yuv(trainData.data[i])

@@ -13,6 +13,8 @@
 -- 4/ description of training and test procedures
 --
 -- Clement Farabet
+
+-- Some changes for visualizing data and predicted values.  Alessio Salman 11/2014
 ----------------------------------------------------------------------
 
 require 'torch'
@@ -378,11 +380,17 @@ end
 --
 while true do
    -- train/test
-   --complete = train(trainData)
-   test(testData)
+   -- if the option for visualizing is true we want to show only tested sample,
+   -- so training should already have been done before. 
+   if opt.visualize == false then 
+   complete = train(trainData)
+   end 
 
-  if complete == 1.0 then 
-   break 
+   test(testData)
+  if complete != nil then 
+   if complete == 1.0 then 
+       break 
+   end 
 end 
 
    -- plot errors
