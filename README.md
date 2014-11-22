@@ -1,5 +1,5 @@
-University
-==========
+<h3>University</h3>
+<hr> 
 
 Some exercises related to my BSc in computer engineering.
 
@@ -14,5 +14,5 @@ Subjects:
    <li> J2EE: Servlet, JSP, Hibernate </li> 
    <li> SysAdmin: snmp, LDAP, and others bash scripts. </li> 
 </ul> 
-<hb> 
+<br> 
 N.B. The repo is incomplete and should be updated soon 
