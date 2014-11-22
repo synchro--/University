@@ -2,9 +2,7 @@
 <hr> 
 
 Some exercises related to my BSc in computer engineering.
-<style>
-  font-family: Helvetica; 
-</style>
+
 Subjects: 
 <ul> 
    <li> Operating System </li>
