@@ -2,7 +2,7 @@
 
 Here's the digit classifier from Clement Farabet (https://github.com/torch/demos)
 with some little changes to make the user see the result of the training. 
-You will need Lua and Torch7 framework (<href="torch.ch">torch.ch</href>) in order to run the example above. 
+You will need Lua and Torch7 framework (<href=torch.ch>torch.ch</href>) in order to run the example above. 
 
 N.B. You will also need all the rocks required, in particularly : gfx.js for the visualization. The other comes preinstalled with Torch7. 
 For gfx just do: (see https://github.com/clementfarabet/gfx.js)
