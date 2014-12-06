@@ -114,13 +114,13 @@ local labelsAll = torch.Tensor(total)
 end]]-- 
 
 
-
+--Esempio con immagini 'png', ma si può cambiare decidendo da riga di comando il tipo
 for i=1,#classes do 
    --load images
    prefix=folders[i]..'/'..folders[i] --prefix = person/person
    local count = getNumber(folders[i]) -- retrieving total number of photos 
    for j=1,count do 
-      imagesAll[{  {(i*count), (i*count+j)}  }] = image.load(prefix..j..'.png') --person/person.1.png, person/person.2.png
+      imagesAll[{  {(i*count), (i*count+j)}  }] = image.load(prefix..'.'..j..'.png') --person/person.1.png, person/person.2.png
       labelsAll[{  {(i*count), (i*count+j)}  }] = classes[i] --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
   end 
 end  
