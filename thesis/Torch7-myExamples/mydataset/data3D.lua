@@ -1,14 +1,15 @@
--- data for our 3d pursuit of happiness 
-
 ----------------------------------------------------------------------
--- This script load the apple dataset used for supervised learning
--- 
+-- This script loads a datasets composed of N classes, N = number of folders in the directory
+-- It should be run in the parent directory that contains all the other folders of pictures
+-- for example, folders like:  */parent/person/   */parent/tree 	*/parent/cat */parent/car ecc 
+--  ==> run the script in parent. 'th path/to/parent/data3D.lua
+
 -- It's a good idea to run this script with the interactive mode:
 -- $ torch -i 1_data.lua
 -- this will give you a Torch interpreter at the end, that you
 -- can use to analyze/visualize the data you've just loaded.
 --
--- Ali Alessio Salman
+-- A.A.Salman
 ----------------------------------------------------------------------
 
 require 'torch'   -- torch
@@ -17,40 +18,28 @@ require 'gfx.js'  -- to visualize the dataset
 require 'nn'      -- provides a normalization operator
 
 
---[[ function getFiles(dir)
-   local folders = {}
-   local tmpfile = '/tmp/stmp.txt'
-   os.execute('ls -l'..dir..' > '..tmpfile)
-   local f = io.open(tmpfile)
-   if not f then return files end  
-   local k = 1
-   for line in f:lines() do
-      folders[k] = line
-      k = k + 1
-   end
-   f:close()
-   return folders
- end]] -- 
-
 ----------------------------------------------------------------------
 -- parse command line arguments
 if not opt then
    print '==> processing options'
    cmd = torch.CmdLine()
    cmd:text()
-   cmd:text('Apple Dataset Preprocessing')
+   cmd:text('Dataset Preprocessing')
    cmd:text()
    cmd:text('Options:')
    cmd:option('-visualize', true, 'visualize input data and weights during training')
+   cmd:option('-img','png','type of image: png | jpg | others')     -- th data3D.lua -img png/jpg
    cmd:text()
    opt = cmd:parse(arg or {})
 end
 
 ----------------------------------------------------------------------
 
+print(sys.COLORS.red .. '> Using '..opt.img..' format')
+
 print(sys.COLORS.red ..  '==> searching datasets...')
 
---check that the number of folders correspond to the number of classes: 
+--check number of files in a directory
 function getNumber(dir)
    count={}
    tmpfile='count.txt'
@@ -66,11 +55,14 @@ function getNumber(dir)
 end 
 
 
+--gets the name of all the files in a directory
  function getNames(dir)
    local folders = {}
-   local tmpfile = 'list.txt'
-   os.execute("ls -l "..dir.." | grep -v total | awk -F' ' '{print $9'}> "..tmpfile)
-   local f = io.open(tmpfile)
+   os.execute('rm list.txt')
+   local tmpfile='list.txt'
+   --os.execute("ls -l "..dir.." | grep -v total | awk -F' ' '{print $9'}> "..tmpfile)
+   os.execute("for i in "..dir.."/*; do if test -d $i; then echo $(basename $i) >>" ..tmpfile.."; fi; done")
+   local f = io.open('list.txt')
    if not f then return files end  
    local k = 1
    for line in f:lines() do
@@ -80,15 +72,30 @@ end
    f:close()
    return folders
  end
- 
- --classes GLOBAL VAR
-classes = {'person','tree','stairs','ecc'}
-local count = getNumber('.') -- recupero il numero delle subdirectories quindi dei dataset 
 
-if count != #classes
+--check the 3-dimensions of the input images
+function checkImg(img)
+  size = img:size()
+  if (size[1] ~= 3) or size[2]~=size[3] or size[2]~=32 then 
+  --facciamo il resizing 
+   newImg = image.scale(img,32,32)
+   return newImg 
+   end 
+
+   return img
+end  
+
+
+--qui si definisce un array con i nomi di tutte le classi del problema 
+ --classes GLOBAL VAR
+classes = {'person','tree','stairs','ecc'} -- change ecc with the name of all the classes 
+local count = getNumber('.') -- recupero il numero delle subdirectories quindi delle classi del dataset 
+
+--[[if count ~= #classes then 
+   print (count ..' diverso da '..#classes)
    print ('missing some data... exit')
    os.exit(-1)
-end 
+end ]]
 
 folders = getNames('.')
 
@@ -98,20 +105,11 @@ print(sys.COLORS.red ..  '==> loading dataset')
 torch.setdefaulttensortype('torch.FloatTensor') -- preprocessing requires a floating point representation 
 
 --we load data from disk 
-local total = 5000
+--local total = 5000
+local total = 36
 local imagesAll = torch.Tensor(total,3,32,32)
 local labelsAll = torch.Tensor(total)
 
-   
---function for loading all the images for all the folders 
-
---[[function loadImg() 
-      local count = getNumber('.') -- retrieving total number of photos 
-      for j=1,count do 
-       imagesAll[{  {(i*count), (i*count+j)}  }] = image.load(folders[j]..j..'.png') --person.1.png, person.2.png
-         labelsAll[{  {(i*count), (i*count+j)}  }] = classes[i] --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
-      end
-end]]-- 
 
 
 --Esempio con immagini 'png', ma si può cambiare decidendo da riga di comando il tipo
@@ -119,15 +117,19 @@ for i=1,#classes do
    --load images
    prefix=folders[i]..'/'..folders[i] --prefix = person/person
    local count = getNumber(folders[i]) -- retrieving total number of photos 
+   local offset = count*(i-1) -- si parte da qui per non sovrascrivere le immagini già caricate. Al primo loop è 0
    for j=1,count do 
-      imagesAll[{  {(i*count), (i*count+j)}  }] = image.load(prefix..'.'..j..'.png') --person/person.1.png, person/person.2.png
-      labelsAll[{  {(i*count), (i*count+j)}  }] = classes[i] --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
+      local img = image.load(prefix..'.'..j..'.'..opt.img) --person/person.1.png, person/person.2.png
+      img = checkImg(img)
+      imagesAll[offset + j] = img 
+      labelsAll[offset + j] = i --lega l'indice alla label che indica la classe e ogni indice corrisponde alla particolare immagine 
   end 
 end  
 
 -- shuffle dataset: get shuffled indices in this variable:
 local labelsShuffle = torch.randperm((#labelsAll)[1]) -- mescola gli indici ma mantiene le corrispondenze: 
---[[ anzichè avere una corrispondenza ordinata, la si mescola : 
+
+--[[ dopo si otterrà una corrispondenza ordinata ma mescolata
      1-apple               23-apple          
      2-apple               17599-bg
      .          ==>        .
@@ -141,12 +143,13 @@ local labelsShuffle = torch.randperm((#labelsAll)[1]) -- mescola gli indici ma m
 local portionTrain = 0.8 -- 80% is train data, rest is test data
 local trsize = torch.floor(labelsShuffle:size(1)*portionTrain)
 local tesize = labelsShuffle:size(1) - trsize
+print('size: '..trsize..' '..tesize)
 
 --create train set 
-trainData {
-    data = torch.Tensor(trsize,1,32,32) -- yuv o solo y 
-    labels  = torch.Tensor(trsize)
-    size = function() size return trsize end   
+trainData = {
+    data = torch.Tensor(trsize,1,32,32), -- yuv o solo y 
+    labels  = torch.Tensor(trsize),
+    size = function() return trsize end   
 } 
 
 --create test set
@@ -162,6 +165,7 @@ for i=1,trsize do
    trainData.data[i] = imagesAll[labelsShuffle[i]][1]:clone() -- shuffled training imgs
    trainData.labels[i] = labelsAll[labelsShuffle[i]]  -- shuffled lables for training 
 end
+
 for i=trsize+1,tesize+trsize do
    testData.data[i-trsize] = imagesAll[labelsShuffle[i]][1]:clone() -- same as above 
    testData.labels[i-trsize] = labelsAll[labelsShuffle[i]]
@@ -170,6 +174,10 @@ end
 ---------------------------------------------------------------------------------------
 -- PREPROCESSING DATA -- 
 print(sys.COLORS.red ..  '==> preprocessing data')
+
+trainData.data = trainData.data:float()
+testData.data = testData.data:float()
+
 
 -- We now preprocess the data. Preprocessing is crucial
 -- when applying pretty much any kind of machine learning algorithm.
@@ -184,17 +192,19 @@ print(sys.COLORS.red ..  '==> preprocessing data')
 --   + color channels are normalized globally, across the entire dataset;
 --     as a result, each color component has 0-mean and 1-norm across the dataset.
 
-local channels = {'y','u','v'}
+--local channels = {'y','u','v'}
+local channels = {'y'}
 
 --convert all to yuv, this step can be undone if you prefer to keep it similar to our biological process
+--N.B. Si può ovviamente fare solo con immagini a colori
 
-for i=1,trsize do 
-  trainData.data[i] = image.rgb2yuv(trainData.data[i])
+--[[for i=1,trainData:size() do 
+  trainData.data[i] = image.rgb2y(trainData.data[i])
   end 
 
-for i=1,tesize do 
+for i=1,testData:size() do 
   testData.data[i] = image.rgb2yuv(testData.data[i])
-  end 
+  end ]]
 
 -- Normalize each channel, and store mean/std
 -- per channel. These values are important, as they are part of
@@ -205,10 +215,11 @@ print(sys.COLORS.red ..  '==> preprocessing data: normalize each feature (channe
 local mean = {}
 local std = {}
 for i,channel in ipairs(channels) do 
- mean = trainData[{ {},i,{},{} }]:mean()
- std  = trainData[{ {},i,{},{} }]:std() 
- trainData[{ {},i,{},{} }] = trainData[{{},i,{},{}]:add(-mean[i]) -- syntax matlab-like: [{ {1dim} {2dim} {3dim} {4dim} }]
- trainData[{ {},i,{},{} }] = trainData[{{},i,{},{}]:div(std[i])
+  print(i)
+ mean[i] = trainData.data[{ {},i,{},{} }]:mean()
+ std[i]  = trainData.data[{ {},i,{},{} }]:std() 
+ trainData.data[{ {},i,{},{} }] = trainData.data[{ {},i,{},{} }]:add(-mean[i]) -- syntax matlab-like: [{ {1dim} {2dim} {3dim} {4dim} }]
+ trainData.data[{ {},i,{},{} }] = trainData.data[{ {},i,{},{} }]:div(std[i])
 end 
 
 -- Normalize test data, using the training means/stds
@@ -222,16 +233,16 @@ print(sys.COLORS.red ..  '==> preprocessing data: normalize all three channels l
 
 --define Normalization neighborhood 
 neighborhood = image.gaussian1D(5) -- vedere come decidere questo parametro 
-norm = nn.SpatialContrastiveNormalization(1,neighborhood,1):float() --1 input (canale y) 
+local norm = nn.SpatialContrastiveNormalization(1,neighborhood,1):float() --1 input (canale y) 
 
---normalize each channel locally 
-for channel in ipairs(channels)
-for i=1,trsize do 
-  trainData[{ i,{channel},{},{} }] = norm:forward(trainData[{ i,{channel},{},{} }])
-  end 
-
-for i=1,tesize do 
-    tesize[{ i,{c},{},{} }] = norm:forward(tesize[{ i,{c},{},{} }])
+-- Normalize all channels locally:
+for c in ipairs(channels) do
+   for i = 1,trainData:size() do
+      trainData.data[{ i,{c},{},{} }] = norm:forward(trainData.data[{ i,{c},{},{} }])
+   end
+   for i = 1,testData:size() do
+      testData.data[{ i,{c},{},{} }] = norm:forward(testData.data[{ i,{c},{},{} }])
+   end
 end
 
 ----------------------------------------------------------------------
@@ -262,10 +273,10 @@ print(sys.COLORS.red ..  '==> visualizing data')
 -- help(image.display), for more info about options.
 
 if opt.visualize then
-   local first256Samples_y = trainData.data[{ {1,256},1 }]
-   gfx.image(first256Samples_y, {nrow=16, legend='Some training examples: Y channel'})
-   local first256Samples_y = testData.data[{ {1,256},1 }]
-   gfx.image(first256Samples_y, {nrow=16, legend='Some testing examples: Y channel'})
+   local trSamples_y = trainData.data[{ {1,28},1 }]
+   gfx.image(trSamples_y, {nrow=16, legend='Some training examples: Y channel'})
+   local teSamples_y = testData.data[{ {1,8},1 }]
+   gfx.image(teSamples_y, {nrow=16, legend='Some testing examples: Y channel', padding=2, zoom=4})
    --image.display{image=first256Samples_y, nrow=16, legend='Some testing examples: Y channel'}
 end
 
