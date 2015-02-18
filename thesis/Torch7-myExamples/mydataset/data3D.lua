@@ -91,13 +91,7 @@ end
 classes = {'person','tree','stairs','ecc'} -- change ecc with the name of all the classes 
 local count = getNumber('.') -- recupero il numero delle subdirectories quindi delle classi del dataset 
 
---[[if count ~= #classes then 
-   print (count ..' diverso da '..#classes)
-   print ('missing some data... exit')
-   os.exit(-1)
-end ]]
-
-folders = getNames('.')
+folders = getNames('.') --recupero il nome di ogni directory dal quale prendere le immagini
 
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> loading dataset')
