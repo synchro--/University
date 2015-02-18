@@ -1,6 +1,5 @@
 <h3>University</h3>
 <hr> 
-sdaiudsahisdhaidsusd
 Some exercises related to my BSc in computer engineering.
 
 Subjects: 
