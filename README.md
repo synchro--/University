@@ -9,8 +9,8 @@ Subjects:
    <li> SQL </li> 
    <li> XML </li>
    <li> Web Development: HTML, CSS, JavaScript </li>
-   <li> J2EE: Servlet, JSP, Hibernate </li> 
-   <li> SysAdmin: snmp, LDAP, and others bash scripts. </li> 
+   <li> J2EE: Servlet, JSP, ORM: Hibernate </li> 
+   <li> SysAdmin: start-up, monitoring, network admin, tcpdump, iptables, SNMP, LDAP, and other bash scripts. </li> 
 </ul> 
 <br> 
 N.B. The repo is incomplete and should be updated soon 
