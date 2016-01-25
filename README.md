@@ -1,6 +1,6 @@
 <h3>University</h3>
 <hr> 
-Some exercises related to my BSc in computer engineering.
+Some exercises related to my BSc in Computer Engineering.  
 Subjects: 
 <ul> 
    <li> Operating System </li>
