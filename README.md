@@ -13,4 +13,4 @@ Subjects:
    <li> SysAdmin: start-up, monitoring, network admin, tcpdump, iptables, SNMP, LDAP, and other bash scripts. </li> 
 </ul> 
 <br> 
-N.B. The repo is incomplete and should be updated soon 
+##N.B. The repo is incomplete and should be updated soon 
