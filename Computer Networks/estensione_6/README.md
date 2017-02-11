@@ -7,7 +7,7 @@ After that the C/S communication goes on with stream sockets and the files are s
 Fileinfo contains the name and length of 1 file.  
 RemoteInfo contains the endpoint useful for socket stream and an array of FileInfo.
 
-N.B.: this code sucks and it's old. One day, when dragon Shenron will be up in the dark sky, I'll find the time to fix it, hopefully.
+*N.B.: this code sucks and it's old. One day, when dragon Shenron will be up in the dark sky, I'll find the time to fix it, hopefully.*
 
 
 
