@@ -1,10 +1,10 @@
 ----------------------------------------------------------------------
--- This script shows how to train different models on the MNIST 
+-- This script shows how to train different models on the MNIST
 -- dataset, using multiple optimization techniques (SGD, LBFGS)
 --
--- This script demonstrates a classical example of training 
+-- This script demonstrates a classical example of training
 -- well-known models (convnet, MLP, logistic regression)
--- on a 10-class classification problem. 
+-- on a 10-class classification problem.
 --
 -- It illustrates several points:
 -- 1/ description of the model
@@ -14,7 +14,7 @@
 --
 -- Clement Farabet
 
--- Some changes for visualizing data and predicted values.  Alessio Salman 11/2014
+-- Some changes for visualizing data and predicted values. Alessio Salman 11/2014
 ----------------------------------------------------------------------
 
 require 'torch'
@@ -31,20 +31,20 @@ require 'gfx.js'
 -- parse command-line options
 --
 local opt = lapp[[
-   -s,--save          (default "logs")      subdirectory to save logs
-   -n,--network       (default "logs/mnist.net")          reload pretrained network
-   -m,--model         (default "convnet")   type of model tor train: convnet | mlp | linear
-   -f,--full                                use the full dataset
-   -p,--plot                                plot while training
-   -o,--optimization  (default "SGD")       optimization: SGD | LBFGS 
-   -r,--learningRate  (default 0.05)        learning rate, for SGD only
-   -b,--batchSize     (default 10)          batch size
-   -m,--momentum      (default 0)           momentum, for SGD only
-   -i,--maxIter       (default 3)           maximum nb of iterations per batch, for LBFGS
-   --coefL1           (default 0)           L1 penalty on the weights
-   --coefL2           (default 0)           L2 penalty on the weights
-   -t,--threads       (default 2)           number of threads
-   -v,--visualize     (default true)        let the user visualize all the tested images with predictions
+-s,--save (default "logs") subdirectory to save logs
+-n,--network (default "logs/mnist.net") reload pretrained network
+-m,--model (default "convnet") type of model tor train: convnet | mlp | linear
+-f,--full use the full dataset
+-p,--plot plot while training
+-o,--optimization (default "SGD") optimization: SGD | LBFGS
+-r,--learningRate (default 0.05) learning rate, for SGD only
+-b,--batchSize (default 10) batch size
+-m,--momentum (default 0) momentum, for SGD only
+-i,--maxIter (default 3) maximum nb of iterations per batch, for LBFGS
+--coefL1 (default 0) L1 penalty on the weights
+--coefL2 (default 0) L2 penalty on the weights
+-t,--threads (default 2) number of threads
+-v,--visualize (default true) let the user visualize all the tested images with predictions
 ]]
 
 -- fix seed
@@ -79,16 +79,16 @@ if opt.network == '' then
 
    if opt.model == 'convnet' then
       ------------------------------------------------------------
-      -- convolutional network 
+      -- convolutional network
       ------------------------------------------------------------
       -- stage 1 : mean suppresion -> filter bank -> squashing -> max pooling
       model:add(nn.SpatialConvolutionMM(1, 32, 5, 5))
-    --  model:add(nn.SpatialConvolutionMap(nn.tables.random(3,32,1),5,5))
+      -- model:add(nn.SpatialConvolutionMap(nn.tables.random(3,32,1),5,5))
       model:add(nn.Tanh())
       model:add(nn.SpatialMaxPooling(3, 3, 3, 3))
       -- stage 2 : mean suppresion -> filter bank -> squashing -> max pooling
       model:add(nn.SpatialConvolutionMM(32, 64, 5, 5))
-      --      model:add(nn.SpatialConvolutionMap(nn.tables.random(32,64,1),5,5))
+      -- model:add(nn.SpatialConvolutionMap(nn.tables.random(32,64,1),5,5))
 
       model:add(nn.Tanh())
       model:add(nn.SpatialMaxPooling(2, 2, 2, 2))
@@ -137,9 +137,9 @@ print(model)
 ----------------------------------------------------------------------
 -- loss function: negative log-likelihood
 --
-if opt.network == "" then 
-model:add(nn.SoftMax())
-end 
+if opt.network == "" then
+   model:add(nn.SoftMax())
+end
 
 criterion = nn.ClassNLLCriterion()
 
@@ -253,7 +253,7 @@ function train(dataset)
             lineSearch = optim.lswolfe
          }
          optim.lbfgs(feval, parameters, lbfgsState)
-       
+
          -- disp report:
          print('LBFGS step')
          print(' - progress in batch: ' .. t .. '/' .. dataset:size())
@@ -269,7 +269,7 @@ function train(dataset)
             learningRateDecay = 5e-7
          }
          optim.sgd(feval, parameters, sgdState)
-      
+
          -- disp progress
          xlua.progress(t, dataset:size())
 
@@ -277,7 +277,7 @@ function train(dataset)
          error('unknown optimization method')
       end
    end
-   
+
    -- time taken
    time = sys.clock() - time
    time = time / dataset:size()
@@ -296,7 +296,7 @@ function train(dataset)
       os.execute('mv ' .. filename .. ' ' .. filename .. '.old')
    end
    print('<trainer> saving network to '..filename)
-    torch.save(filename, model)
+   torch.save(filename, model)
 
    -- next epoch
    epoch = epoch + 1
@@ -330,27 +330,24 @@ function test(dataset)
          k = k + 1
       end
 
-
-    
-    --here we visualize all the inputs tested and we label them with the correspective predictions 
-     if opt.visualize == true then 
-     for j=1,(k-1) do 
-       local  img = inputs[j]
-       local  predicted = model:forward(img)
-       local  conf , ind = predicted:float():sort()
-       print('conf -----> '..conf[conf:size(1)])
-       local catgry = (ind[ind:size(1)] - 1)   -- catgry has the value of the predicted class. 
-       gfx.image(img,{legend=catgry,zoom=2})
-                        --image.display{image=img,legend=val,zoom=2}
-       io.write("continue ([y]/n)? ")
-       io.flush()
-       answer = io.read() -- fittizio
-       if answer =='n' then 
-           break 
+      --here we visualize all the inputs tested and we label them with the correspective predictions
+      if opt.visualize == true then
+         for j=1,(k-1) do
+            local img = inputs[j]
+            local predicted = model:forward(img)
+            local conf , ind = predicted:float():sort()
+            print('conf -----> '..conf[conf:size(1)])
+            local catgry = (ind[ind:size(1)] - 1) -- catgry has the value of the predicted class.
+            gfx.image(img,{legend=catgry,zoom=2})
+            --image.display{image=img,legend=val,zoom=2}
+            io.write("continue ([y]/n)? ")
+            io.flush()
+            answer = io.read() -- fittizio
+            if answer =='n' then
+               break
+            end
          end
-        end 
       end
-
 
       -- confusion:
       -- test samples
@@ -381,17 +378,17 @@ end
 while true do
    -- train/test
    -- if the option for visualizing is true we want to show only tested sample,
-   -- so training should already have been done before. 
-   if opt.visualize == false then 
-   complete = train(trainData)
-   end 
+   -- so training should already have been done before.
+   if opt.visualize == false then
+      complete = train(trainData)
+   end
 
    test(testData)
-  if complete != nil then 
-   if complete == 1.0 then 
-       break 
-   end 
-end 
+   if complete != nil then
+      if complete == 1.0 then
+         break
+      end
+   end
 
    -- plot errors
    if opt.plot then
@@ -402,4 +399,4 @@ end
    end
 end
 
-print 'training completed. Percentige: 100% '
+print 'training completed.'
