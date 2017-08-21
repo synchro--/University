@@ -1,0 +1,96 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+%\author{A. Salman\vspace{-2ex}}
+%\title{Notes\vspace{-2ex}}
+
+%\date{}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+%AGGIUNTE
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{courier}
+%\usepackage[showframe]{geometry}
+\usepackage{layout}
+
+\setlength{\voffset}{-0.75in}
+\setlength{\headsep}{20pt}
+
+%nice way to highlight code 
+\usepackage{listings}
+\usepackage{color}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+}
+ 
+\lstset{style=mystyle}
+
+
+\begin{document}
+
+%\maketitle
+
+\section*{Loss Function}
+%%%% FONTS %%%%%%
+\fontfamily{ptm}\selectfont
+Our loss function is defined as follow: 
+\begin{gather*}
+    C(X) = \left ( \frac{1}{n} \right ) \sum_{j}^{dmax}(\left |  SAD(X_j -X_1) - Y_j \right|)
+\end{gather*}
+\newline
+Where $X$ and $Y$ are the input and target vectors respectively.\newline 
+Wrt to 3D stereo matching context, every element $X_j$ is a 2D-image matrix representing 9x9 patches of the target image whilst $X_1$ is the patch of the reference image and $SAD$ is the 'Sum of Absolute Differences' cost. 
+So, leaving out the average - which is optional - and the outer sum that computes the total error, the function on which we have to compute the gradient will be: 
+\begin{flalign*}
+\triangledown (C(X)) &= \triangledown (\left |  SAD(X_j -X_1) - Y_j \right|) 
+\end{flalign*}
+The gradient contains $dmax$ derivatives, each for each $X_j$ patch. Hence, let's now focus on a single image patch $X_j$. \\*Given $g(X_j)=(\left |  f(X_j) - y \right|)$, $f(X_j) = SAD(X_j -X_1) = \sum_{i}^{P} \left | x_{ij} - x_{i1}  \right |$ and $h(X_j) = g(f(X_j))$ we can write the derivative of each example following the chain-rule: 
+\begin{gather*}
+\frac{\mathrm{d} h(X_j)}{\mathrm{d} X_j} = g'_(f(X_j)) \cdot f'(X_j) \\
+g'(X_j) = sgn(f(X_j)-Y_j)\\
+f'(X_j) = sgn(X_j - X_1)
+\end{gather*}
+Note that the derivative of the $SAD$ function boils down to the derivative of the $abs$ function. The former is motivated by the fact that our input is the entire image $X_j$, not the single pixels $x_{ij}$, thus the external sum can be ignored. \newline
+To obtain the final gradient, we need to compute the above derivatives for every image patch (i.e. every input $X_j$)
+
+\subsection*{Implementation in Torch Criterion}
+
+\begin{lstlisting}[language={[5.2]Lua}]
+  for i=1,self.dmax do
+     local diff = input[i] - ref 
+     SAD[i] = (torch.sum(torch.abs(input[i])) / self.maxDiff)
+     d_SAD[i] =  torch.sign(input[i]) / self.maxDiff
+   end
+   --chain-rule derivatives 
+   local dg_dx  = torch.sign(SAD - target) --(DMAX)x1
+   local df_dx = d_SAD -- (DMAX)x1x9x9
+
+   for i=1,self.dmax do
+       gradInput[i] = dg_dx[i] * df_dx[i]
+   end
+\end{lstlisting}
+
+
+
+\end{document}
