@@ -56,7 +56,7 @@ Il percettrone però era in grado di imparare solo funzioni linearmente separabi
 %--------------------------------------------------------------------
 
 \section{Multi-layer Perceptron}
-
+\label{sec:mlp}
 Il Multi-layer Perceptron (\textit{MLP}) o percettrone multi-strato è un tipo di rete feed-forward che mappa un set di input ad un set di output. È la naturale estensione del percettrone singolo e permette di distinguere dati non linearmente separabili.
 
 \begin{figure}[h!]
@@ -112,9 +112,10 @@ innovazioni, il progetto di aprire un ristorantino a New York City."}
 Loris ha esportato con successo la piadina a NY, si veda \parencite{WGradisca} \href{www.gradiscanyc.com} ma col passare degli anni ha notato alcuni problemi e vuole utilizzare di nuovo le sue brillanti capacità analitiche per migliorare il profitto del suo ambizioso ristorante. \\
 I problemi sono 2: 
 \begin{enumerate}
-\item il numero di coperti del ristorante è troppo grande rispetto alla clientela che effettivamente viene;
-\item gli orari di apertura sono troppo lunghi e vi sono alcune zone morte dove il costo di mantenere aperto il ristorante è maggiore rispetto al ricavo dei pochi clienti che mangiano a quell'ora; 
+\item il ristorante è conosciuto ormai - si sa che tutti vogliono mangiare italiano - ma il numero dei coperti era rimasto a 22, come quelli iniziali; 
+\item gli orari di apertura sono troppo lunghi e vi sono alcune zone morte dove il costo di mantenere aperto il ristorante è maggiore rispetto al ricavo dei pochi clienti che si siedono a mangiare durante quelle ore; 
 \end{enumerate}
+Secondo la National Restaurant Association\parencite{WProfit} \parencite{WRRG} il profitto medio lordo annuo di un ristorante negli Stati Uniti varia dal 2 al 6\%. Così Loris ha collezionato alcuni dati riguardo gli ultimi anni e - attratto da tutta quest'entusiasmo attorno alle reti neurali - decide di provare ad utilizzarle per trovare il trade-off ottimale di coperti e di orari di apertura settimanali per massimizzare il profitto del suo ristorante. 
 
 %--------------------------------------------------------------------%--------------------
 %	SECTION 4
@@ -122,10 +123,35 @@ I problemi sono 2:
 %--------------------------------------------------------------------
 
 \section{Implementazione da zero di un MLP}
-%Parlare brevemente del caso d'uso 
-\subsection{Dataset e Modello iniziale}
+%Parlare brevemente del caso di studio
+Per il suddetto caso di studio si è implementato da zero un percettrone multistrato a 3 strati come quello illustrato in sezione \ref{sec:mlp}. Vediamo qui di seguito le varie parti da implementare passo passo per costruire un MLP, addestrarlo e testare che l'addestramento sia stato eseguito in maniera corretta. Il progetto è realizzato in Lua, per sfruttare il framework per il \emph{Machine Learning} Torch\ref{Capitolo3}
+\subsection{Dataset e Architettura}
+Nei vari anni, Loris ha cambiato le due variabili in gioco annotando di volta in volta i risultati. Siccome i coperti erano troppo pochi e le file d'attesa erano troppo lunghe, il ristorante perdeva alcuni clienti. Quindi Loris ha portato i coperti a 25 e diminuendo le ore settimanali a 38, ed i profitti sono aumentati. Tuttavia, non era raro che ancora qualche cliente dovesse aspettare in piedi per troppo tempo (si sa la vita a NY è frenetica), finendo poi per scegliere un ristorante adiacente. Inoltre, aveva diminuito le ore di troppo; nel weekend i clienti arrivavano fino a tardi, quindi rimanere aperti un'ora in più sarebbe stato lungimirante. Così, dopo l'allargamento della sala principale, ha aggiunto altri coperti ed aumentato le ore settimanali a 40, segnando un record personale di $4.4\%$ di profitti annui. \\
 
-\subsection{Forward Propagation}
+Quindi, i dati in ingresso ed in uscita, in $X$ e $Y$ rispettivamente sono:
+\[ 
+X = \begin{pmatrix}
+22 & 42\\ 
+25 & 38 \\ 
+30 & 40
+\end{pmatrix} 
+%
+Y = \begin{pmatrix}
+2.8\\ 
+3.4 \\ 
+4.4
+\end{pmatrix} 
+\]
+Osservando le dimensioni dei dati si nota che la rete deve avere 2 input e dare in uscita 1 output, che chiameremo $\hat{y}$, in contrapposizione a $y$ che è l'uscita desiderata. Per quanto detto nella sezione \ref{sec:mlp}, il MLP deve avere 2 neuroni nello strato di ingresso ed 1 solo in uscita. Per quanto riguarda lo strato nascosto, la rete avrà 3 neuroni. Questi parametri vengono chiamati \emph{hyperparameters}. In figura \ref{fig:mlp} è mostrata l'architettura generale della nostra rete. 
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/MLP-Profitto.png}
+ \caption{Struttura di un percettrone multistrato con un solo strato nascosto}
+ \label{fig:mlp}
+\end{figure}
+
+\subsection{Modello Neurone \& Forward Propagation}
 \subsection{Backpropagation}
 Come si fa ad addestrare una rete multistrato con diversi neuroni per strato? Tramite l'algoritmo di \emph{backpropagation of errors} di ... 
 \subsection{Verifica numerica del gradiente}
