@@ -245,7 +245,71 @@ function Neural_Network:forward(X)
 end
 \end{lstlisting}
 \subsection{Backpropagation}
-Come si fa ad addestrare una rete multistrato con diversi neuroni per strato? Tramite l'algoritmo di \emph{backpropagation of errors} di ... 
+Come si fa ad addestrare una rete multistrato con diversi neuroni per strato, ognuno dei quali con uscita non lineare? Tramite l'algoritmo di \emph{backpropagation of errors}, scoperto da Rumelhart-Hinton-Williams nel 1985. 
+
+Non si può introdurre l'algoritmo di \emph{"backprop"} senza prima spiegare il concetto di funzione di costo (o \emph{loss function}). Nelle reti neurali (e più specificatamente nell'apprendimento supervisionato\parencite{WSupervised}), la funzione di costo misura la discrepanza tra l'uscita desiderata e l'effettivo output della rete. È quindi una misura dell'errore della rete, per cui l'obiettivo dell'apprendimento è diminuire questa funzione. Come per la funzione di attivazione, anche in questo caso ci sono ampie possibilità di scelta \parencite{WLoss} a seconda del task su cui la rete viene addestrata. \\
+E di nuovo, come per la funzione di attivazione, si è scelta una delle funzione di costo più popolari: l'errore quadratico medio. 
+\begin{equation}
+J = \sum_{j=1}^{n} \frac{1}{2} (y-\hat{y})^2} \tag{5}
+\end{equation}
+
+La \emph{backprop} ha alcuni requisiti: 
+\begin{itemize}
+\item Reti stratificate 
+\item Ingressi a valori reali $\in [0,1]$
+\item Neuroni non lineari con funzione di uscita sigmoidale (o altra fz. di attivazione derivabile)
+\end{itemize} 
+Sotto queste condizioni l'algoritmo sfrutta la regola della catena\parencite{WChain} per la derivazione di funzione composte, per calcolare il gradiente della \emph{funzione di costo}. I pesi della rete vengono quindi aggiornati secondo la \emph{discesa del gradiente} (figura\ref{fig:gradDescend}); ovvero variano in maniera tale da minimizzare la funzione di costo $J$. 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\teoria/gradientbased.png}
+ \caption{Cercare il minimo di una fz. seguendo la discesa del gradiente}
+ \label{fig:gradDescend}
+\end{figure}
+
+Viene chiamato \emph{backward propagation of errors} poiché l'errore calcolato a partire dall'output della rete viene distribuito in maniera proporzionale all'indietro, su tutti i neuroni della rete. È importante quindi, spezzare il calcolo del gradiente dell'errore in derivate parziali, dall'ultimo strato fino al primo, e poi combinarle insieme. 
+
+Si noti che le equazioni (1-5) formano una un'unica equazione che lega $J$ a $X, y, W^{(1)}, W^{(2)}$. Tenendo questo in mente, si applica la regola della catena. \\ 
+%% mettere la formula completa da spezzare in passaggi %% 
+Partendo dal fattore riguardante lo strato di output si ha: 
+$$
+\frac{\partial J}{\partial W^{(2)}} = \sum \frac{\partial \frac{1}{2}(y-\hat{y})^2}{\partial W^{(2)}}
+$$
+Sviluppando i calcoli si ottiene: 
+$$
+\frac{\partial J}{\partial W^{(2)}} = -(y-\hat{y}) \frac{\partial \hat{y}}{\partial W^{(2)}}
+$$
+L'equazione (4) indica che $\hat{y}$ è la funzione di attivazione di $z^{(3)}$. Da cui: 
+$$
+\frac{\partial J}{\partial W^{(2)}} = 
+-(y-\hat{y})
+\frac{\partial \hat{y}}{\partial z^{(3)}}  
+\frac{\partial z^{(3)}}{\partial W^{(2)}}
+$$
+Il 2° membro dell'equazione è semplicemente la derivata della funzione di attivazione sigmoide: 
+\begin{align*}
+f(z) = \frac{1}{1+e^{-z}}\\
+f^\prime(z) = \frac{e^{-z}}{(1+e^{-z})^2}
+\end{align*}
+Definiamo quindi la derivata della funzione sigmoid in Lua: 
+%% qui codice %% 
+
+%% qui grafico uguale al iPython %% 
+Quindi l'equazione così ottenuta è: 
+$$
+\frac{\partial J}{\partial W^{(2)}}= 
+-(y-\hat{y}) f^\prime(z^{(3)}) \frac{\partial z^{(3)}}{\partial W^{(2)}}
+$$
+ 
+Infine, dobbiamo trovare dz3dW2, che rappresenta la variazione dell'attività del terzo layer rispetto ai pesi del secondo layer. Richiamando l'equazione (3): 
+$$
+z^{(3)} = a^{(2)}W^{(2)} \tag{3}\\
+$$
+
+
+
+
+
 \subsection{Verifica numerica del gradiente}
 \subsection{Addestramento}
 
