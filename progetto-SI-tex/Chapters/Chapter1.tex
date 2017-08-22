@@ -1,5 +1,4 @@
 \chapter{Reti Neurali Artificiali: le basi} % Main chapter title
-
 \label{Capitolo1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 %variables to define path to images
 \def \path {Figures/C1}
@@ -102,13 +101,14 @@ L'aggiunta di ulteriori strati non cambia \emph{formalmente} il numero di funzio
 %%%  20 coperti - 38-42 ore di apertura a settimana 
 %%%  Profitto in % = Ricavo - Spesa, According to the Restaurant Resource Group, average profit margins for restaurants range from 2 to 6 percent. 
 %%% 
-Prendendo spunto dalla traccia d'esame di Sistemi Intelligenti M del 2 Aprile 2009: \\
+Prendendo spunto dalla traccia d'esame di Sistemi Intelligenti M del 2 Aprile 2009:
+\begin{quote}
 \textit{"Loris è figlio della titolare di una famoso spaccio di piadine nel Riminese e sta tornando in Italia
 dopo aver frequentato con successo un prestigioso Master in Business Administration ad Harvard, a
 cui si è iscritto inseguendo il sogno di esportare in tutto il mondo la piadina romagnola. Nel lungo
 viaggio in prima classe, medita su come presentare alla mamma, che sa essere un tantino restia alle
 innovazioni, il progetto di aprire un ristorantino a New York City."}
-
+\end{quote}
 Loris ha esportato con successo la piadina a NY, si veda \parencite{WGradisca} \href{www.gradiscanyc.com} ma col passare degli anni ha notato alcuni problemi e vuole utilizzare di nuovo le sue brillanti capacità analitiche per migliorare il profitto del suo ambizioso ristorante. \\
 I problemi sono 2: 
 \begin{enumerate}
@@ -124,7 +124,7 @@ Secondo la National Restaurant Association\parencite{WProfit} \parencite{WRRG} i
 
 \section{Implementazione da zero di un MLP}
 %Parlare brevemente del caso di studio
-Per il suddetto caso di studio si è implementato da zero un percettrone multistrato a 3 strati come quello illustrato in sezione \ref{sec:mlp}. Vediamo qui di seguito le varie parti da implementare passo passo per costruire un MLP, addestrarlo e testare che l'addestramento sia stato eseguito in maniera corretta. Il progetto è realizzato in Lua, per sfruttare il framework per il \emph{Machine Learning} Torch\ref{Capitolo3}
+Per il suddetto caso di studio si è implementato da zero un percettrone multistrato a 3 strati come quello illustrato in sezione \ref{sec:mlp}. Vediamo qui di seguito le varie parti da implementare passo passo per costruire un MLP, addestrarlo e verificare che l'addestramento sia stato eseguito in maniera corretta. Il progetto è realizzato in Lua, per utilizzare il framework per il \emph{Machine Learning} \textbf{Torch} e mantenere le consistenza con gli altri capitoli, nei quali si userà ancora Torch per addestrare reti neurali molto più complesse. 
 \subsection{Dataset e Architettura}
 Nei vari anni, Loris ha cambiato le due variabili in gioco annotando di volta in volta i risultati. Siccome i coperti erano troppo pochi e le file d'attesa erano troppo lunghe, il ristorante perdeva alcuni clienti. Quindi Loris ha portato i coperti a 25 e diminuendo le ore settimanali a 38, ed i profitti sono aumentati. Tuttavia, non era raro che ancora qualche cliente dovesse aspettare in piedi per troppo tempo (si sa la vita a NY è frenetica), finendo poi per scegliere un ristorante adiacente. Inoltre, aveva diminuito le ore di troppo; nel weekend i clienti arrivavano fino a tardi, quindi rimanere aperti un'ora in più sarebbe stato lungimirante. Così, dopo l'allargamento della sala principale, ha aggiunto altri coperti ed aumentato le ore settimanali a 40, segnando un record personale di $4.4\%$ di profitti annui. \\
 
@@ -142,16 +142,108 @@ Y = \begin{pmatrix}
 4.4
 \end{pmatrix} 
 \]
-Osservando le dimensioni dei dati si nota che la rete deve avere 2 input e dare in uscita 1 output, che chiameremo $\hat{y}$, in contrapposizione a $y$ che è l'uscita desiderata. Per quanto detto nella sezione \ref{sec:mlp}, il MLP deve avere 2 neuroni nello strato di ingresso ed 1 solo in uscita. Per quanto riguarda lo strato nascosto, la rete avrà 3 neuroni. Questi parametri vengono chiamati \emph{hyperparameters}. In figura \ref{fig:mlp} è mostrata l'architettura generale della nostra rete. 
+Osservando le dimensioni dei dati si nota che la rete deve avere 2 input e dare in uscita 1 output, che chiameremo $\hat{y}$, in contrapposizione a $y$ che è l'uscita desiderata. Per quanto detto nella sezione \ref{sec:mlp}, il MLP deve avere 2 neuroni nello strato di ingresso ed 1 solo in uscita. Inoltre, avrà uno strato nascosto con 3 neuroni. La dimensione di ogni strato fa parte di un insieme di parametri che viene deciso "a mano" sperimentando, i cosiddetti \emph{hyperparameters}. Questi parametri non vengono aggiornati durante l'addestramento - come i pesi della rete - ma vengono decisi a priori. \\In figura \ref{fig:mlp} è mostrata l'architettura generale della nostra rete. 
 
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/MLP-Profitto.png}
- \caption{Struttura di un percettrone multistrato con un solo strato nascosto}
+ \caption{Architettura del percettrone multistrato per la previsione dei profitti}
  \label{fig:mlp}
 \end{figure}
 
-\subsection{Modello Neurone \& Forward Propagation}
+Di seguito gli snippet di codice per la definizione dei dati e dell'architettura della rete secondo lo schema appena presentato. 
+
+\begin{lstlisting}[language={[5.2]Lua}]
+----------------------- Part 1 ----------------------------
+th = require 'torch'
+bestProfit = 6.0
+-- X = (num coperti, ore di apertura settimanali), y = profitto lordo annuo in percentuale
+torch.setdefaulttensortype('torch.DoubleTensor')
+X = th.Tensor({{22,42}, {25,38}, {30,40}})
+y = th.Tensor({{2.8},{3.4},{4.4}})
+
+--normalize
+normalizeTensorAlongCols(X)
+y = y/bestProfit
+
+\end{lstlisting}
+
+\begin{lstlisting}[language={[5.2]Lua}]
+----------------------- Part 2 ----------------------------
+--creating the NN class in Lua, using a nice class utility
+require 'class'
+
+Neural_Network = class(function(net, inputs, hiddens, outputs)
+      net.inputLayerSize = inputs
+      net.hiddenLayerSize = hiddens
+      net.outputLayerSize = outputs
+      net.W1 = th.randn(net.inputLayerSize, net.hiddenLayerSize)
+      net.W2 = th.randn(net.hiddenLayerSize, net.outputLayerSize)
+   end)
+\end{lstlisting}
+
+\subsection{Forward Propagation}
+
+%%% MULTI-COLUMN table for variables 
+\begin{table}[h!]
+\caption{Variabili usate nel testo e nel codice}
+\label{tab:variabili}
+\begin{center}
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{\textbf{Variabili}} \\
+ \hline
+ \textbf{S. Codice} & \textbf{S. Matematico} & \textbf{Definizione} & \textbf{Dimensione}\\
+ \hline
+ X	& $X$	&Esempi, 1 per riga&	\makecell{(numEsempi, \\inputLayerSize)}\\
+ \hline
+ y&	$y$	& uscita desiderata	& \makecell{(numEsempi, \\outputLayerSize)}\\ 
+ \hline
+ W1 & $W^{(1)}$	& Pesi layer 1&	\makecell{(inputLayerSize, \\hiddenLayerSize)}\\
+ \hline
+ W2	& $W^{(2)}$   & Pesi layer 2&	(hiddenLayerSize, outputLayerSize)\\
+ \hline
+ z2 & $z^{(2)}$	& Input layer 2& \makecell{(numEsempi, \\hiddenLayerSize)}\\
+ \hline
+ a2 & $a^{(2)}$	& Uscita layer 2& \makecell{(numEsempi, \\hiddenLayerSize)}\\
+ \hline
+ z3 & $z^{(3)}$	& Input layer 3& \makecell{(numEsempi, \\outputLayerSize)}\\
+  \hline
+ \end{tabular}
+ \end{center}
+ \end{table}
+Nella tabella \ref{tab:variabili} sono elencate le variabili della rete. Gli input dei layer indicati con $z$ possono anche essere chiamati "attività dei layer" (indicando l'attività sulle loro sinapsi); e $a^{(2)}$ indica l'uscita del neurone dopo aver applicato la sommatoria e la funzione di attivazione sulle attività provenienti dal layer precedente.
+
+Per muovere i dati in parallelo attraverso la rete si usa la moltiplicazione fra matrici, per questo è molto comodo usare framework che supportano operazioni fra matrici come \emph{Torch, Numpy o Matlab}. Per prima cosa, gli input del tensore $X$ devono essere moltiplicati e sommati con i pesi del primo layer $W^{(1)}$, ottenendo l'ingresso per l'hidden layer: 
+\begin{equation}
+z^{(2)} = XW^{(1)} \tag{1}
+\end{equation}
+Si noti che $z^{(2)}$ è di dimensione 3x3, essendo $X$ e $W^{(1)}$ di dimensione 3x2 e 2x3 rispettivamente. \\
+Ora bisogna applicare la funzione di attivazione a $z^{(2)}$. Vi sono diverse funzioni di attivazione utilizzate per le reti neurali. Una delle prime a diventare popolare fu la funzione \emph{sigmoide}\parencite{WSigmoid}, utilizzata per questa rete. Vedremo nei capitoli successivi funzioni più efficaci.
+\begin{equation}
+a^{(2)} = f(z^{(2)}) \tag{2},\quad ove \quad f=sigmoide
+\end{equation}
+Per completare la \emph{forward propagation}, bisogna seguire lo stesso procedimento per lo strato di output: sommare i contributi provenienti dall'hidden layer ed applicare la sigmoide: 
+\begin{center}
+\begin{align*}
+z^{(3)} = a^{(2)}W^{(2)} \tag{3}\\
+\hat{y} = f(z^{(3)}) \tag{4}
+\end{align*}
+\end{center}
+Essendo $a^{(2)}$ di dimensione 3x3 e $W^{(2)}$ 3x1 l'output $\hat{y}$ sarà anch'esso di dimensione 3x1, risultando quindi in una previsione per ogni esempio in ingresso. \\
+Si noti come la moltiplicazione fra matrici renda tutto esprimibile in poche righe di codice. 
+\begin{lstlisting}[language={[5.2]Lua}]
+--Note: I didn't implement manually the sigmoid function as Torch has one built-in.
+--define a forward method
+function Neural_Network:forward(X)
+   --Propagate inputs though network
+   self.z2 = th.mm(X, self.W1) --matrix multiplication
+   self.a2 = th.sigmoid(self.z2)
+   self.z3 = th.mm(self.a2, self.W2)
+   yHat = th.sigmoid(self.z3)
+   return yHat
+end
+\end{lstlisting}
 \subsection{Backpropagation}
 Come si fa ad addestrare una rete multistrato con diversi neuroni per strato? Tramite l'algoritmo di \emph{backpropagation of errors} di ... 
 \subsection{Verifica numerica del gradiente}

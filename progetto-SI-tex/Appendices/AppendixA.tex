@@ -1,25 +1,55 @@
 % Appendix A
 
-\chapter{Frequently Asked Questions} % Main appendix title
+\chapter{Appendice A: Codice addizionale ed il framework Torch} % Main appendix title
 
-\label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
+\label{AppendixA} % Change X to a consecutive letter; for referencing this appendix elsewhere, use \ref{AppendixX}
 
-\section{How do I change the colors of links?}
+In Lua manca il costrutto delle classi. Si può tuttavia crearle utilizzando tables e meta-tables. Per il progetto si è utilizzato una piccola libreria, di seguito riportata. 
 
-The color of links can be changed to your liking using:
+\begin{lstlisting}[language={[5.2]Lua}]
+-- class.lua
+-- Compatible with Lua 5.1 (not 5.0).
+function class(base, init)
+   local c = {} -- a new class instance
+   if not init and type(base) == 'function' then
+      init = base
+      base = nil
+   elseif type(base) == 'table' then
+      -- our new class is a shallow copy of the base class!
+      for i,v in pairs(base) do
+         c[i] = v
+      end
+      c._base = base
+   end
+   -- the class will be the metatable for all its objects,
+   -- and they will look up their methods in it.
+   c.__index = c
 
-{\small\verb!\hypersetup{urlcolor=red}!}, or
-
-{\small\verb!\hypersetup{citecolor=green}!}, or
-
-{\small\verb!\hypersetup{allcolor=blue}!}.
-
-\noindent If you want to completely hide the links, you can use:
-
-{\small\verb!\hypersetup{allcolors=.}!}, or even better: 
-
-{\small\verb!\hypersetup{hidelinks}!}.
-
-\noindent If you want to have obvious links in the PDF but not the printed text, use:
-
-{\small\verb!\hypersetup{colorlinks=false}!}.
+   -- expose a constructor which can be called by <classname>(<args>)
+   local mt = {}
+   mt.__call = function(class_tbl, ...)
+      local obj = {}
+      setmetatable(obj,c)
+      if init then
+         init(obj,...)
+      else
+         -- make sure that any stuff from the base class is initialized!
+         if base and base.init then
+            base.init(obj, ...)
+         end
+      end
+      return obj
+   end
+   c.init = init
+   c.is_a = function(self, klass)
+      local m = getmetatable(self)
+      while m do
+         if m == klass then return true end
+         m = m._base
+      end
+      return false
+   end
+   setmetatable(c, mt)
+   return c
+end
+\end{lstlisting}
