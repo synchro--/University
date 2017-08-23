@@ -407,7 +407,7 @@ X^{T}\delta^{(2)} \tag{7}}
 \begin{equation}
 \boxed{\delta^{(3)} = -(y-\hat{y}) f^\prime(z^{(3)})  \tag{9}} \end{equation}
 
-Implementando le equazioni sovrascritte in Lua, la classe \texttt{Neural_Network} è quindi completa\ref{AppendixA}. 
+Implementando le equazioni sovrascritte in Lua, la classe \texttt{Neural\_Network} è quindi completa (per i dettagli si veda l'appendica \ref{AppendixA}). 
 
 \begin{lstlisting}[language={[5.2]Lua}]
 function Neural_Network:d_CostFunction(X, y)
@@ -424,6 +424,69 @@ end
 \end{lstlisting}
 
 \subsection{Verifica numerica del gradiente}
+Siccome la Backprop è notoriamente difficile da debuggare, una volta che la si usa per l'addestramento di una rete, bisogna controllare se l'implementazione della sezione precedente è corretta prima di proseguire nel progetto. A questo scopo, è stata scritta una funzione per il calcolo \emph{numerico} del gradiente che andrà poi confrontata con il calcolo computato dalla Backprop. 
+
+L'algoritmo\parencite{WGradcheck} è basato sulla seguente definizione di derivata: 
+$$
+\frac{\mathrm{d} }{\mathrm{d} \theta}J(\theta)) = \lim_{\epsilon\rightarrow 0} \frac{J(\theta + \epsilon)- J(\theta - \epsilon)}{2*\epsilon}
+$$
+Il gradiente che bisogna controllare è formato dai 2 vettori che contengono le derivate dei pesi di tutta la rete: $\frac{\partial J}{\partial W^{(1)}} \quad e \quad \frac{\partial J}{\partial W^{(2)}}}$.\\
+Approssimando $\epsilon$ con un valore molto piccolo \emph{(i.e. $10^{-4}$)} è possibile perturbare singolarmente i singoli pesi della rete (contenuti nei vettori $W_{(1)}$ e $W_{(2)}$) e calcolare così il gradiente in maniera numerica. 
+
+Per poterlo fare, servono delle funzioni ausiliare (metodi getter e setter) per prendere e settare i pesi ed il gradiente della rete come singolo vettore "flat" di parametri (appendice \ref{AppendixA}). Dopodiché basta un loop ed un array per memorizzare le derivate dei singoli pesi così calcolati:
+
+\begin{lstlisting}[language={[5.2]Lua}]
+function computeNumericalGradient(NN, X, y)
+   paramsInitial = NN:getParams()
+   numgrad = th.zeros(paramsInitial:size())
+   perturb = th.zeros(paramsInitial:size())
+   e = 1e-4
+
+   for p=1,paramsInitial:nElement() do
+      --Set perturbation vector
+      perturb[p] = e
+      NN:setParams(paramsInitial + perturb)
+      loss2 = NN:costFunction(X, y)
+
+      NN:setParams(paramsInitial - perturb)
+      loss1 = NN:costFunction(X, y)
+
+      --Compute Numerical Gradient
+      numgrad[p] = (loss2 - loss1) / (2*e)
+
+      --Return the value we changed to zero:
+      perturb[p] = 0
+   end
+
+   --Return Params to original value:
+   NN:setParams(paramsInitial)
+   return numgrad
+end
+\end{lstlisting}
+Si può ora inizializzare una rete, eseguire la backpropagation e confrontare i valori con quelli calcolati numericamente: 
+\begin{lstlisting}[language={[5.2]Lua}]
+--test if we actually make the calculations correctly
+NN = Neural_Network(2,3,1)
+
+print('Gradient checking...')
+numgrad = computeNumericalGradient(NN, X, y)
+grad = NN:computeGradients(X, y)
+--[[
+In order to make an accurate comparison of the 2 vectors
+we can calculate the difference as the ratio of:
+numerator  --> the norm of the difference
+denumerator--> the norm of the sum
+Should be in the order of 10^-8 or less
+--]]
+diff = th.norm(grad-numgrad)/th.norm(grad+numgrad)
+print(string.format('The difference is %e',diff))
+\end{lstlisting}
+
+Per calcolare \emph{quanto} siano effettivamente uguali i due gradienti si può usare un rapporto basato sulla norme della somma e della differenza dei gradienti (si veda il codice sopra). Se la backprop è stata implementata correttamente questa differenza dovrebbe essere nell'ordine di $10^{-8}$ o inferiore. Difatti, quando si esegue lo script si ottiene: 
+
+%%inserire figura %% 
+
+
 \subsection{Addestramento}
 
 %--------------------------------------------------------------------%--------------------
