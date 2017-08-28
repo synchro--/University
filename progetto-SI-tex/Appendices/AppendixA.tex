@@ -55,7 +55,7 @@ function class(base, init)
 end
 \end{lstlisting}
 \section{La classe Neural\_Network}
-Nel capitolo \ref{Capitolo1} si sono mostrati i vari snippet di codice man mano che si introducevano i concetti teorici che stanno alla base di questa implementazione. Di seguito è presentata l'intera classe \texttt{Neural\_Network} :
+Nel capitolo \ref{Capitolo2} si sono mostrati i vari snippet di codice man mano che si introducevano i concetti teorici che stanno alla base di questa implementazione. Di seguito è presentata l'intera classe \texttt{Neural\_Network} :
 
 \begin{lstlisting}[language={[5.2]Lua}]
 --creating class NN in Lua, using a nice class utility
@@ -111,7 +111,7 @@ end
 \end{lstlisting}
 
 \section{Metodi getter e setter}
-Nella sottosezione \ref{subsec:gradcheck} del capitolo \ref{Capitolo1} si è dimostrato come calcolare numericamente il gradiente. Si è fatto cenno ai \emph{getter e setter} per ottenere dei \emph{flattened gradients}, ovvero "srotolare" i tensori dei gradienti in vettori monodimensionali. I metodi, qui mostrati, necessitano di una comprensione dei comandi di Torch. Data la maggiore popolarità di Python \emph{Numpy}, nel caso il lettore fosse più familiare con quest'ultimo, nell'appendice \ref{AppendixB} è mostrata anche una tabella di equivalenza dei metodi fra i due. 
+Nella sottosezione \ref{sec:gradcheck} del capitolo \ref{Capitolo2} si è dimostrato come calcolare numericamente il gradiente. Si è fatto cenno ai \emph{getter e setter} per ottenere dei \emph{flattened gradients}, ovvero "srotolare" i tensori dei gradienti in vettori monodimensionali. I metodi, qui mostrati, necessitano di una comprensione dei comandi di Torch. Data la maggiore popolarità di Python \emph{Numpy}, nel caso il lettore fosse più familiare con quest'ultimo, nell'appendice \ref{AppendixB} è mostrata anche una tabella di equivalenza dei metodi fra i due. 
 \begin{lstlisting}[language={[5.2]Lua}]
 --Helper Functions for interacting with other classes:
 function Neural_Network:getParams()

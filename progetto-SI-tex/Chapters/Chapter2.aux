@@ -5,8 +5,8 @@
 \@writefile{lot}{\addvspace {10\p@ }}
 \newlabel{Capitolo2}{{2}{5}{Implementazione di un MLP}{chapter.14}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.1}Dataset e Architettura}{5}{section.15}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Architettura del percettrone multistrato per la previsione dei profitti\relax }}{6}{figure.caption.16}}
-\newlabel{fig:mlp}{{2.1}{6}{Architettura del percettrone multistrato per la previsione dei profitti\relax }{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Architettura del MLP per la previsione dei profitti\relax }}{6}{figure.caption.16}}
+\newlabel{fig:mlp}{{2.1}{6}{Architettura del MLP per la previsione dei profitti\relax }{figure.caption.16}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.2}Forward Propagation}{6}{section.43}}
 \@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces Variabili usate nel testo e nel codice\relax }}{7}{table.caption.44}}
 \newlabel{tab:variabili}{{2.1}{7}{Variabili usate nel testo e nel codice\relax }{table.caption.44}{}}
@@ -18,21 +18,29 @@
 \newlabel{fig:sigmoidPrime}{{2.3}{10}{La funzione sigmoide e la sua derivata\relax }{figure.caption.80}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.4}Verifica numerica del gradiente}{11}{section.101}}
 \newlabel{sec:gradcheck}{{2.4}{11}{Verifica numerica del gradiente}{section.101}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.5}Addestramento}{13}{section.145}}
-\newlabel{ref:training}{{2.5}{13}{Addestramento}{section.145}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Apprendimento supervisionato}{13}{subsection.146}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Apprendimento supervisionato: schema generale\relax }}{13}{figure.caption.147}}
-\newlabel{fig:supervised}{{2.4}{13}{Apprendimento supervisionato: schema generale\relax }{figure.caption.147}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Discesa del gradiente}{14}{subsection.150}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.6}Ottimizzazione: diverse tecniche}{14}{section.152}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.5}{\ignorespaces Confronto tra il momentum classico e NAG\relax }}{15}{figure.caption.153}}
-\newlabel{fig:nag}{{2.5}{15}{Confronto tra il momentum classico e NAG\relax }{figure.caption.153}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces Confronto dei metodi di ottimizzazione durante il training\relax }}{17}{figure.caption.186}}
-\newlabel{fig:comparison}{{2.6}{17}{Confronto dei metodi di ottimizzazione durante il training\relax }{figure.caption.186}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.7}Overfitting: come rilevarlo e risolverlo}{17}{section.187}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.8}Risultati}{17}{section.188}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Addestramento}{13}{section.149}}
+\newlabel{ref:training}{{2.5}{13}{Addestramento}{section.149}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Apprendimento supervisionato}{13}{subsection.150}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Discesa del gradiente}{13}{subsection.154}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Apprendimento supervisionato: schema generale\relax }}{14}{figure.caption.151}}
+\newlabel{fig:supervised}{{2.4}{14}{Apprendimento supervisionato: schema generale\relax }{figure.caption.151}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}Ottimizzazione: diverse tecniche}{14}{section.156}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.5}{\ignorespaces Confronto tra il momentum classico e NAG\relax }}{15}{figure.caption.157}}
+\newlabel{fig:nag}{{2.5}{15}{Confronto tra il momentum classico e NAG\relax }{figure.caption.157}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces Confronto dei metodi di ottimizzazione durante il training\relax }}{17}{figure.caption.190}}
+\newlabel{fig:comparison}{{2.6}{17}{Confronto dei metodi di ottimizzazione durante il training\relax }{figure.caption.190}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces L'output della rete $\mathaccentV {hat}05E{y}$ \IeC {\`e} vicino all'output desiderato $y$\relax }}{17}{figure.caption.191}}
+\newlabel{fig:previsioni}{{2.7}{17}{L'output della rete $\hat {y}$ è vicino all'output desiderato $y$\relax }{figure.caption.191}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}Overfitting}{18}{section.192}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.8}{\ignorespaces Entrambe le funzioni hanno un'errore nullo sul dataset. Tuttavia, la funzione blu \IeC {\`e} eccessivamente complessa ed affetta da rumore; avr\IeC {\`a} quindi cattive capacit\IeC {\`a} di generalizzazione. La verde, al contrario, sar\IeC {\`a} presumibilmente pi\IeC {\`u} corretta rispetto ai punti sconosciuti della distribuzione sottostante.\relax }}{18}{figure.caption.193}}
+\newlabel{fig:regularization}{{2.8}{18}{Entrambe le funzioni hanno un'errore nullo sul dataset. Tuttavia, la funzione blu è eccessivamente complessa ed affetta da rumore; avrà quindi cattive capacità di generalizzazione. La verde, al contrario, sarà presumibilmente più corretta rispetto ai punti sconosciuti della distribuzione sottostante.\relax }{figure.caption.193}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}Rilevare l'overfitting}{18}{subsection.194}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}Contromisure}{19}{subsection.239}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.8}Risultati}{19}{section.240}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.9}{\ignorespaces La rete mostra overfitting. Dopo l'iterazione 100 le performance sul test set iniziano ad essere sbagliate. Attorno alla 250 il modello diventa troppo complesso e le predizioni sono pessime\relax }}{20}{figure.caption.238}}
+\newlabel{fig:overfitting}{{2.9}{20}{La rete mostra overfitting. Dopo l'iterazione 100 le performance sul test set iniziano ad essere sbagliate. Attorno alla 250 il modello diventa troppo complesso e le predizioni sono pessime\relax }{figure.caption.238}{}}
 \@setckpt{Chapters/Chapter2}{
-\setcounter{page}{18}
+\setcounter{page}{21}
 \setcounter{equation}{1}
 \setcounter{enumi}{2}
 \setcounter{enumii}{0}
@@ -47,14 +55,14 @@
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{6}
+\setcounter{figure}{9}
 \setcounter{table}{1}
 \setcounter{LT@tables}{0}
 \setcounter{LT@chunks}{0}
 \setcounter{ContinuedFloat}{0}
 \setcounter{parentequation}{0}
 \setcounter{nlinenum}{0}
-\setcounter{lstnumber}{32}
+\setcounter{lstnumber}{12}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
@@ -64,7 +72,7 @@
 \setcounter{citetotal}{0}
 \setcounter{multicitecount}{0}
 \setcounter{multicitetotal}{0}
-\setcounter{instcount}{0}
+\setcounter{instcount}{20}
 \setcounter{maxnames}{3}
 \setcounter{minnames}{3}
 \setcounter{maxitems}{3}
@@ -163,10 +171,10 @@
 \setcounter{bbx:relatedcount}{0}
 \setcounter{bbx:relatedtotal}{0}
 \setcounter{cbx@tempcnta}{0}
-\setcounter{cbx@tempcntb}{0}
+\setcounter{cbx@tempcntb}{18}
 \setcounter{Item}{4}
 \setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{16}
+\setcounter{bookmark@seq@number}{18}
 \setcounter{lstlisting}{0}
 \setcounter{section@level}{1}
 }

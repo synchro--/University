@@ -27,12 +27,11 @@ Y = \begin{pmatrix}
 4.4
 \end{pmatrix}
 \]
-Osservando le dimensioni dei dati si nota che la rete deve avere 2 input e dare in uscita 1 output, che chiameremo $\hat{y}$, in contrapposizione a $y$ che è l'uscita desiderata. Per quanto detto nella sezione \ref{sec:mlp}, il MLP deve avere 2 neuroni nello strato di ingresso ed 1 solo in uscita. Inoltre, avrà uno strato nascosto con 3 neuroni. La dimensione di ogni strato fa parte di un insieme di parametri che viene deciso "a mano" sperimentando, i cosiddetti \emph{hyperparameters}. Questi parametri non vengono aggiornati durante l'addestramento - come i pesi della rete - ma vengono decisi a priori. \\In figura \ref{fig:mlp} è mostrata l'architettura generale della nostra rete.
-
+Osservando le dimensioni dei dati si nota che la rete deve avere 2 input e dare in uscita 1 output, che chiameremo $\hat{y}$, in contrapposizione a $y$ che è l'uscita desiderata. Per quanto detto nella sezione \ref{sec:mlp}, il MLP deve avere 2 neuroni nello strato di ingresso ed 1 solo in uscita. Inoltre, avrà uno strato nascosto con 3 neuroni. La dimensione di ogni strato fa parte di un insieme di parametri che viene deciso "a mano" sperimentando, i cosiddetti \emph{hyperparameters}. Questi parametri non vengono aggiornati durante l'addestramento - come i pesi della rete - ma vengono decisi a priori. \\In figura \ref{fig:mlp} è mostrata l'architettura generale della nostra rete. \newpage
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/MLP-Profitto.png}
- \caption{Architettura del percettrone multistrato per la previsione dei profitti}
+ \caption{Architettura del MLP per la previsione dei profitti}
  \label{fig:mlp}
 \end{figure}
 
@@ -183,7 +182,7 @@ $$
 \frac{\partial \hat{y}}{\partial z^{(3)}}
 \frac{\partial z^{(3)}}{\partial W^{(2)}}
 $$
-Il 2° membro dell'equazione è semplicemente la derivata della funzione di attivazione sigmoide:
+Il 2° membro dell'equazione è semplicemente la derivata della funzione di attivazione sigmoide (fig. \ref{fig:sigmoidPrime}):
 \begin{align*}
 f(z) = \frac{1}{1+e^{-z}}\\
 f^\prime(z) = \frac{e^{-z}}{(1+e^{-z})^2}
@@ -372,8 +371,13 @@ print(string.format('The difference is %e',diff))
 
 Per calcolare \emph{quanto} siano effettivamente uguali i due gradienti si può usare un rapporto basato sulla norme della somma e della differenza dei gradienti (si veda il codice sopra). Se la backprop è stata implementata correttamente questa differenza dovrebbe essere nell'ordine di $10^{-8}$ o inferiore. Difatti, quando si esegue lo script si ottiene:
 
-%%inserire figura %%
 
+%%inserire figura %%
+\begin{lstlisting}
+$ th 4_gradCheck.lua 
+Gradient checking...	
+The difference is 2.123898e-10	
+\end{lstlisting}
 
 \section{Addestramento}
 \label{ref:training}
@@ -491,17 +495,106 @@ Procedendo iterativamente con le diverse tecniche di ottimizzazione si ottiene i
  \caption{Confronto dei metodi di ottimizzazione durante il training}
  \label{fig:comparison}
 \end{figure}
-Dal grafico si evidenzia come le premesse teoriche dei vari metodi siano state pienamente rispettate. Nonostante il problema sia molto semplice se comparato ai reali problemi di \emph{deep learning}, già su un dataset ed un numero di iterazioni così limitato si nota la superiorità di un metodo verso il precedente. In particolare, nel corso \texttt{"CS231"} di deep learning applicato alla visione artificiale di Stanford\parencite{WCS231-adam}, sviluppato da Andrej Karpathy et. al, si raccomanda Adam come metodo di default per applicazioni di deep learning: 
+Dal grafico si evidenzia come le premesse teoriche dei vari metodi siano state pienamente rispettate. Nonostante il problema sia molto semplice se comparato ai reali problemi di \emph{deep learning}, già su un dataset ed un numero di iterazioni così limitato si nota la superiorità di un metodo verso il precedente. In particolare, nel corso \texttt{"CS231"} di deep learning applicato alla visione artificiale di Stanford\parencite{WCS231adam}, sviluppato da Andrej Karpathy et. al, si raccomanda Adam come metodo di default per applicazioni di deep learning: 
 \begin{quote}
-In practice Adam is currently recommended as the default algorithm to use. However, it is often also worth trying SGD+Nesterov Momentum as an alternative.
+\emph{In practice Adam is currently recommended as the default algorithm to use. However, it is often also worth trying SGD+Nesterov Momentum as an alternative}.
 \end{quote}
+
+La rete è ora addestrata: dando in ingresso la matrice $X$ di input si avranno in output previsioni molto più accurate, come mostrato in figura \ref{fig:previsioni}. 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.5\textwidth]{\path/previsioni.jpg}
+ \caption{L'output della rete $\hat{y}$ è vicino all'output desiderato $y$}
+ \label{fig:previsioni}
+\end{figure}
+
 %--------------------------------------------------------------------%--------------------
 %	SECTION 6
 %--------------------
 %--------------------------------------------------------------------
-\section{Overfitting: come rilevarlo e risolverlo}
-Uno dei maggiori problemi del ML 
+\section{Overfitting}
+Uno dei problemi più comuni dell'apprendimento automatico è \emph{l'Overfitting}. Esso si verifica laddove il modello creato per fare predizioni risulta troppo complesso e troppo "legato" al solo training set, di cui apprende anche i rumori: la rete è quindi incapace di \emph{generalizzare} ad esempi ancora non visti e, nonostante l'accuratezza estremamente alta sul training set, darà delle pessime predizioni. Questo può essere dovuto a diversi fattori: 
+\begin{itemize}
+\item il modello ha troppi parametri rispetto al numero di osservazioni; 
+\item il dataset è costituito da troppi pochi esempi; 
+\item l'addestramento è stato fatto troppo a lungo;
+\end{itemize}
 
+In figura \ref{fig:regularization} è mostrato un esempio di 2 modelli statistici che hanno entrambi errore nullo ma complessità molto diversa. 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.6\textwidth]{\path/reg-wikipedia.png}
+ \caption{Entrambe le funzioni hanno un'errore nullo sul dataset. Tuttavia, la funzione blu è eccessivamente complessa ed affetta da rumore; avrà quindi cattive capacità di generalizzazione. La verde, al contrario, sarà presumibilmente più corretta rispetto ai punti sconosciuti della distribuzione sottostante.}
+ \label{fig:regularization}
+\end{figure}
+\subsection{Rilevare l'overfitting}
+Per rilevare se è avvenuto o meno overfitting durante l'apprendimento; si possono dare in ingresso al percettrone esempi ancora non visti e controllare "ad occhio" se le predizioni hanno senso. Per averne la certezza però, bisogna dividere il dataset in un training set ed un \emph{test set} su cui testare la rete durante l'apprendimento. Sugli esempi del test set non si farà backpropagation e non avverrà quindi apprendimento; si utilizzeranno solo per sapere quanto è corretto l'addestramento. \\
+Testando la rete \emph{durante} l'apprendimento si può capire il preciso momento in cui avviene l'overfitting. Per farlo, occorre plottare sullo stesso grafico l'errore sul training set e sul test set. 
+
+Dopo aver definito arbitrariamente alcuni esempi di testing, si modifica l'algoritmo di training: 
+\begin{lstlisting}[language={[5.2]Lua}]
+--Need to modify trainer class a bit to check testing error during training:
+function Trainer:train(trainX, trainY, testX, testY)
+   --variables to keep track of the training
+   local neval = 0
+
+   params0 = self.N:getParams()
+   -- create closure to evaluate f(X) and df/dX
+   local feval = function(params0)
+      local f = self.N:costFunction(trainX, trainY)
+      local test = self.N:costFunction(testX, testY)
+      --printing training and testing error
+      print(f..' '..test)
+      local df_dx = self.N:computeGradients(trainX, trainY)
+      neval = neval + 1
+      --logging both training and testing data
+      logger:add{neval, f} --,timer:time().real}
+      testLogger:add{neval, test}
+
+      return f, df_dx
+   end
+
+   if optimMethod == optim.cg then
+      newparams,_,_ = optimMethod(feval, params0, optimState)
+   else
+      for i=1,opt.maxIter do
+         newparams,_,_ = optimMethod(feval, params0, optimState)
+         self.N:setParams(newparams)
+      end
+   end
+end
+\end{lstlisting}
+
+Si addestra la rete e si loggano i valori di training e di testing, con il seguente codice: 
+\begin{lstlisting}[language={[5.2]Lua}]
+--now let's train and check where exactly the net is Overfitting
+nn = Neural_Network(2,3,1)
+
+init_params = nn:getParams()
+logtrain = 'train.log'
+logtest = 'test.log'
+logger = optim.Logger(logtrain)
+testLogger = optim.Logger(logtest)
+
+trainer = Trainer(nn)
+trainer:train(trainX, trainY, testX, testY)
+\end{lstlisting}
+
+Andando infine a plottare i dati così ottenuti: 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.6\textwidth]{\path/overfitting.png}
+ \caption{La rete mostra overfitting. Dopo l'iterazione 100 le performance sul test set iniziano ad essere sbagliate. Attorno alla 250 il modello diventa troppo complesso e le predizioni sono pessime}
+ \label{fig:overfitting}
+\end{figure}
+
+\subsection{Contromisure}
+%dataset più ampio
+%early stopping
+%k-fold cross validation 
+%regularization 
+
+%%inserire grafico ultimo
 
 %--------------------------------------------------------------------%--------------------
 %	SECTION 7
