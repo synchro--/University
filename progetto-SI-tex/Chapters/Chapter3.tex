@@ -9,27 +9,98 @@
 %% da completare
 In questo capitolo si introduce una panoramica generale sulle reti neurali convoluzionali. Essendo un argomento vasto, una trattazione teorica approfondita sarebbe materia di una tesi di laurea, ragion per cui gli argomenti sono introdotti con lo scopo di avere un'infarinatura per comprendere le applicazioni sviluppate nei capitoli successivi. 
 \section{Breve introduzione}
-La reti neurali convoluzionali, alle quali ci riferiremo con l'abbrevazione \emph{CNN} - dall'inglese \emph{Convolutional Neural Network}, sono un'evoluzione delle normali reti artificiali profonde caratterizzate da una particolare architettura estremamente vantaggiosa per compiti visivi e non, che le ha rese negli anni molto efficaci e popolari. Ispirate 
-
-%%% ricollocare la figura %%% 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/CNN-features.png} 
- \caption{I diversi strati tipici di una CNN}
- \label{fig:conv1}
-\end{figure}
+La reti neurali convoluzionali, alle quali ci riferiremo con l'abbrevazione \emph{CNN} - dall'inglese \emph{Convolutional Neural Network}, sono un'evoluzione delle normali reti artificiali profonde caratterizzate da una particolare architettura estremamente vantaggiosa per compiti visivi (e non), che le ha rese negli anni molto efficaci e popolari. Sono state ispirate dalle ricerche biologiche di Hubel e Wiesel i quali, studiando il cervello dei gatti, avevano scoperto che la loro corteccia visiva conteneva una complessa struttura di cellule. Quest'ultime erano sensibili a piccole parti locali del campo visivo, detti campi recettivi \emph{(receptive fields)}. Agivano quindi da filtri locali perfetti per comprendere la correlazione locale degli oggetti in un'immagine. Essendo questi sistemi i più efficienti in natura per la comprensione delle immagini, i ricercatori hanno tentato di simularli. 
 
 %--------------------------------------------------------------------
 %	SECTION 2
 %--------------------------------------------------------------------
 
 \section{Architettura}
-\subsection{Strato di Convoluzione}
+Le CNN sono reti neurali profonde costituite da diversi strati che fungono da estrattori delle features ed una rete completamente connessa alla fine, che funge da classificatore, come raffigurato in figura \ref{fig:cnn1}. \\
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/CNN-expl.png} 
+ \caption{Architettura di una CNN che classifica segnali stradali: si evidenzia la divisione tra gli strati che fungono da feature extractor ed il classificatore finale}
+ \label{fig:cnn1}
+\end{figure}
+Questi strati in cui si estraggono le caratteristiche delle immagini sono detti strati di convoluzione, e sono generalmente seguiti da una funzione non lineare e un passo di \emph{pooling}. Vi possono poi essere degli strati di elaborazione dell'immagine, come quello di normalizzazione del contrasto, si veda \fig{ref:cnn2}.
+%%% ricollocare la figura %%% 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/CNN-features.png} 
+ \caption{I diversi strati tipici di una CNN}
+ \label{fig:cnn2}
+\end{figure}
+Convoluzione e pooling hanno come scopo quello di estrarre le caratteristiche, mentre l’unità non lineare serve a rafforzare le caratteristiche più forti e indebolire quelle meno importanti, ovvero quelle che hanno stimolato meno i neuroni (si dice che fa da “squashing”). \\
+Sempre dalla figura \ref{fig:cnn1}, possiamo inoltre notare che, per ogni immagine in input, corrispondono nei vari strati, diversi gruppi di immagini, che vengono chiamate \emph{feature maps}. Le feature maps sono il risultato dell'operazione di convoluzione svolta tramite un banco di filtri, chiamati anche kernel, che altro non sono che delle matrici con dei valori utili a ricercare determinate caratteristiche nelle immagini.\\
+Infine, terminati i convolutional layers, le feature maps vengono “srotolate” in vettori e affidate ad una rete neurale "classica" che esegue la classificazione finale. 
 
+Il numero di strati di convoluzione è arbitrario. Inizialmente, quando le CNN divennero famose grazie a Y.LeCun, che addestrò una CNN chiamata \emph{"LeNet5"} al riconoscimento dei numeri \parencite{lenet}, questo numero era compreso tra 2-5. Nel 2012, Alex Krizhevsky et al \parencite{imagenet2012} addestrarono una rete costituita da 5 strati di convoluzione, 60 milioni di parametri e 650 mila neuroni. Ottennero la migliore percentuale d'errore al mondo sul dataset ImageNet ILSVRC-2010, contenente 1,2 milioni di immagini divise in 1000 categorie. \\
+Da allora le cose si sono evolute con una velocità disaramente, e l'ImageNet challenge del 2015, è stata vinta da una rete con 152 strati \parencite{resnet}. Nel capitolo \ref{Capitolo5} si farà un confronto tra quest'ultima rete, soprannominata \emph{"ResNet"} e la capostipite LeNet5 su un task di classificazione.   
+\subsection{Strato di Convoluzione}
+Per comprendere appieno quello che avviene in una CNN, occorre introdurre il concetto di convoluzione fra matrici, e capire come questo sia importante per applicare dei filtri ad un'immagine digitale.
+
+Un’immagine digitale può essere considerata come una matrice A di dimensione $M×N$ valori reali o discreti. Ogni valore della matrice prende il nome di pixel e i suoi indici sono anche chiamati coordinate: ogni pixel $A(m,n)$ rappresenta l’intensità nella posizione indicata dagli indici. \\ 
+Si definisce “filtro” o “kernel” una trasformazione applicata ad un’immagine. Come detto prima, questi filtri sono a loro volta della matrici; la trasformazione quindi si effettua appunto tramite un'operazione di convoluzione tra l'immagine in ingresso ed il filtro.
+La convoluzione, discreta nel caso di immagini digitali, si può definire come: 
+%% INSERIRE EQUZIONEI %%% 
+
+Ogni pixel di $y[m,n]$ è così il risultato di una somma pesata tramite $h[m,n]$ della sottoregione che ha centro nel pixel indicato dalle coordinate m,n. Un esempio di convoluzione è rappresentato in figura \ref{fig:convolution}. 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/convolution.png} 
+ \caption{Convoluzione con un kernel: primi due step}
+ \label{fig:convolution}
+\end{figure}
+Nei convolutional layers viene quindi fatta un'operazione di convoluzione tra l'immagine/i in ingresso
+e un numero arbitrario K di filtri. Questi filtri hanno valori tali da ottenere in uscita – tramite convoluzione – un riconoscimento di determinate caratteristiche. \\
+I valori dei filtri sono all'inizio scelti casualmente, e vengono poi migliorati ad ogni iterazione mediante l'algoritmo di backpropagation, visto nel Capitolo \ref{Capitolo2}. Così facendo la rete addestra i suoi filtri ad estrarre le features più importanti degli esempi del training set; cambiando training set i valori dei
+filtri saranno diversi.
+Ad esempio, i valori dei filtri di una rete allenata con immagini di pali verticali saranno diversi da quella allenata con immagini di palloni da calcio; nel primo caso i valori saranno calibrati per riconoscere lunghi orientamenti verticali, mentre
+nel secondo per riconoscere i confini sferici. 
+
+Nelle reti convoluzionali quindi, l'algoritmo di Backpropagation migliora i valori dei filtri della rete, è lì quindi che si accumula l'apprendimento. I neuroni, in queste reti, devono intendersi come i singoli filtri.\\
+\\
+Vi sono diversi \emph{hyperparameters} da settare manualmente negli strati di convoluzione: 
+\begin{enumerate}
+\item la misura del filtro $F$: chiamato anche \emph{receptive field}. Ogni filtro cerca una determinata caratteristica in un'area locale dell'immagine, la sua misura quindi è il campo recettivo del singolo neurone. Tipicamente sono 3x3, 5x5 o 7x7.
+
+\item il numero $K$ di filtri: per ogni strato, questo valore definisce la profondità dell'output dell'operazione di convoluzione. Infatti, mettendo una sopra l'altra le feature maps, si ottiene un cubo in cui ogni "fetta" è il risultato dell'operazione tra l'immagine in ingresso ed il corrispettivo filtro. La profondità di questo cubo dipende appunto dal numero dei filtri. 
+
+\item lo \emph{"Stride"} S: definisce di quanti pixel si muove il filtro della convoluzione ad ogni passo. Se lo stride è settato a 2, il filtro salterà 2 pixel alla volta, producendo quindi un output più piccolo. 
+
+\item il \emph{"padding"} P: definisce la misura con la quale si vuole aggiungere degli "0" all'input per preservare la dimensione in output. In generale, quando lo stride S=1, un valore di  $P = (F - 1)/2$ garantisce che l'output avrà le stesse dimensioni dell'input. 
+\end{enumerate}
+
+%% pezzo sulla dimensione in output %% 
+Quando si elaborano delle immagini con le CNN si hanno generalmente in ingresso degli input tridimensionali, caratterizzati dall'altezza H_1, l'ampiezza W_1 e il numero di canali di colore D_1. Conoscendo i parametri sopra specificati si può calcolare la dimensione dell'output di un layer di convoluzione: 
+\begin{align*}
+H_2 = (H_1 - F + 2P)/S + 1
+W_2 = (H_1 - F + 2P)/S + 1
+D_2 = K
+\end{align*}
+%% astrazione %% 
+
+Gli strati di convoluzioni mostrano molte proprietà interessanti, di cui qui ne cito 2. \\
+In primo luogo, se l'immagine in input viene traslata, l'output della feature map sarà traslato della stessa quantità ma rimarrà invariato altrove. Questa proprietà è alla base della robustezza rispetto alle traslazioni e alle distorsioni dell'immagine in ingresso; in secondo luogo, mettendo in fila diversi strati di convoluzioni si ottiene una rete capace di avere una comprensione più "astratta" dell'immagine in ingresso. Il primo strato di convoluzione si occupa di estrarre features direttamente dai pixel grezzi dell'immagine e li memorizza nelle feature maps. Questo output diviene poi l'input di un successivo livello di convoluzione, il quale andrà a fare una seconda estrazione delle caratteristiche, combinando le informazioni dello strato precedente. Da questa astrazione a più livelli deriva una maggior comprensione delle features. 
+
+
+\subsection{Strato di ReLU}
+Nel capitolo \ref{Capitolo2} si è detto che la funzione sigmoide non era la più efficiente. Difatti, negli anni si è stabilita con sicurezza la \emph{Rectified Linear Unit} (ReLU) come funzione d'attivazione più efficace. La ReLU è più verosimile alla modalità di attivazione biologica dei nostri neuroni\parencite{Relu}, ed è definita come: 
+$$
+f(x) = max(0,x)
+$$ 
+Y. LeCun ha dichiarato che la ReLU è inaspettatamente \emph{“l'elemento
+singolo più importante di tutta l'architettura per un sistema di riconoscimento”}. Questo può essere dovuto principalmente a 2 motivi:
+\begin{enumerate}
+\item la polarità delle caratteristiche è molto spesso irrilevante per riconoscere gli oggetti;
+\item la ReLU evita che quando si esegue pooling (sezione \ref{subsec:pooling}) due caratteristiche entrambe importanti ma con polarità opposte si cancellino fra loro
+\end{enumerate}
 \subsection{Strato di Pooling}
+\label{subsec:pooling}
 
 \subsection{Strato completamente connesso (FC)}
-
+%% menzionare che adesso si usa la convoluzione %% 
 
 %--------------------------------------------------------------------
 %	SECTION 3
