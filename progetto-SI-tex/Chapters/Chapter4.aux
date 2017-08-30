@@ -4,15 +4,32 @@
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \newlabel{Capitolo4}{{4}{31}{CNN: implementazione e addestramento}{chapter.305}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Il framework Torch}{31}{section.306}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Modello di CNN basato su LeNet}{31}{section.307}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Strato di Convoluzione}{31}{subsection.308}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Strato di Pooling}{31}{subsection.309}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Strato completamente connesso (FC)}{31}{subsection.310}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Dataset d'esempio: CIFAR}{31}{section.311}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Addestramento su CIFAR}{31}{section.312}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Modello di CNN basato su LeNet}{31}{section.306}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Architettura di LeNet5, qui per il riconoscimento di caratteri scritti a mano\relax }}{31}{figure.caption.307}}
+\newlabel{fig:lenet}{{4.1}{31}{Architettura di LeNet5, qui per il riconoscimento di caratteri scritti a mano\relax }{figure.caption.307}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Definire la loss function}{31}{subsection.308}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Preprocessing del dataset MNIST}{32}{section.315}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Addestramento su MNIST}{32}{section.316}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Preprocessing del dataset CIFAR}{32}{section.317}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Addestramento su CIFAR}{32}{section.318}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Esempi di cifre classificate correttamente\relax }}{32}{figure.caption.319}}
+\newlabel{fig:mnist-correct}{{4.2}{32}{Esempi di cifre classificate correttamente\relax }{figure.caption.319}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Esempi di animali classificati erroneamente\relax }}{33}{figure.caption.320}}
+\newlabel{fig:cifar-wrong}{{4.3}{33}{Esempi di animali classificati erroneamente\relax }{figure.caption.320}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Esempi di animali classificati correttamente\relax }}{33}{figure.caption.321}}
+\newlabel{fig:cifar-correct}{{4.4}{33}{Esempi di animali classificati correttamente\relax }{figure.caption.321}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Confusion Matrix MNIST: la matrice che mostra le percentuali di accuratezza ed errore sul validation set per ogni classe\relax }}{33}{figure.caption.322}}
+\newlabel{fig:mnist-training}{{4.5}{33}{Confusion Matrix MNIST: la matrice che mostra le percentuali di accuratezza ed errore sul validation set per ogni classe\relax }{figure.caption.322}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Confusion Matrix CIFAR: la matrice che mostra le percentuali di accuratezza ed errore sul validation set per ogni classe\relax }}{34}{figure.caption.323}}
+\newlabel{fig:cifar-training}{{4.6}{34}{Confusion Matrix CIFAR: la matrice che mostra le percentuali di accuratezza ed errore sul validation set per ogni classe\relax }{figure.caption.323}{}}
+\newlabel{fig:training}{{4.7a}{34}{Accuracy sul training set\relax }{figure.caption.324}{}}
+\newlabel{sub@fig:training}{{a}{34}{Accuracy sul training set\relax }{figure.caption.324}{}}
+\newlabel{fig:validation}{{4.7b}{34}{Accuracy sul validation set\relax }{figure.caption.324}{}}
+\newlabel{sub@fig:validation}{{b}{34}{Accuracy sul validation set\relax }{figure.caption.324}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Performance della rete in training e validation\relax }}{34}{figure.caption.324}}
+\newlabel{fig:subfigure}{{4.7}{34}{Performance della rete in training e validation\relax }{figure.caption.324}{}}
 \@setckpt{Chapters/Chapter4}{
-\setcounter{page}{32}
+\setcounter{page}{35}
 \setcounter{equation}{0}
 \setcounter{enumi}{2}
 \setcounter{enumii}{0}
@@ -22,19 +39,21 @@
 \setcounter{mpfootnote}{0}
 \setcounter{part}{0}
 \setcounter{chapter}{4}
-\setcounter{section}{4}
+\setcounter{section}{5}
 \setcounter{subsection}{0}
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{0}
+\setcounter{figure}{7}
 \setcounter{table}{0}
 \setcounter{LT@tables}{0}
 \setcounter{LT@chunks}{0}
 \setcounter{ContinuedFloat}{0}
 \setcounter{parentequation}{0}
 \setcounter{nlinenum}{0}
-\setcounter{lstnumber}{41}
+\setcounter{subfigure}{2}
+\setcounter{subtable}{0}
+\setcounter{lstnumber}{6}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
@@ -44,7 +63,7 @@
 \setcounter{citetotal}{0}
 \setcounter{multicitecount}{0}
 \setcounter{multicitetotal}{0}
-\setcounter{instcount}{32}
+\setcounter{instcount}{0}
 \setcounter{maxnames}{3}
 \setcounter{minnames}{3}
 \setcounter{maxitems}{3}
@@ -143,10 +162,10 @@
 \setcounter{bbx:relatedcount}{0}
 \setcounter{bbx:relatedtotal}{0}
 \setcounter{cbx@tempcnta}{0}
-\setcounter{cbx@tempcntb}{30}
+\setcounter{cbx@tempcntb}{0}
 \setcounter{Item}{10}
 \setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{35}
+\setcounter{bookmark@seq@number}{34}
 \setcounter{lstlisting}{0}
 \setcounter{section@level}{1}
 }
