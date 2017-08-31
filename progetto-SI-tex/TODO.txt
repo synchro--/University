@@ -1,15 +1,15 @@
 relazione in Latex: 
  -prendere grafici 3D dai notebook di welch labs 
- -decidere una storiella diversa per i valori di previsione 
- -c'è sigmoid come fz di attivazione nella rete neurale basica. Spiegare poi in un sotto capitolo il problema dei vanishing gradients (ripescare quel video di Atcold) e quindi arrivare alle ReLU, più biologicamente plausibile per altro. 
+ -decidere una storiella diversa per i valori di previsione ✔️✔️
+ -c'è sigmoid come fz di attivazione nella rete neurale basica. Spiegare poi in un sotto capitolo il problema dei vanishing gradients (ripescare quel video di Atcold) e quindi arrivare alle ReLU, più biologicamente plausibile per altro. ✔️✔️
 
 presentazione google pres 
 
 codice:
-  -rinominare tutti i file della NeuralNetwork con i nomi degli argomenti tipo gradient, backprop ecc 
+  -rinominare tutti i file della NeuralNetwork con i nomi degli argomenti tipo gradient, backprop ecc ✔️✔️
   -pulire tutti i commenti per welch labs 
   -pulire tutto il codice del fine-tuning 
   -pulire il codice di Cifar10 naive che è ancora in unico file 
-  -prendere spunto dal codice su torch.ch per la sfida di Kaggle di cifar10
+  -prendere spunto dal codice su torch.ch per la sfida di Kaggle di cifar10 ✔️✔️
 
 
