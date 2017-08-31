@@ -1,6 +1,6 @@
 % Chapter Template
 
-\chapter{Caso d'uso attuale: fine-tuning su dataset arbitrario} % Main c
+\chapter{Caso d'uso: fine-tuning su dataset arbitrario} % Main c
 
 Un caso di studio attuale è quello di prendere una rete allo stato dell'arte, già addestrata per mesi su un dataset enorme come quello di \emph{Imagenet\href{http://www.image-net.org/}} per utilizzarla su un dataset arbitrario a nostra scelta, per scopi industriali o personali.
 
@@ -26,8 +26,16 @@ Un caso di studio attuale è quello di prendere una rete allo stato dell'arte, g
 %--------------------------------------------------------------------
 
 \section{ModelZoo}
+\parencite{Wzoo}
 
 \subsection{Fine-tuning su Resnet}
 Facebook ha reso pubbliche le sue implementazioni di Resnet su github a tutti, cosicché possano essere utilizzate per qualsivoglia esperimento. Ci sono vari modelli, più o meno potenti a seconda degli strati della rete (da 18 a 140). 
 
 
+\begin{lstlisting}[language={[5.2]Lua}]
+--add a Log-SoftMax classifier at the end of the Net
+model:add(nn.LogSoftMax())
+
+--criterion (i.e. the loss) will be the negative-likelihood
+criterion = nn.ClassNLLCriterion()
+\end{lstlisting}

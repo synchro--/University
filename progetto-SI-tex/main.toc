@@ -1,0 +1,60 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {italian}
+\defcounter {refsection}{0}\relax 
+\select@language {italian}
+\contentsline {chapter}{\numberline {1}Reti Neurali Artificiali: le basi}{1}{chapter.2}
+\contentsline {section}{\numberline {1.1}Breve introduzione}{1}{section.3}
+\contentsline {section}{\numberline {1.2}Multi-layer Perceptron}{2}{section.8}
+\contentsline {subsection}{\numberline {1.2.1}Strati Nascosti}{3}{subsection.10}
+\contentsline {section}{\numberline {1.3}Caso di studio: prevedere il profitto di un ristorante}{3}{section.11}
+\contentsline {chapter}{\numberline {2}Implementazione di un MLP}{5}{chapter.14}
+\contentsline {section}{\numberline {2.1}Dataset e Architettura}{5}{section.15}
+\contentsline {section}{\numberline {2.2}Forward Propagation}{6}{section.43}
+\contentsline {section}{\numberline {2.3}Backpropagation}{8}{section.64}
+\contentsline {section}{\numberline {2.4}Verifica numerica del gradiente}{11}{section.101}
+\contentsline {section}{\numberline {2.5}Addestramento}{13}{section.149}
+\contentsline {subsection}{\numberline {2.5.1}Apprendimento supervisionato}{13}{subsection.150}
+\contentsline {subsection}{\numberline {2.5.2}Discesa del gradiente}{13}{subsection.154}
+\contentsline {section}{\numberline {2.6}Ottimizzazione: diverse tecniche}{14}{section.156}
+\contentsline {section}{\numberline {2.7}Overfitting}{18}{section.192}
+\contentsline {subsection}{\numberline {2.7.1}Rilevare l'overfitting}{18}{subsection.194}
+\contentsline {subsection}{\numberline {2.7.2}Contromisure}{19}{subsection.239}
+\contentsline {section}{\numberline {2.8}Risultati}{22}{section.282}
+\contentsline {chapter}{\numberline {3}Reti Neurali Convoluzionali}{23}{chapter.283}
+\contentsline {section}{\numberline {3.1}Breve introduzione}{23}{section.284}
+\contentsline {section}{\numberline {3.2}Architettura}{23}{section.285}
+\contentsline {subsection}{\numberline {3.2.1}Strato di Convoluzione}{24}{subsection.288}
+\contentsline {subsection}{\numberline {3.2.2}Strato di ReLU}{26}{subsection.295}
+\contentsline {subsection}{\numberline {3.2.3}Strato di Pooling}{27}{subsection.298}
+\contentsline {subsection}{\numberline {3.2.4}Strato completamente connesso (FC)}{28}{subsection.300}
+\contentsline {section}{\numberline {3.3}Applicazioni e risultati}{29}{section.303}
+\contentsline {subsection}{\numberline {3.3.1}Confronto con l'uomo}{29}{subsection.304}
+\contentsline {chapter}{\numberline {4}CNN: implementazione e addestramento}{31}{chapter.305}
+\contentsline {section}{\numberline {4.1}Modello di CNN basato su LeNet}{31}{section.306}
+\contentsline {subsection}{\numberline {4.1.1}Definire la loss function}{32}{subsection.339}
+\contentsline {section}{\numberline {4.2}Procedura di training}{32}{section.346}
+\contentsline {section}{\numberline {4.3}MNIST: preprocessing}{34}{section.415}
+\contentsline {section}{\numberline {4.4}MNIST: addestramento}{34}{section.416}
+\contentsline {section}{\numberline {4.5}CIFAR: preprocessing}{35}{section.419}
+\contentsline {section}{\numberline {4.6}CIFAR: addestramento}{37}{section.469}
+\contentsline {chapter}{\numberline {5}Addestrare un modello allo stato dell'arte}{39}{chapter.474}
+\contentsline {section}{\numberline {5.1}Deep Residual Network}{39}{section.475}
+\contentsline {section}{\numberline {5.2}Implementazione di ResNet di Facebook}{41}{section.480}
+\contentsline {section}{\numberline {5.3}Addestramento su CIFAR}{42}{section.523}
+\contentsline {section}{\numberline {5.4}LeNet vs Resnet: confronto}{42}{section.524}
+\contentsline {chapter}{\numberline {6}Caso d'uso attuale: fine-tuning su dataset arbitrario}{45}{chapter.527}
+\contentsline {section}{\numberline {6.1}Dataset}{45}{section.528}
+\contentsline {section}{\numberline {6.2}Fine-Tuning}{45}{section.529}
+\contentsline {section}{\numberline {6.3}ModelZoo}{45}{section.530}
+\contentsline {subsection}{\numberline {6.3.1}Fine-tuning su Resnet}{45}{subsection.531}
+\contentsline {chapter}{\numberline {7}Conclusioni}{47}{chapter.538}
+\contentsline {chapter}{\numberline {A}MLP: Codice addizionale}{49}{appendix.539}
+\contentsline {section}{\numberline {A.1}Classi in Lua}{49}{section.540}
+\contentsline {section}{\numberline {A.2}La classe Neural\_Network}{50}{section.587}
+\contentsline {section}{\numberline {A.3}Metodi getter e setter}{51}{section.639}
+\contentsline {chapter}{\numberline {B}Il framework Torch}{53}{appendix.662}
+\contentsline {section}{\numberline {B.1}Introduzione}{53}{section.663}
+\contentsline {section}{\numberline {B.2}Utilizzo base per reti neurali}{53}{section.664}
+\contentsline {subsection}{\numberline {B.2.1}Supporto CUDA}{53}{subsection.665}
+\contentsline {section}{\numberline {B.3}ResNet}{53}{section.666}
