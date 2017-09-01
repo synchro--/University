@@ -25,36 +25,47 @@ Si procede quindi, ad implementare la rete costituita da:
 %% inserire codice rete %% 
 
 \begin{lstlisting}[language={[5.2]Lua}]
+--hyper-parameters
+nfeats = 3               --3D input volume
+nstates = {16, 256, 128} --output at each level
+filtsize = 5             --filter size or kernel
+poolsize = 2
+
+--gaussian kernel for std normalization 
+normkernel = image.gaussian1D(13)
+
 -- define model to train
 -- on the 10-class classification problem
 ---
 classes = {'airplane', 'car', 'bird', 'cat',
    'deer', 'dog', 'frog', 'horse', 'ship', 'truck'}
 
-normkernel = image.gaussian1D(13)
 
 --first, we get a sequential model onto which we'll add every layer
 model = nn.Sequential()
 ------------------------------------------------------------
 -- convolutional network
 ------------------------------------------------------------
--- stage 1 : mean+std normalization -> filter bank -> squashing -> max pooling
-model:add(nn.SpatialConvolutionMap(nn.tables.random(3,16,1), 5, 5))
+-- stage 1 :  filter bank -> squashing -> max pooling -> mean+std normalization
+--            3 -> 16
+model:add(nn.SpatialConvolutionMM(nfeats, nstates[1], filtsize, filtsize))
 model:add(nn.ReLU())
-model:add(nn.SpatialLPPooling(16,2,2, 2, 2, 2))
-model:add(nn.SpatialSubtractiveNormalization(16, normkernel))
+model:add(nn.SpatialMaxPooling(poolsize, poolsize, poolsize, poolsize))
+model:add(nn.SpatialSubtractiveNormalization(nstates[1], normkernel))
 
--- stage 2 : filter bank -> squashing -> max pooling
-model:add(nn.SpatialConvolutionMap(nn.tables.random(16, 256, 4), 5, 5))
+-- stage 2 : filter bank -> squashing -> max pooling -> mean+std normalization
+--           16 -> 256
+model:add(nn.SpatialConvolutionMM(nstates[1], nstates[2], filtsize, filtsize))
 model:add(nn.ReLU())
-model:add(nn.SpatialLPPooling(256,2,2, 2, 2, 2))
+model:add(nn.SpatialMaxPooling(poolsize, poolsize, poolsize, poolsize))
 model:add(nn.SpatialSubtractiveNormalization(256, normkernel))
 
 -- stage 3 : standard 2-layer neural network
-model:add(nn.Reshape(256*5*5))
-model:add(nn.Linear(256*5*5, 128))
+--           256 -> 128 -> 10 -> classification
+model:add(nn.Reshape(nstates[2]*filtsize*filtsize))
+model:add(nn.Linear(nstates[2]*filtsize*filtsize, nstates[3]))
 model:add(nn.ReLU())
-model:add(nn.Linear(128,#classes))
+model:add(nn.Linear(nstates[3],#classes))
 \end{lstlisting}
 
 \subsection{Definire la loss function}
@@ -264,8 +275,14 @@ Con il dataset pronto, si può procedere all'effettivo addestramento della rete 
 Dopo circa 4-5 epoche (~1 ore di training) si hanno i risultati in figura \ref{fig:cifar-compare}. L'apprendimento è quasi ultimato e la percentuale di accuracy sul validation set si mantiene attorno al 70\%. Continuando il training per 20 epoche, si arriva ad un'accuratezza sulla media delle classi del 72.7\%. \\
 Il tempo di training è alto se si usa la CPU, ma cala drasticamente se si addestrano le reti sulla GPU. Torch infatti, ha il supporto a CUDA\parencite{cuda} ed è molto semplice passare da CPU a GPU e viceversa: basta chiamare sul tensore il metodo \texttt{:cuda()}. Si veda un esempio in appendice \ref{AppendixB}. 
 \\
-
+\\
 Sono stati effettuati diversi addestramenti per testare alcune scelte architetturali. È importante notare che cambiando solamente la funzione d'attivazione - da tangente iperbolica (tanh) a rectified linear unit - ed allenando la rete per lo stesso numero di epoch, si ha un miglioramento di circa 8 punti percentuali. Come menzionato prima nel corso di quest'elaborato infatti, la ReLU si è dimostrata più volte la funzione non lineare più efficace per l'apprendimento. In figura \ref{fig:relu} il confronto fra i 2 risultati.
+\\
+\\
+Come per MNIST, si sono visualizzati a titolo d'esempio alcune immagini su cui la rete ha dato un responso corretto ed altre dove ha sbagliato. I colori strani delle immagini sono dovute al pre-processing, figura \ref{fig:cifar-correct} e \ref{fig:cifar-wrong}. In particolare, durante il training si è visto che buona parte degli errori è dovuta ad una confusione tra cani, gatti e uccelli, in figura si può vedere qualche esempio di ciò.
+%%% FIGURES IN NEW PAGE %%% 
+\newpage
+
 \begin{figure}
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -283,6 +300,8 @@ Sono stati effettuati diversi addestramenti per testare alcune scelte architettu
 \caption{Performance della rete in training e validation}
 \label{fig:cifar-compare}
 \end{figure} 
+
+\bigskip
 
 \begin{figure}
 \centering
@@ -302,14 +321,19 @@ Sono stati effettuati diversi addestramenti per testare alcune scelte architettu
 \label{fig:relu}
 \end{figure}
 \\
-\medskip 
-Come per MNIST, si sono visualizzati a titolo d'esempio alcune immagini su cui la rete ha dato un responso corretto ed altre dove ha sbagliato. I colori strani delle immagini sono dovute al pre-processing, figura \ref{fig:cifar-correct} e \ref{fig:cifar-wrong}. In particolare, durante il training si è visto che buona parte degli errori è dovuta ad una confusione tra cani, gatti e uccelli, in figura si può vedere qualche esempio di ciò. 
+%%%%% NEW PAGE FOR THE NEW FIGURES %%%% 
+\newpage
+\pagebreak
+\medskip
+\newpage
+
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/cifar-correct.png} 
  \caption{Esempi classificati correttamente}
  \label{fig:cifar-correct}
 \end{figure}
+
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/cifar-wrong.png} 
