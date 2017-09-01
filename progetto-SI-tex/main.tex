@@ -1,18 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Masters/Doctoral Thesis 
-% LaTeX Template
-% Version 2.4 (22/11/16)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% Version 2.x major modifications by:
-% Vel (vel@latextemplates.com)
-%
-% This template is based on a template by:
-% Steve Gunn (http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/)
-% Sunil Patel (http://www.sunilpatel.co.uk/thesis-template/)
-%
 % Template license:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %
@@ -48,7 +35,8 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{makecell}
 \usepackage{subcaption}
 
-\usepackage{lmodern} % Use the Palatino font by default
+% Use the latin modern font instead of Palatino
+\usepackage{lmodern} 
 \fontfamily{lmr}\selectfont
 %\usepackage{times}
 %\fontfamily{ptr}\selectfont
@@ -108,7 +96,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Reti neurali artificiali: dal MLP agli ultimi modelli di CNN} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Reti neurali artificiali: dal MLP alle più recenti CNN} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 %\supervisor{Dr. James \textsc{Smith}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Doctor of Philosophy} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -174,12 +162,14 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 %	ABSTRACT PAGE
 %----------------------------------------------------------------------------------------
-\begin{comment}
+%\begin{comment}
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too \ldots
+Quest'elaborato verte sullo studio delle reti neurali artificiali, e si prefigge principalmente due scopi: il primo consiste nel comprendere il funzionamento che sta alla base delle reti neurali ed il loro apprendimento; il secondo sta nell'affrontare studio ed implementazione dei modelli più all'avanguardia delle Convolutional Neural Networks e saggiare la loro nota efficacia nei compiti di visione artificiale, in particolare nella classificazione. \\
+Nel \emph{Capitolo 1} viene fornita un'introduzione alle reti neurali, finendo nella proposta di un problema da risolvere con un percettrone multi-strato; nel \emph{Capitolo 2} si percorre passo passo l'implementazione da zero di quest'ultimo, fino a portare a termine l'effettivo addestramento; il \emph{Capitolo 3} introduce le Convolutional Neural Networks, ne spiega l'architettura ed i loro ultimi successi; nel \emph{Capitolo 4} vengono implementate queste reti e provate su un due dataset diversi; il \emph{Capitolo 5} presenta un'architettura allo stato dell'arte che viene testata sullo stesso dataset e confrontata con quella del capitolo precedente; nel \emph{Capitolo 6} viene analizzato un caso d'uso industriale della classificazione, affrontato sfruttando il transfer-learning; il \emph{Capitolo 7}, infine, tira le somme e conclude l'elaborato.
+\ldots
 \end{abstract}
-\end{comment}
+%\end{comment}
 
 
 %----------------------------------------------------------------------------------------

@@ -1,16 +1,15 @@
 ----------------------------------------------------------------------
--- This script shows how to train different models on the CIFAR
--- dataset, using multiple optimization techniques (SGD, ASGD, CG)
+-- Training di una Convolutional Neural Network on CIFAR10
 --
--- This script demonstrates a classical example of training
--- well-known models (convnet, MLP, logistic regression)
--- on a 10-class classification problem.
+-- Esempio di training di un modello di rete (CNN, MLP, logistic regression) 
+-- su un task di classificazione con 10 classi 
 --
 -- Illustra diversi punti:
 -- 1. descrizione del modello
 -- 2. scelta della loss function da minimizzare
 -- 3. creazione del dataset come semplice Lua table
--- 4. definizione di procedure di training e testing
+-- 4. tecniche di ottimizzazione SGD/ASGD/LBGFS
+-- 5. definizione di procedure di training e testing
 ----------------------------------------------------------------------
 
 require 'torch'
@@ -75,7 +74,7 @@ if opt.network == '' then
       -- stage 1 : mean+std normalization -> filter bank -> squashing -> max pooling
       model:add(nn.SpatialConvolutionMap(nn.tables.random(3,16,1), 5, 5))
       model:add(nn.ReLU())
-      model:add(nn.SpatialLPPooling(16,2,2, 2, 2, 2))
+      model:add(nn.SpatialLPPooling(16, 2,2, 2, 2, 2))
       model:add(nn.SpatialSubtractiveNormalization(16, normkernel))
 
       -- stage 2 : filter bank -> squashing -> max pooling

@@ -7,8 +7,8 @@ opt = opts.parse(arg)
 
 --load model and save prediction on unseen test data
 model = torch.load(opt.save..'tuned.t7')
-t1 = torch.load(opt.data..'val_ants.t7').features
-t2 = torch.load(opt.data..'val_bees.t7').features
+t1 = torch.load(opt.data..'test_ants.t7').features
+t2 = torch.load(opt.data..'test_bees.t7').features
 Z = torch.cat(t1,t2,1)
 
 labels = torch.Tensor(t1:size(1)):fill(1)
@@ -35,5 +35,5 @@ end
 accuracy = correct / labels:size(1)
 print('Testing on '..labels:size(1)..' unseen examples...')
 print(string.format('#Test Accuracy: %.3f',accuracy))
-
+--save in a CSV file
 csvigo.save('test.csv', output, true)

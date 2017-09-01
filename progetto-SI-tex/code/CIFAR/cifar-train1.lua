@@ -1,19 +1,16 @@
 ----------------------------------------------------------------------
--- This script shows how to train different models on the CIFAR
--- dataset, using multiple optimization techniques (SGD, ASGD, CG)
+-- Training di una Convolutional Neural Network on CIFAR10
 --
--- This script demonstrates a classical example of training 
--- well-known models (convnet, MLP, logistic regression)
--- on a 10-class classification problem. 
+-- Esempio di training di un modello di rete (CNN, MLP, logistic regression) 
+-- su un task di classificazione con 10 classi 
 --
--- It illustrates several points:
--- 1/ description of the model
--- 2/ choice of a loss function (criterion) to minimize
--- 3/ creation of a dataset as a simple Lua table
--- 4/ description of training and test procedures
---
--- Clement Farabet
-----------------------------------------------------------------------
+-- Illustra diversi punti:
+-- 1. descrizione del modello
+-- 2. scelta della loss function da minimizzare
+-- 3. creazione del dataset come semplice Lua table
+-- 4. tecniche di ottimizzazione SGD/ASGD/LBGFS
+-- 5. definizione di procedure di training e testing
+---------------------------------------------------------------------
 
 require 'torch'
 require 'nn'
@@ -85,7 +82,7 @@ if opt.network == '' then
       model:add(nn.Reshape(256*5*5))
       model:add(nn.Linear(256*5*5, 128))
       model:add(nn.Tanh())
-      model:add(nn.Linear(128,#classes)) --l'output va sempre variato in base al numero delle classi del problema 
+      model:add(nn.Linear(128,#classes)) -- in output il numero delle classi del problema
       ------------------------------------------------------------
 
    elseif opt.model == 'mlp' then
