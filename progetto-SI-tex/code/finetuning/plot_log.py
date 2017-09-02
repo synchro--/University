@@ -1,4 +1,3 @@
-#import matplotlib.pyplot as plt
 import pylab as pylab
 
 filename = 'training.log'

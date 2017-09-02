@@ -97,7 +97,7 @@ function Neural_Network:costFunction(X, y)
 end
 
 function Neural_Network:d_CostFunction(X, y)
-   --Compute derivative wrt to W and W2 for a given X and y
+   --Compute derivative wrt to W1 and W2 for a given X and y
    self.yHat = self:forward(X)
    delta3 = th.cmul(-(y-self.yHat), self:d_Sigmoid(self.z3))
    dJdW2 = th.mm(self.a2:t(), delta3)
@@ -131,7 +131,7 @@ end
 
 --this is like the getParameters(): method in the NN module of torch, i.e. compute the gradients and returns a flattened grads array
 function Neural_Network:computeGradients(X, y)
-   dJdW1, dJdW2 = self:costFunctionPrime(X, y)
+   dJdW1, dJdW2 = self:d_CostFunction(X, y)
    return th.cat((dJdW1:view(dJdW1:nElement())), (dJdW2:view(dJdW2:nElement())))
 end
 \end{lstlisting}

@@ -130,11 +130,6 @@ end
 optim = require 'optim'
 require 'helper'
 
---[[
-This optimization part is strongly dependent on the libraries we're using. Therefore it will slighly be different from the python version.
-The concept of a wrapper function that respects a specific API for an optimization method is still applies.
-]]--
-
 Trainer = class(function(tr, NN)
       --Make Local reference to network:
       tr.N = NN
@@ -178,52 +173,18 @@ opt.momentum = 0.0
 optimMethod = configOpt(opt)
 
 --[[
-We’ll add a couple more data points to make overfitting a bit more obvious and retrain our model on the new dataset. If we re-examine our predictions across our sample space, we begin to see some strange behavior.
+We’ll add a couple more examples to make overfitting more noticeable
+Later, we'll re-train our model on the new dataset, but fighting back 
+overfitting with a pretty simple but effective technique
 --]]
-
-X2 = th.Tensor({ {3,5}, {5,1}, {10,2}, {6, 1.5} })
-y2 = th.Tensor({ {75},{82},{93}, {70} })
-
---normalize
-normalizeTensorAlongCols(X)
-y2 = y2/bestProfit
-
-nn = Neural_Network(2,3,1)
-nn:forward(X2)
-
-print(y2-yHat)
-
---Test network for various combinations of sleep/study:
-hoursSleep = th.linspace(0, 10)
-hoursStudy = th.linspace(0, 5)
-
---Normalize data (same way training data way normalized)
-hoursSleepNorm = hoursSleep/10.
-hoursStudyNorm = hoursStudy/5.
-
-a = th.repeatTensor(hoursSleepNorm, 100)
-temp = th.repeatTensor(hoursStudyNorm, 100,1)
-b = temp:t():clone()
-b = b:view(b:nElement())
-
---Join into a single input matrix:
-allInputs = th.zeros(a:nElement(), 2)
-
-allInputs[{ {},{1} }] = a
-allInputs[{ {},{2} }] = b
-allOutputs = nn:forward(allInputs)
---TODO: here 3D plotting in Torch is missing. Right now I don't have the time to read how to use gnuplot or iTorch.plot
---to do such plots, but will be added in future.
---The important part though, is the plotting on the test set below. 
 
 ---------------------------------------------------------------------------
 --Training data
-trainX = th.Tensor({ {3,5}, {5,1}, {10,2}, {6, 1.5} })
-trainY = th.Tensor({ {75},{82},{93}, {70} })
-
+X = th.Tensor({{22,42}, {25,38}, {30,40}, {60, 45} })
+y = th.Tensor({{2.8},{3.4},{4.4}, {2.1} })
 --Testing Data:
-testX = th.Tensor({ {4, 5.5}, {4.5,1}, {9,2.5}, {6, 2} })
-testY = th.Tensor({ {70}, {89}, {85}, {75} })
+testX = th.Tensor({ {20, 35}, {27, 39}, {40,20}, {33, 41} })
+testY = th.Tensor({ {2.6}, {3.8}, {1.8}, {5.1} })
 
 --normalize
 normalizeTensorAlongCols(trainX)

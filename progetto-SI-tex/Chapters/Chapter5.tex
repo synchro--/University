@@ -5,14 +5,14 @@
 %	SECTION 1
 %--------------------------------------------------------------------
 \section{Deep Residual Network}
-Menzionata nel Capitolo \ref{Capitolo3} a causa del clamore riscosso per l'incredibilmente bassa percentuale d'errore nella ImageNet Challenge del 2015, la \emph{Deep Residual Network} - o ResNet - è una CNN \emph{molto} profonda presentata da Microsoft Research Asia\parencite{resnet} che ha stravolto tutti i record in classification, detection e localization. 
+Menzionata nel Capitolo \ref{Capitolo3} a causa del clamore riscosso per l'incredibilmente bassa percentuale d'errore nella ImageNet Challenge del 2015, la \emph{Deep Residual Network} - o ResNet - è una CNN \emph{molto} profonda presentata da Microsoft Research Asia \parencite{resnet} che ha stravolto tutti i record in classification, detection e localization. 
 \\ 
 L'architettura è modulare: si basa su un blocco detto \emph{"residual block"} (figura \ref{fig:residual}) che viene ripetuto N volte, prima dell'ultimo strato di classificazione. L'idea dietro a questo blocco viene chiamata \emph{residual learning} e funziona così: 
 \begin{enumerate}
-\item l'input $x$ va attraverso una serie \texttt{conv-relu-conv} dando in output un certo $F(x)$
-\item a questo viene aggiunto l'input originale: $H(x) = F(x) + x$
+\item l'input $x$ va attraverso una serie \texttt{conv-relu-conv} dando in output un certo $F(x)$;
+\item a questo viene aggiunto l'input originale: $H(x) = F(x) + x$;
+\item $F(x)$ è chiamato residual learning. 
 \end{enumerate}\\ 
-$F(x)$ è chiamato residual learning. 
 \begin{figure}[h!]
  \centering
  \includegraphics[width=0.6\textwidth]{\path/residual.jpg} 
@@ -23,16 +23,17 @@ $F(x)$ è chiamato residual learning.
 Nelle CNN normalmente si passa direttamente da $x$ a $F(x)$, la quale è una rappresentazione completamente nuova che non mantiene l'informazione dell'input originale. La novità qui, invece, consiste nel mantenere queste informazioni lungo tutta la rete; ogni blocco esegue una sorta di fine-tuning delle informazioni apprese negli strati precedenti, e secondo gli autori è più facile ottimizzare un "residual mapping" anziché un "unreferenced mapping". 
 \\
 Un esempio della profondità di ResNet è rappresentato in figura \ref{fig:resnet}, dove viene confrontata la versione da 34 strati con la VGG-Network, la rete più profonda che venne presentata 2 anni prima. 
+\newpage 
 
 \begin{figure}[h!]
  \centering
  \includegraphics[width=0.7\textwidth]{\path/resnet.png} 
- \caption{Confronto architetture: VGG-Net la più innovativa della competizione ILSVRC 2014, rete classica a 34 strati (centro), Residual Network a 34 strati (sinistra). }
+ \caption{Confronto architetture: VGG-Net la più innovativa della competizione ILSVRC 2014, rete classica a 34 strati (centro), Residual Network a 34 strati (sinistra)}
  \label{fig:resnet}
 \end{figure}
-\\
+\bigskip
 Un'altra ragione per cui ResNet è stupefacente è che la backpropagation funziona meglio a causa delle somme di ogni layer che distribuiscono la derivata lungo la rete. Inoltre, avere queste scorciatoie che non passano attraverso \texttt{conv-relu} aiuta contro il cruciale problema dei \emph{vanishing gradients}. Quando si usano molti layer uno sull'altro si corre il rischio di non riuscire ad ottimizzare l'apprendimento perché l'errore calcolato con la backprop si perde tra i vari strati e dopo alcuni layer arriva un gradiente nullo che non aiuta nell'apprendimento. Per questa ragione anche, il paper di ResNet è importante: ha dimostrato come poter costruire CNN molto profonde (numero di strati > 100) riuscendo a completare l'apprendimento ed avere inoltre risultati allo stato dell'arte. \\
-Tuttavia, altre analisi sul successo di ResNet\parencite{restudy} sostengono il contrario: anche in essa il problema dei vanishing gradients si manifesta dopo \~20 moduli, e quindi la profondità da sola non può essere la caratteristica principale della rete. Suggeriscono invece, che la rete si comporti come un gruppo di "sotto-reti" più piccole che contribuiscono insieme a generare la risposta corretta.\\
+Tuttavia, altre analisi sul successo di ResNet \parencite{restudy} sostengono il contrario: anche in essa il problema dei vanishing gradients si manifesta dopo \~20 moduli, e quindi la profondità da sola non può essere la caratteristica principale della rete. Suggeriscono invece, che la rete si comporti come un gruppo di "sotto-reti" più piccole che contribuiscono insieme a generare la risposta corretta.\\
 È sicuramente un argomento recente e complesso; per ulteriori dettagli si rimanda alla bibliografia. 
  %--------------------------------------------------------------------
 %	SECTION 2
@@ -85,7 +86,7 @@ Nei seguenti snippet, vi è l'implementazione della scorciatoia identità e del 
    end
 \end{lstlisting}
  
-Microsoft ha addestrato ResNet per circa 3 settimane su 8 GPU di ultima generazione. Dato l'evidente mancanza di hardware opportuno per un'"impresa" del genera si è deciso di utilizzare il modello più piccolo, quello a 18 strati. In apprendice \ref{AppendixB} è mostrata una rappresentazione testuale del modello, ove se ne può apprezzare la complessità e lunghezza. 
+Microsoft ha addestrato ResNet per circa 3 settimane su 8 GPU di ultima generazione. Data l'evidente mancanza di hardware opportuno per un'"impresa" del genera si è deciso di utilizzare il modello più piccolo, quello a 18 strati. In apprendice \ref{AppendixB} è mostrata una rappresentazione testuale del modello, ove se ne può apprezzare la complessità e lunghezza. 
 
 
 %--------------------------------------------------------------------
@@ -94,7 +95,7 @@ Microsoft ha addestrato ResNet per circa 3 settimane su 8 GPU di ultima generazi
 \section{Addestramento su CIFAR}
 Si è addestrato il modello ResNet-18 su CIFAR10 per circa 160 epoche. I risultati sul training e validation set sono presentati rispettivamente in figura e figura. Sull'asse X vi sono le epoch di training, sull'asse Y la percentuale di errore. 
 \\
-La rete da in uscita le 10 classi più probabili; con top1 s'intende quando la classe corretta è quella in uscita più probabile mentre con top5 quando la classe corretta è tra le prime 5 più probabili. \\
+La rete da in uscita le 10 classi più probabili; con top1 s'intende quando la classe corretta è la prima più probabile mentre con top5 quando la classe corretta è tra le prime 5 più probabili. \\
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/ResNet-Cifar10-Train.png} 

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pylab
 import glob
 
-#small script to plot all log files together to compare
+#lil' script to plot all log files together to compare
 #different optimization methods
 
 #methods = ('SGD', 'ASGD', 'LBFGS', 'NAG')

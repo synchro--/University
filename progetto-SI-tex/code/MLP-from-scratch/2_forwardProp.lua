@@ -1,6 +1,8 @@
 --[[
 Build & Train MLP from scratch in Torch. 
 Alessio Salman     
+
+2. Forward propagation
 --]]
 
 ----------------------- Part 1 ----------------------------

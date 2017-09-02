@@ -7,7 +7,7 @@ In questo capitolo verranno messi in pratica i concetti introdotti nel Capitolo 
 %	SECTION 1
 %--------------------------------------------------------------------
 \section{Modello di CNN basato su LeNet}
-La rete implementata è basata sulla capostipite delle CNN, \texttt{LeNet5}, resa celebre da Y. LeCun per il riconoscimento di caratteri, anche scritti a mano\parencite{lenet}.  L'architettura è rappresentata in figura \ref{fig:lenet}. Si noti che la rete è appositamente progettata per avere in input immagini di 32x32 pixel, adatta ai dataset che si introduranno dopo. 
+La rete implementata è basata sulla capostipite delle CNN, \texttt{LeNet5}, resa celebre da Y. LeCun per il riconoscimento di caratteri, anche scritti a mano \parencite{lenet}.  L'architettura è rappresentata in figura \ref{fig:lenet}. Si noti che la rete è appositamente progettata per avere in input immagini di 32x32 pixel, adatta ai dataset che si introduranno dopo. 
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/lenet.png} 
@@ -21,9 +21,8 @@ Si procede quindi, ad implementare la rete costituita da:
 \item 2x $\rightarrow$ Convolutional layers - ReLU - Pooling layers
 \item 1x $\rightarrow$ Multi-layer perceptron completamente connesso, con 1 hidden layer 
 \end{itemize}
-
-%% inserire codice rete %% 
-
+\\
+In Torch, si definiscono gli hyper-parameters, si istanzia prima un modello sequenziale - \texttt{model = nn.Sequential()} - e poi si aggiungono a questo modello tutti i vari strati in fila, tramite il metodo \texttt{add()}.
 \begin{lstlisting}[language={[5.2]Lua}]
 --hyper-parameters
 nfeats = 3               --3D input volume
@@ -69,7 +68,7 @@ model:add(nn.Linear(nstates[3],#classes))
 \end{lstlisting}
 
 \subsection{Definire la loss function}
-Ora che si ha un modello, va definita una funzione di costo da minimizzare che, come visto nel capitolo 2, sta alla base dell’apprendimento. Nel capitolo 2 però, si era definito tutto "a mano", mentre ora si usano le librerie di Torch. \\Con Torch si possono definire diverse funzioni di costo, a seconda del principio di apprendimento che vogliamo utilizzare. Come ad esempio lo scarto quadratico che però non è in generale una scelta ottimale. Una delle più convienienti per i problemi di classificazione è la \emph{negative-likelihood-log} (likelihood = funzione di verosimiglianza). La NLL necessita in ingresso di un vettori di probabilità logaritmiche normalizzate. Quindi, prima si trasforma l’output del classificatore in probabilità logaritmica aggiungendo un modulo chiamato \texttt{LogSoftMax} e poi si calcola l'errore sulla NLL. In Torch questo è molto semplice: 
+Ora che si ha un modello, va definita una funzione di costo da minimizzare che, come visto nel capitolo 2, sta alla base dell’apprendimento. Nel capitolo 2 però, si era definito tutto "a mano", mentre ora si usano le librerie di Torch. \\Con Torch si possono definire diverse funzioni di costo, a seconda del principio di apprendimento che vogliamo utilizzare. Come ad esempio lo scarto quadratico che però non è in generale una scelta ottimale. Una delle più convienienti per i problemi di classificazione è la \emph{negative-likelihood-log} (likelihood = funzione di verosimiglianza). La NLL necessita in ingresso di un vettori di probabilità logaritmiche normalizzate. Quindi, prima si trasforma l’output del classificatore in probabilità logaritmica aggiungendo un modulo chiamato \texttt{LogSoftMax} e poi si calcola l'errore sulla NLL. In Torch questo è molto semplice, grazie al modulo \textit{'criterion'}: 
 
 \begin{lstlisting}[language={[5.2]Lua}]
 --add a Log-SoftMax classifier at the end of the Net
@@ -88,11 +87,11 @@ Prima di implementare la procedura di training occorre definire con precisione l
 \begin{itemize}
 \item \emph{Batch}: insieme di esempi che si da in input alla rete e su cui si va a calcolare la media dell'errore tramite backpropagation. Se gli esempi non sono molto numeri si chiama anche "mini-batch". Solitamente è a multipli di 8 (32,64,128,256). Si veda anche il Capitolo 2, sezione \ref{sec:backprop}.
 \item \emph{Pass}: un forward pass + un backward pass. In altre parole si dà qualcosa in input alla rete e si calcola l'errore tramite la backpropagation. Questo "qualcosa", può essere un solo esempio, o un mini-batch.
-\item \emph{iterazioni}: un pass completo di tutti gli esempi di un batch. Nel caso di batchSize = 1, iterazione e pass assumono lo stesso significato. 
+\item \emph{Iterazioni}: un pass completo di tutti gli esempi di un batch. Nel caso di batchSize = 1, iterazione e pass assumono lo stesso significato. 
 \item \emph{Epoch}: con il termine epoch si intende un pass completo di tutti gli esempi del dataset.
 \end{itemize}
 \\
-Passiamo quindi alla definizione della procedura di training: il seguente snippet di codice mostra come implementare il training di una epoch, dopodiché basterà eseguirlo in loop per tutto il dataset. 
+Torch fornisce i metodi per astrarre dalla sottostante implementazione della backpropagation (ottimizzata in C) semplificando di molto la procedura di training. Invocando il metodo \texttt{backward()} sul modulo criterion, si calcola il gradiente della funzione di costo associata \texttt{df\_do} e si effettua poi la backpropagation chiamando lo stesso metodo su model (la rete), dando in ingresso \texttt{df\_do} (\texttt{model:backward(input, df\_do)}). Il seguente snippet di codice mostra come implementare il training di una epoch, dopodiché basterà eseguirlo in loop per tutto il dataset. 
 
 \begin{lstlisting}[language={[5.2]Lua}]
    -- do one epoch
@@ -159,7 +158,7 @@ Passiamo quindi alla definizione della procedura di training: il seguente snippe
             		      momentum = opt.momentum,
             			  learningRateDecay = 5e-7}
       -- optimize on current mini-batch
-	  --N.B. optimMethod = 'SGD' or others
+      -- N.B. optimMethod = 'SGD' or others
       optimMethod(feval, parameters, config)
 end
 \end{lstlisting}
@@ -167,7 +166,7 @@ end
 %	SECTION 3
 %--------------------------------------------------------------------
 \section{MNIST: preprocessing}
-MNIST è un dataset di cifre scritte a mano, disponibile sul sito di Y. LeCun\parencite{Wlecun}, costituito da un training set di 60000 esempi e un test set di 10000. 
+MNIST è un dataset di cifre scritte a mano, disponibile sul sito di Y. LeCun \parencite{Wlecun}, costituito da un training set di 60000 esempi e un test set di 10000. 
 \\
 Le immagini sono B/N, tagliate in modo tale da avere la cifra esattamente al centro dell’immagine e una risoluzione di 32x32; per questo richiedono un pre-processing minimo. Basta utilizzare uno script per scaricare le immagini e caricarle nei tensori per il training ed il testing. Dopodiché si esegue uno step di \emph{data normalization} per standardizzare i dati, sottraendo la media e dividendo per la deviazione standard. 
 $$
@@ -189,6 +188,7 @@ Quindi, utilizzando il codice della sezione precedente e lanciando un addestrame
  \label{fig:mnist-training}
 \end{figure}
 \\
+\newline
 Come da aspettative, l'architettura divenuta popolare sulla classificazione di caratteri raggiunge un'accuratezza vicina al 99.3\% in poco meno di mezz'ora di training. \\
 Utilizzando una libreria per Lua basata su Javascript, si è scritto uno script per visualizzare alcune delle immagini in input durante il testing, con le rispettive classificazioni compiute dalla rete, in alto a sinistra (figura \ref{fig:mnist-correct}).
 \begin{figure}[h!]
@@ -198,21 +198,22 @@ Utilizzando una libreria per Lua basata su Javascript, si è scritto uno script 
  \label{fig:mnist-correct}
 \end{figure}
 
-Come dimostrato, MNIST è un dataset piuttosto semplice per le CNN. Tuttavia, è rimarchevole come in poche linee di codice si possa addestrare una rete nella comprensione dei caratteri in pochissimo tempo, laddove i metodi precedenti richiedevano più sforzi e dovevano necessariamente essere adattati e rifiniti per ogni dataset diverso. All'opposto, questa stessa CNN è stata utilizzata con successo per l'addestramento sul dataset CIFAR. 
+Come dimostrato, MNIST è un dataset piuttosto semplice per le CNN. Tuttavia, è rimarchevole come in poche linee di codice si possa addestrare una rete nella comprensione dei caratteri in pochissimo tempo, laddove i metodi precedenti richiedevano più sforzi e dovevano necessariamente essere adattati e rifiniti per ogni dataset diverso. All'opposto, questa stessa CNN è stata utilizzata con successo anche per l'addestramento sul dataset CIFAR. 
 
 %--------------------------------------------------------------------
 %	SECTION 5
 %--------------------------------------------------------------------
 \section{CIFAR: preprocessing}
 Il dataset CIFAR10 è decisamente più impegnativo in quanto contiene immagini a colori di 10 classi di oggetti e animali del mondo reale: aeroplani, automobili, uccelli, cani, cavalli, renne, rane, navi e camion. Vi sono 60000 immagini a colori 32x32 divisi nelle suddette 10 classi, 6000 immagini per classe. Le immagini sono divise in 50000 per il training e 10000 per il testing. Più precisamente vi sono 5 batch di training e 1 di testing. Quello di testing contiene esattamente 1000 immagini per ogni classe, mentre alcuni batch di training contengono più immagini di una classe rispetto ad un’altra, ma nell’insieme contengono esattamente 5mila immagini per ogni classe.
+
 Gli oggetti di ogni classe variano molto fra di loro: ci sono diverse specie di uccello, in svariate pose diverse ed a volte parzialmente occluse e le pose si complicano ulteriormente per cani e gatti. Tutto ciò lo rende un dataset alquanto impegnativo per un sistema automatico, in particolare nella versione con 100 classi (CIFAR100). 
 \\
-Il record è del 96\% in quello da 10 classi e del 75\% in quello da 100, stabilito nel 2015\parencite{Wcifar}. Qui verrà utilizzato quello da 10 classi anche per motivi di tempistiche di training. \\
+Il record è del 96\% in quello da 10 classi e del 75\% in quello da 100, stabilito nel 2015 \parencite{Wcifar}. Qui verrà utilizzato quello da 10 classi anche per motivi di tempistiche di training. \\
 \\
 Prima di eseguire il training, bisogna preparare il dataset. Essendo CIFAR un dataset a colori, la normalizzazione avviene in maniera appena diversa da MNIST. Il metodo più efficace consiste in 2 passi: 
 \begin{enumerate}
 \item trasformare le immagini dallo spazio colore RGB a YUV per separare il canale della luminanza Y, da quelli dei colori U,V; 
-\item normalizzare Y localmente - i.e. per ogni esempio - e U.V globalmente;
+\item normalizzare Y localmente - i.e. per ogni esempio - e U.V globalmente.
 \end{enumerate} 
 Nei seguenti snippet di codice, si mostra come caricare il dataset e fare pre-processing.
 
@@ -271,15 +272,14 @@ trainData.data[{ {},3,{},{} }]:div(-std_v)
 %	SECTION 6
 %--------------------------------------------------------------------
 \section{CIFAR: addestramento}
-Con il dataset pronto, si può procedere all'effettivo addestramento della rete e misurarne i risultati.\\
-Dopo circa 4-5 epoche (~1 ore di training) si hanno i risultati in figura \ref{fig:cifar-compare}. L'apprendimento è quasi ultimato e la percentuale di accuracy sul validation set si mantiene attorno al 70\%. Continuando il training per 20 epoche, si arriva ad un'accuratezza sulla media delle classi del 72.7\%. \\
-Il tempo di training è alto se si usa la CPU, ma cala drasticamente se si addestrano le reti sulla GPU. Torch infatti, ha il supporto a CUDA\parencite{cuda} ed è molto semplice passare da CPU a GPU e viceversa: basta chiamare sul tensore il metodo \texttt{:cuda()}. Si veda un esempio in appendice \ref{AppendixB}. 
+Con il dataset pronto, si può procedere all'effettivo addestramento della rete e misurarne i risultati. Dopo circa 4-5 epoche (~1 ore di training) si hanno i risultati in figura \ref{fig:cifar-compare}. L'apprendimento è quasi ultimato e la percentuale di accuracy sul validation set si mantiene attorno al 70\%. Continuando il training per 20 epoche, si arriva ad un'accuratezza sulla media delle classi del 72.7\%. \\
+Il tempo di training è alto se si usa la CPU, ma cala drasticamente se si addestrano le reti sulla GPU. Torch infatti, ha il supporto a CUDA \parencite{cuda} ed è molto semplice passare da CPU a GPU e viceversa: basta chiamare sul tensore il metodo \texttt{:cuda()}. Si veda un esempio in appendice \ref{AppendixB}. 
 \\
 \\
 Sono stati effettuati diversi addestramenti per testare alcune scelte architetturali. È importante notare che cambiando solamente la funzione d'attivazione - da tangente iperbolica (tanh) a rectified linear unit - ed allenando la rete per lo stesso numero di epoch, si ha un miglioramento di circa 8 punti percentuali. Come menzionato prima nel corso di quest'elaborato infatti, la ReLU si è dimostrata più volte la funzione non lineare più efficace per l'apprendimento. In figura \ref{fig:relu} il confronto fra i 2 risultati.
 \\
 \\
-Come per MNIST, si sono visualizzati a titolo d'esempio alcune immagini su cui la rete ha dato un responso corretto ed altre dove ha sbagliato. I colori strani delle immagini sono dovute al pre-processing, figura \ref{fig:cifar-correct} e \ref{fig:cifar-wrong}. In particolare, durante il training si è visto che buona parte degli errori è dovuta ad una confusione tra cani, gatti e uccelli, in figura si può vedere qualche esempio di ciò.
+Come per MNIST, si sono visualizzati a titolo d'esempio alcune immagini su cui la rete ha dato un responso corretto ed altre dove ha sbagliato. I colori strani delle immagini sono dovute al pre-processing, figura \ref{fig:cifar-correct} e \ref{fig:cifar-wrong}. In particolare, durante il training si è visto che buona parte degli errori è dovuta ad una confusione tra cani, gatti e uccelli; in figura se ne può osservare qualche esempio.
 %%% FIGURES IN NEW PAGE %%% 
 \newpage
 

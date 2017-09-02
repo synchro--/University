@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------
 -- Training di una Convolutional Neural Network on CIFAR10
 --
--- Esempio di training di un modello di rete (CNN, MLP, logistic regression) 
--- su un task di classificazione con 10 classi 
+-- Esempio di training di un modello di rete (CNN, MLP, logistic regression)
+-- su un task di classificazione con 10 classi
 --
 -- Illustra diversi punti:
 -- 1. descrizione del modello
@@ -10,7 +10,9 @@
 -- 3. creazione del dataset come semplice Lua table
 -- 4. tecniche di ottimizzazione SGD/ASGD/LBGFS
 -- 5. definizione di procedure di training e testing
-----------------------------------------------------------------------
+
+-- Qui con RELUs al posto di tangenti iperboliche
+---------------------------------------------------------------------
 
 require 'torch'
 require 'nn'
@@ -74,7 +76,7 @@ if opt.network == '' then
       -- stage 1 : mean+std normalization -> filter bank -> squashing -> max pooling
       model:add(nn.SpatialConvolutionMap(nn.tables.random(3,16,1), 5, 5))
       model:add(nn.ReLU())
-      model:add(nn.SpatialLPPooling(16, 2,2, 2, 2, 2))
+      model:add(nn.SpatialLPPooling(16,2,2, 2, 2, 2))
       model:add(nn.SpatialSubtractiveNormalization(16, normkernel))
 
       -- stage 2 : filter bank -> squashing -> max pooling
@@ -96,7 +98,7 @@ if opt.network == '' then
       ------------------------------------------------------------
       model:add(nn.Reshape(3*32*32))
       model:add(nn.Linear(3*32*32, 1*32*32))
-      model:add(nn.Tanh())
+      model:add(nn.ReLU())
       model:add(nn.Linear(1*32*32, #classes))
       ------------------------------------------------------------
 
@@ -412,11 +414,11 @@ function test(dataset)
          myTime = sys.clock()
 
          local pred = model:forward(input) -- predicted
-         local conf , index = pred:float():sort() -- sort restituisce i risultati ordinati in ordine decrescente
+         local conf , index = pred:float():sort()
          --taking time
          myTime = sys.clock() - myTime
 
-         local catgry = (index[index:size(1)]) -- prendo il valore all'ultimo indice di index
+         local catgry = (index[index:size(1)])
          catgry = classes[catgry] -- catgry has the value of the predicted class.
          label = catgry..'. Test time: '..math.floor((myTime*1000))..'ms'
 

@@ -1,6 +1,10 @@
 --[[
+--------------------------------------
 Build & Train MLP from scratch in Torch.
 Alessio Salman
+
+3. backpropagation
+---------------------------------------
 --]]
 
 ----------------------- Part 1 ----------------------------
@@ -37,9 +41,9 @@ Neural_Network = class(function(net, inputs, hiddens, outputs)
       net.W2 = th.randn(net.hiddenLayerSize, net.outputLayerSize)
    end)
 
---using the torch 'class' package
---more similar to python
 --[[
+--Alternative: using the torch 'class' package
+--more similar to python
 Neural_Network = class('Neural_Network')
 
 function Neural_Network:__init(inputs, hiddens, outputs)

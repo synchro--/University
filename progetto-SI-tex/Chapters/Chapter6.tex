@@ -11,11 +11,11 @@ Un tipico scenario d'uso industriale è quello di avere un piccolo dataset di im
 Occorre trovare una maniera di costruire un modello che riesca ad essere addestrato su un dataset discretamente piccolo ma al contempo sia successivamente capace di classificare correttamente esempi ancora non visti. Le CNN sono la norma quando si tratta di task di classificazione, tuttavia è difficile riuscire ad affrontare un problema del genere per i seguenti motivi: 
 \begin{enumerate}
 \item un modello troppo semplice non sarebbe capace di estrarre tutte le caratteristiche necessarie per catalogare le immagini; 
-\item addestrare finemente un modello complesso richiede delle risorse computazionali non indifferenti, non a disposizione;
+\item addestrare finemente un modello complesso richiede delle risorse computazionali non indifferenti, di cui non si dispone;
 \item un modello troppo complesso con un dataset troppo piccolo avrebbe la certezza di incorrere in overfitting.
 \end{enumerate}
 \\
-In pratica, in pochi addestrano interamente una CNN da zero proprio per i problemi elencati sopra. Quello che in genere si fa è usare modelli pre-addestrati per settimane su un dataset enorme come quello di \emph{Imagenet\href{http://www.image-net.org/}} come estrattori di features da applicare a dataset più piccoli per i più svariati scopi.
+In pratica, in pochi addestrano interamente una CNN da zero proprio per i problemi elencati sopra. Quello che in genere si fa è usare modelli pre-addestrati per settimane su un dataset enorme come quello di \emph{ImageNet\href{http://www.image-net.org/}} come estrattori di features da applicare a dataset più piccoli per i più svariati scopi.
 
 
 %--------------------------------------------------------------------
@@ -25,12 +25,12 @@ In pratica, in pochi addestrano interamente una CNN da zero proprio per i proble
 Sfruttare l'apprendimento di grosse CNN per trasferirlo alla nostra rete è un processo che prende il nome di \emph{"transfer learning"}. \\
 Gli scenari principali del transfer learning sono i seguenti: 
 \begin{itemize}	
-\item \textbf{CNN come estrattore di feature}: si prende una rete addestrata su ImageNet, si rimuove l'ultimo strato completamente connesso che faceva da classificatore per le 1000 classi di ImageNet, e si utilizza la restante rete come estrattore di features per il nuovo dataset. Si danno in ingresso alla rete le immagini del nuovo dataset e si ottengono in uscita le attivazione dell'ultimo hidden layer prima del classificatore finale, chiamate anche \emph{CNN codes}. Una volta ottenuti questi CNN codes, gli si addestra un classificatore lineare (una SVM o un SoftMax).
+\item \textbf{CNN come estrattore di feature}: si prende una rete addestrata su ImageNet, si rimuove l'ultimo strato completamente connesso che faceva da classificatore per le 1000 classi di ImageNet, e si utilizza la restante rete come estrattore di features per il nuovo dataset. Si danno in ingresso alla rete le immagini del nuovo dataset e si ottengono in uscita le attivazione dell'ultimo hidden layer prima del classificatore finale, chiamate anche \emph{CNN codes}. Una volta ottenuti questi CNN codes, gli si addestra sopra un classificatore lineare (una SVM o un SoftMax).
 \\
 Uno schema di questo approccio si è visto nella figura \ref{fig:cnn1} del Capitolo \ref{Capitolo3}, dove il primo rettangolo rossa indica la CNN come estrattore di features. 
 \item \textbf{Fine-tuning su una CNN}: la seconda strategia consiste non solo nel rimpiazzare e ri-addestrare il classificatore usando CNN sul nuovo dataset; ma anche nel "rifinire" (fine-tune) i pesi di tutta la CNN continuando la backpropagation. Si possono rifinire i pesi di tutti gli strati o solamente dei primi se si hanno preoccupazioni di overfitting. Questa scelta è motivata dal fatto che i primi strati della rete contengono feature più generiche (per esempio edge detectors) che possono essere utili a diversi task, mentre gli ultimi strati diventano sempre più specifici ai dettagli delle classi contenuti nel dataset su cui sono state addestrate. Ad esempio, una CNN addestrata sull'ImageNet challenge che contiene tantissime razze diverse di cane, può avere molto del suo potere di rappresentazione dedito a distinguire tra le diverse razze. 
 \end{itemize} \\
-Siccome le archittuture moderne richiedono un addestramento di 2-3 settimane su una moltitudine di GPUs, nella comunità scientifica è consueto rilasciare la rete addestrata on-line, cosicché gli altri ne possano beneficiare. Ad esempio, il framework per il Deep Learning \emph{"Caffe"} ha una repository online chiamato "Model Zoo"\parencite{Wzoo}, dove appunto gli utenti caricano i pesi sinaptici dei loro modelli già addestrati. Grazie a delle librerie che traducono le rappresentazioni dei modelli da un framework ad un altro, è facile importare questi modelli (in Torch, ad esempio).   
+Siccome le archittuture moderne richiedono un addestramento di 2-3 settimane su una moltitudine di GPUs, nella comunità scientifica è consueto rilasciare la rete addestrata on-line, cosicché gli altri ne possano beneficiare. Ad esempio, il framework per il Deep Learning \emph{"Caffe"} ha una repository online chiamato "Model Zoo" \parencite{Wzoo}, dove appunto gli utenti caricano i pesi sinaptici dei loro modelli già addestrati. Grazie a delle librerie che traducono le rappresentazioni dei modelli da un framework ad un altro, è facile importare ed esportare questi modelli (in Torch, ad esempio).   
 
 \subsection{Fine-tuning}
 Il fine-tuning è il processo con il quale si rifiniscono i pesi della rete alle specificità del dataset su cui la si sta addestrando. Come visto prima, è una strategia molto vantaggiosa poiché è un risparmio sia in termini di sviluppo di software ma soprattutto in termini di risorse computazionali. 
@@ -81,7 +81,8 @@ lab1 = torch.Tensor(t1:size(1)):fill(1)
 lab2 = torch.Tensor(t2:size(1)):fill(2)
 labels = torch.cat(lab1, lab2)
 
---Shuffling the whole given dataset before dividing it in training and val sets
+--Shuffling the whole given dataset 
+--before dividing it in training and val sets
 torch.manualSeed(opt.manualSeed)
 shuffle= torch.randperm(Z:size(1))
 
@@ -109,18 +110,20 @@ end
 %--------------------------------------------------------------------
 \section{Fine-tuning su Resnet}
 \subsection{Training}
-Come menzionato nel Capitolo 5, Facebook ha reso pubbliche le sue implementazioni di ResNet, compresi i pesi dei modelli pre-addestrati su ImageNet (1.2 millioni di esempi). È stato utilizzato il modello da 18 strati, sopra il quale si è addestrato un classificatore SoftMax. La funzione SoftMax\parencite{WSoftmax} generalizza la funzione logistica con una funzione esponenziale normalizzata: 
+Come menzionato nel Capitolo 5, Facebook ha reso pubbliche le sue implementazioni di ResNet, compresi i pesi dei modelli pre-addestrati sugli 1.2 milioni di esempi di ImageNet. È stato utilizzato il modello da 18 strati, sopra il quale si è addestrato un classificatore SoftMax. La funzione SoftMax \parencite{WSoftmax} generalizza la funzione logistica con una funzione esponenziale normalizzata: 
 $$
 \sigma(z) = \frac{e^{z_j}}{\sum_{K}^{k=1}e^{z_k}} \quad per \quad j=1,..., K.
 $$
-\\
-L'architettura finale è raffigurata in \ref{fig:arch}. 
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/ft-arch.png} 
  \caption{Architettura della rete: il transfer learning avviene utilizzando i CNN codes provenienti da ResNet per addestrare il classificatore SoftMax}
  \label{fig:arch}
 \end{figure}
+\\
+L'architettura finale è raffigurata in \ref{fig:arch}. 
+\\
+
 Per addestrare il classificatore lineare non è necessario ricorrere alla libreria di ottimizzazione \texttt{optim} di Torch usata per il training delle CNN. Basta utilizzare un modulo di training più semplice chiamato \texttt{StochasticGradient}, che appunto lo allenerà mediante una discesa del gradiente classica.
 \\
 Di default, questo modulo stampa sul terminale solo l'errore corrente. Tuttavia, per riuscire a capire se sta avvenendo overfitting o meno, bisogna definire una funzione di valutazione che verrà chiamata poi durante il training dalla funzione di callback del modulo di training.
@@ -147,6 +150,7 @@ function eval(model, dataset, validation)
 end
 \end{lstlisting}
 \\
+\newpage
 Una volta definita la funzione di valutazione, definiamo la callback function che avrà queste funzioni: 
 \begin{itemize}
 \item chiamerà la funzione di valutazione sul training e sul validation set; 
@@ -253,7 +257,7 @@ Eseguendo il test si ottiene l'output in figura \ref{fig:res-test}.
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/test-unseen-data.jpg} 
- \caption{Testing della rete su 154 esempi ancora non visti. Accuracy = 95.4\%}
+ \caption{Testing su 153 esempi ancora non visti. Accuracy = 95.4\%}
  \label{fig:res-test}
 \end{figure}
 \\

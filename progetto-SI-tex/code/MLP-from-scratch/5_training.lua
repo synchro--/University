@@ -1,6 +1,8 @@
 --[[
 Build & Train MLP from scratch in Torch.
 Alessio Salman
+
+5. Training 
 --]]
 
 ----------------------- Part 1 ----------------------------
@@ -47,7 +49,7 @@ function Neural_Network:forward(X)
    return yHat
 end
 
-function Neural_Network:sigmoidPrime(z)
+function Neural_Network:d_Sigmoid(z)
    --Gradient of sigmoid
    return th.exp(-z):cdiv( (th.pow( (1+th.exp(-z)),2) ) )
 end
@@ -61,13 +63,13 @@ function Neural_Network:costFunction(X, y)
    return J
 end
 
-function Neural_Network:costFunctionPrime(X, y)
-   --Compute derivative wrt to W and W2 for a given X and y
+function Neural_Network:d_CostFunction(X, y)
+   --Compute derivative wrt to W1 and W2 for a given X and y
    self.yHat = self:forward(X)
-   delta3 = th.cmul(-(y-self.yHat), self:sigmoidPrime(self.z3))
+   delta3 = th.cmul(-(y-self.yHat), self:d_Sigmoid(self.z3))
    dJdW2 = th.mm(self.a2:t(), delta3)
 
-   delta2 = th.mm(delta3, self.W2:t()):cmul(self:sigmoidPrime(self.z2))
+   delta2 = th.mm(delta3, self.W2:t()):cmul(self:d_Sigmoid(self.z2))
    dJdW1 = th.mm(X:t(), delta2)
 
    return dJdW1, dJdW2
@@ -89,9 +91,10 @@ function Neural_Network:setParams(params)
    self.W2 = th.reshape(params[{ {W1_end+1, W2_end} }], self.hiddenLayerSize, self.outputLayerSize)
 end
 
---this is like the getParameters(): method in the NN module of torch, i.e. compute the gradients and returns a flattened grads array
+--this is like the getParameters(): method in the NN module of torch, 
+--i.e. compute the gradients and returns a flattened grads array
 function Neural_Network:computeGradients(X, y)
-   dJdW1, dJdW2 = self:costFunctionPrime(X, y)
+   dJdW1, dJdW2 = self:d_CostFunction(X, y)
    return th.cat((dJdW1:view(dJdW1:nElement())), (dJdW2:view(dJdW2:nElement())))
 end
 
