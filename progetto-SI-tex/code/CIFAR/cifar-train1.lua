@@ -1,4 +1,5 @@
 ----------------------------------------------------------------------
+<<<<<<< HEAD
 -- Training di una Convolutional Neural Network on CIFAR10
 --
 -- Esempio di training di un modello di rete (CNN, MLP, logistic regression)
@@ -11,6 +12,23 @@
 -- 4. tecniche di ottimizzazione SGD/ASGD/LBGFS
 -- 5. definizione di procedure di training e testing
 ---------------------------------------------------------------------
+=======
+-- This script shows how to train different models on the CIFAR
+-- dataset, using multiple optimization techniques (SGD, ASGD, CG)
+--
+-- This script demonstrates a classical example of training 
+-- well-known models (convnet, MLP, logistic regression)
+-- on a 10-class classification problem. 
+--
+-- It illustrates several points:
+-- 1/ description of the model
+-- 2/ choice of a loss function (criterion) to minimize
+-- 3/ creation of a dataset as a simple Lua table
+-- 4/ description of training and test procedures
+--
+-- Clement Farabet
+----------------------------------------------------------------------
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 
 require 'torch'
 require 'nn'
@@ -58,6 +76,7 @@ print('<torch> set nb of threads to ' .. opt.threads)
 -- on the 10-class classification problem
 --
 classes = {'airplane', 'automobile', 'bird', 'cat',
+<<<<<<< HEAD
    'deer', 'dog', 'frog', 'horse', 'ship', 'truck'}
 
 --hyper-parameters
@@ -65,6 +84,9 @@ nfeats = 3 --3D input volume
 nstates = {16, 256, 128} --output at each level
 filtsize = 5 --filter size or kernel
 poolsize = 2
+=======
+           'deer', 'dog', 'frog', 'horse', 'ship', 'truck'}
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 
 if opt.network == '' then
    -- define model to train
@@ -74,6 +96,7 @@ if opt.network == '' then
       ------------------------------------------------------------
       -- convolutional network
       ------------------------------------------------------------
+<<<<<<< HEAD
       -- stage 1 : filter bank -> squashing -> max pooling -> mean+std normalization
       -- 3 -> 16
 
@@ -96,6 +119,23 @@ if opt.network == '' then
       model:add(nn.Linear(nstates[2]*filtsize*filtsize, nstates[3]))
       model:add(nn.Tanh())
       model:add(nn.Linear(nstates[3],#classes)) -- in output il numero delle classi del problema
+=======
+      -- stage 1 : mean+std normalization -> filter bank -> squashing -> max pooling
+      model:add(nn.SpatialConvolutionMap(nn.tables.random(3,16,1), 5, 5))
+      model:add(nn.Tanh())
+      model:add(nn.SpatialMaxPooling(2, 2, 2, 2))
+   --   model:add(nn.SpatialSubtractiveNormalization(16,image.gaussian1D(7)))
+      -- stage 2 : filter bank -> squashing -> max pooling
+      model:add(nn.SpatialConvolutionMap(nn.tables.random(16, 256, 4), 5, 5))
+      model:add(nn.Tanh())
+      model:add(nn.SpatialMaxPooling(2, 2, 2, 2))
+     -- model:add(nn.SpatialSubtractiveNormalization(256,image.gaussian1D(7)))
+      -- stage 3 : standard 2-layer neural network
+      model:add(nn.Reshape(256*5*5))
+      model:add(nn.Linear(256*5*5, 128))
+      model:add(nn.Tanh())
+      model:add(nn.Linear(128,#classes)) --l'output va sempre variato in base al numero delle classi del problema 
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
       ------------------------------------------------------------
 
    elseif opt.model == 'mlp' then
@@ -123,7 +163,11 @@ if opt.network == '' then
    end
 else
    print('<trainer> reloading previously trained network')
+<<<<<<< HEAD
    --[[ model = nn.Sequential()
+=======
+  --[[ model = nn.Sequential()
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
    model:read(torch.DiskFile(opt.network)) ]]
    model = torch.load(opt.network)
 end
@@ -139,9 +183,15 @@ print(model)
 -- loss function: negative log-likelihood
 --
 if(opt.network == '' ) then
+<<<<<<< HEAD
    --model:add(nn.LogSoftMax())
    model:add(nn.SoftMax())
 end
+=======
+--model:add(nn.LogSoftMax())
+model:add(nn.SoftMax())
+end 
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 criterion = nn.ClassNLLCriterion()
 
 ----------------------------------------------------------------------
@@ -204,8 +254,13 @@ print '<trainer> preprocessing data (color space + normalization)'
 normalization = nn.SpatialContrastiveNormalization(1, image.gaussian1D(7))
 for i = 1,trainData:size() do
    -- rgb -> yuv
+<<<<<<< HEAD
    local yuv = trainData.data[i] -- è rgb
    -- local yuv = image.rgb2yuv(rgb)
+=======
+   local yuv = trainData.data[i]  -- è rgb
+  -- local yuv = image.rgb2yuv(rgb)
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
    -- normalize y locally:
    yuv[1] = normalization(yuv[{{1}}])
    trainData.data[i] = yuv
@@ -225,7 +280,11 @@ trainData.data[{ {},3,{},{} }]:div(-std_v)
 for i = 1,testData:size() do
    -- rgb -> yuv
    local yuv = testData.data[i]
+<<<<<<< HEAD
    -- local yuv = image.rgb2yuv(rgb)
+=======
+--   local yuv = image.rgb2yuv(rgb)
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
    -- normalize y locally:
    yuv[{1}] = normalization(yuv[{{1}}])
    testData.data[i] = yuv
@@ -256,6 +315,7 @@ function display(input)
    if iter%10 == 0 then
       if opt.model == 'convnet' then
          win_w1 = image.display{image=model:get(2).weight, zoom=4, nrow=10,
+<<<<<<< HEAD
             min=-1, max=1,
             win=win_w1, legend='stage 1: weights', padding=1}
          win_w2 = image.display{image=model:get(6).weight, zoom=4, nrow=30,
@@ -270,14 +330,35 @@ function display(input)
          win_w2 = image.display{image=W2, zoom=0.5,
             min=-1, max=1,
             win=win_w2, legend='W2 weights'}
+=======
+                                min=-1, max=1,
+                                win=win_w1, legend='stage 1: weights', padding=1}
+         win_w2 = image.display{image=model:get(6).weight, zoom=4, nrow=30,
+                                min=-1, max=1,
+                                win=win_w2, legend='stage 2: weights', padding=1}
+      elseif opt.model == 'mlp' then
+         local W1 = torch.Tensor(model:get(2).weight):resize(2048,1024)
+         win_w1 = image.display{image=W1, zoom=0.5,
+                                min=-1, max=1,
+                                win=win_w1, legend='W1 weights'}
+         local W2 = torch.Tensor(model:get(2).weight):resize(10,2048)
+         win_w2 = image.display{image=W2, zoom=0.5,
+                                min=-1, max=1,
+                                win=win_w2, legend='W2 weights'}
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
       end
    end
    iter = iter + 1
 end
 
 function getClass(number)
+<<<<<<< HEAD
 
    return classes[number]
+=======
+  
+    return classes[number]
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 
 end
 
@@ -309,6 +390,7 @@ function train(dataset)
 
       -- create closure to evaluate f(X) and df/dX
       local feval = function(x)
+<<<<<<< HEAD
          -- get new parameters
          if x ~= parameters then
             parameters:copy(x)
@@ -347,6 +429,46 @@ function train(dataset)
          -- return f and df/dX
          return f,gradParameters
       end
+=======
+                       -- get new parameters
+                       if x ~= parameters then
+                          parameters:copy(x)
+                       end
+
+                       -- reset gradients
+                       gradParameters:zero()
+
+                       -- f is the average of all criterions
+                       local f = 0
+
+                       -- evaluate function for complete mini batch
+                       for i = 1,#inputs do
+                          -- estimate f
+                          local output = model:forward(inputs[i])
+                          local err = criterion:forward(output, targets[i])
+                          f = f + err
+
+                          -- estimate df/dW
+                          local df_do = criterion:backward(output, targets[i])
+                          model:backward(inputs[i], df_do)
+
+                          -- update confusion
+                          confusion:add(output, targets[i])
+
+                          -- visualize?
+                          if opt.visualize then
+                             display(inputs[i])
+                          end
+                       end
+
+                       -- normalize gradients and f(X)
+                       gradParameters:div(#inputs)
+                       f = f/#inputs
+
+                       -- return f and df/dX
+                       return f,gradParameters
+                    end
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 
       -- optimize on current mini-batch
       if opt.optimization == 'CG' then
@@ -355,20 +477,35 @@ function train(dataset)
 
       elseif opt.optimization == 'LBFGS' then
          config = config or {learningRate = opt.learningRate,
+<<<<<<< HEAD
             maxIter = opt.maxIter,
             nCorrection = 10}
+=======
+                             maxIter = opt.maxIter,
+                             nCorrection = 10}
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
          optim.lbfgs(feval, parameters, config)
 
       elseif opt.optimization == 'SGD' then
          config = config or {learningRate = opt.learningRate,
+<<<<<<< HEAD
             weightDecay = opt.weightDecay,
             momentum = opt.momentum,
             learningRateDecay = 5e-7}
+=======
+                             weightDecay = opt.weightDecay,
+                             momentum = opt.momentum,
+                             learningRateDecay = 5e-7}
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
          optim.sgd(feval, parameters, config)
 
       elseif opt.optimization == 'ASGD' then
          config = config or {eta0 = opt.learningRate,
+<<<<<<< HEAD
             t0 = nbTrainingPatches * opt.t0}
+=======
+                             t0 = nbTrainingPatches * opt.t0}
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
          _,_,average = optim.asgd(feval, parameters, config)
 
       else
@@ -389,7 +526,11 @@ function train(dataset)
    -- save/log current net
    local filename = paths.concat(opt.save, 'cifar.net')
    os.execute('mkdir -p ' .. paths.dirname(filename))
+<<<<<<< HEAD
    if paths.filep(filename) then --backup old net
+=======
+   if paths.filep(filename) then    --fa il backup della rete precedente 
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
       os.execute('mv ' .. filename .. ' ' .. filename .. '.old')
    end
    print('<trainer> saving network to '..filename)
@@ -423,6 +564,7 @@ function test(dataset)
       -- test sample
       local pred = model:forward(input)
       confusion:add(pred, target)
+<<<<<<< HEAD
       --[[
       --testing con labelled output ogni 100 immagini di test
       if t%1000 == 0 then
@@ -466,3 +608,48 @@ function test(dataset)
       trainLogger:plot()
       testLogger:plot()
    end
+=======
+--[[
+--testing con labelled output ogni 100 immagini di test 
+        if t%1000 == 0 then 
+        print('labelled testing .........')
+        confidence, index  = pred:float():sort()
+        predicted_class=classes[index[1]]
+     --[[   print('pred:' ..predicted_class..'with confidence: '.. confidence[1])
+        image.save('tmp.png',input)
+        os.execute('qlua output.lua '..predicted_class..&)
+      end ]]
+   end
+
+   -- timing
+   time = sys.clock() - time
+   time = time / dataset:size()
+   print("<trainer> time to test 1 sample = " .. (time*1000) .. 'ms')
+
+   -- print confusion matrix
+   print(confusion)
+   testLogger:add{['% mean class accuracy (test set)'] = confusion.totalValid * 100}
+   confusion:zero()
+
+   -- averaged param use?
+   if average then
+      -- restore parameters
+      parameters:copy(cachedparams)
+   end
+end
+
+----------------------------------------------------------------------
+-- and train!
+--
+while true do
+   -- train/test
+   train(trainData)
+   test(testData)
+
+   -- plot errors
+   trainLogger:style{['% mean class accuracy (train set)'] = '-'}
+   testLogger:style{['% mean class accuracy (test set)'] = '-'}
+   trainLogger:plot()
+   testLogger:plot()
+end
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a

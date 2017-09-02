@@ -1,18 +1,32 @@
 ----------------------------------------------------------------------
+<<<<<<< HEAD
 -- Training di una Convolutional Neural Network on CIFAR10
 --
 -- Esempio di training di un modello di rete (CNN, MLP, logistic regression)
 -- su un task di classificazione con 10 classi
+=======
+-- This script shows how to train different models on the CIFAR
+-- dataset, using multiple optimization techniques (SGD, ASGD, CG)
+--
+-- This script demonstrates a classical example of training
+-- well-known models (convnet, MLP, logistic regression)
+-- on a 10-class classification problem.
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 --
 -- Illustra diversi punti:
 -- 1. descrizione del modello
 -- 2. scelta della loss function da minimizzare
 -- 3. creazione del dataset come semplice Lua table
+<<<<<<< HEAD
 -- 4. tecniche di ottimizzazione SGD/ASGD/LBGFS
 -- 5. definizione di procedure di training e testing
 
 -- Qui con RELUs al posto di tangenti iperboliche
 ---------------------------------------------------------------------
+=======
+-- 4. definizione di procedure di training e testing
+----------------------------------------------------------------------
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 
 require 'torch'
 require 'nn'
@@ -98,7 +112,11 @@ if opt.network == '' then
       ------------------------------------------------------------
       model:add(nn.Reshape(3*32*32))
       model:add(nn.Linear(3*32*32, 1*32*32))
+<<<<<<< HEAD
       model:add(nn.ReLU())
+=======
+      model:add(nn.Tanh())
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
       model:add(nn.Linear(1*32*32, #classes))
       ------------------------------------------------------------
 
@@ -414,11 +432,19 @@ function test(dataset)
          myTime = sys.clock()
 
          local pred = model:forward(input) -- predicted
+<<<<<<< HEAD
          local conf , index = pred:float():sort()
          --taking time
          myTime = sys.clock() - myTime
 
          local catgry = (index[index:size(1)])
+=======
+         local conf , index = pred:float():sort() -- sort restituisce i risultati ordinati in ordine decrescente
+         --taking time
+         myTime = sys.clock() - myTime
+
+         local catgry = (index[index:size(1)]) -- prendo il valore all'ultimo indice di index
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
          catgry = classes[catgry] -- catgry has the value of the predicted class.
          label = catgry..'. Test time: '..math.floor((myTime*1000))..'ms'
 
