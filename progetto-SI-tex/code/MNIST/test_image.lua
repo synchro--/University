@@ -14,9 +14,18 @@ confidence, prediction = output:float():sort()
 confidence = confidence[confidence:size(1)]
 prediction = prediction[prediction:size(1)]
 
+<<<<<<< HEAD
 print('tempo di elaborazione '..time*1000..' ms')
 print ('predizione = '..prediction .. ' con confidenza '..confidence)
 
+=======
+
+print('tempo di elaborazione '..time*1000..' ms')
+print ('predizione = '..prediction .. ' con confidenza '..confidence)
+
+
+
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 --[[
 -- test function
 function test(dataset)
@@ -43,6 +52,11 @@ function test(dataset)
          targets[k] = target
          k = k + 1
       end
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> ece01a6c88b2ea9153728cdbf63dcf2c83a18f6a
 
     
     --here we visualize all the inputs tested and we label them with the correspective predictions 
