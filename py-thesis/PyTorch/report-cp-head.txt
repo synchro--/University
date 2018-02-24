@@ -1,0 +1,37 @@
+### Model architecture from Keras wt. CP-like Head and BN 
+
+Keras_Cifar (
+  (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+  (conv2): Conv2d (32, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 32, 3, 3), (32,)), parameters=9248
+  (conv3): Conv2d (32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((64, 32, 3, 3), (64,)), parameters=18496
+  (conv4): Conv2d (64, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 64, 3, 3), (64,)), parameters=36928
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (bn_1): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True), weights=((1,), (1,)), parameters=2
+  (bn_2): BatchNorm2d(20, eps=1e-05, momentum=0.1, affine=True), weights=((20,), (20,)), parameters=40
+  (bn_3): BatchNorm2d(5, eps=1e-05, momentum=0.1, affine=True), weights=((5,), (5,)), parameters=10
+  (bn_4): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True), weights=((512,), (512,)), parameters=1024
+  (bn_5): BatchNorm2d(10, eps=1e-05, momentum=0.1, affine=True), weights=((10,), (10,)), parameters=20
+  (bn_6): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_7): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (cpdfc1): Conv2d (64, 20, kernel_size=(1, 1), stride=(1, 1)), weights=((20, 64, 1, 1), (20,)), parameters=1300
+  (cpdfc2): Conv2d (20, 20, kernel_size=(6, 1), stride=(1, 1), groups=20), weights=((20, 1, 6, 1), (20,)), parameters=140
+  (cpdfc3): Conv2d (20, 20, kernel_size=(1, 6), stride=(1, 1), groups=20), weights=((20, 1, 1, 6), (20,)), parameters=140
+  (cpdfc4): Conv2d (20, 512, kernel_size=(1, 1), stride=(1, 1)), weights=((512, 20, 1, 1), (512,)), parameters=10752
+  (conv2fc2): Conv2d (512, 10, kernel_size=(1, 1), stride=(1, 1)), weights=((10, 512, 1, 1), (10,)), parameters=5130
+  (classifier): Linear(in_features=10, out_features=10), weights=((10, 10), (10,)), parameters=110
+)
+
+Number of trainable params: 84428
+-----------------------------------------------------
+Accuracy of the network on the 10000 test images: 76 %
+Accuracy of plane : 79 %
+Accuracy of   car : 88 %
+Accuracy of  bird : 60 %
+Accuracy of   cat : 58 %
+Accuracy of  deer : 74 %
+Accuracy of   dog : 74 %
+Accuracy of  frog : 76 %
+Accuracy of horse : 75 %
+Accuracy of  ship : 88 %
+Accuracy of truck : 87 %
+

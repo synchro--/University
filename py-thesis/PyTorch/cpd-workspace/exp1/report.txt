@@ -1,0 +1,47 @@
+Modello normale allconv, senza decomposizioni. 
+Trainato da conv4 verso conv1 (reverse). 
+
+Partenza: Accuracy: 79% dopo 10 epochs
+          Loss: bassa, 0.193 
+
+
+Conv4:              acc 77% Loss: 0.023
+4+3:                acc 77% Loss: 0.018 
+4+3+2:              acc 77% Loss: 0.033
+4+3+2+1:            acc 77% Loss: 0.032
+4+3+2+1+CONV2FC1    acc 80% Loss: 0.195 
+
+Accuracy of the network on the 10000 test images: 80 %
+Average prediction time 0.0042 313
+Accuracy of plane : 81 %
+Accuracy of   car : 91 %
+Accuracy of  bird : 67 %
+Accuracy of   cat : 67 %
+Accuracy of  deer : 75 %
+Accuracy of   dog : 79 %
+Accuracy of  frog : 82 %
+Accuracy of horse : 86 %
+Accuracy of  ship : 91 %
+Accuracy of truck : 92 %
+
+
+drop di circa 2% 
+
+# COMPARAZIONE PARAMETRI--------------------TOTAL
+
+4           2878    vs.    36928            1218430
+4+3         2206           18496            1202140
+4+3+2       732            9248             1193624
+4+3+2+1     442            896              1193170
+
+CONV2FC1    1180160  vs.   100472          113482  (rank 170)..
+CONV2FC2    5130     vs.   
+
+
+
+### AVERAGE PREDICTION TIME x Batch ### 
+CPU        vs.      GPU 
+0.0451              0.0030
+
+Normal              CPD 
+0.0017              0.0017 

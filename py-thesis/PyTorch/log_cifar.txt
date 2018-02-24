@@ -1,0 +1,119 @@
+# Net size
+
+Net (
+          (conv1): Conv2d (3, 6, kernel_size=(5, 5), stride=(1, 1)), weights=((6, 3, 5, 5), (6,)), parameters=456
+            (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+              (conv2): Conv2d (6, 16, kernel_size=(5, 5), stride=(1, 1)), weights=((16, 6, 5, 5), (16,)), parameters=2416
+                (conv2fc1): Conv2d (400, 120, kernel_size=(5, 5), stride=(1, 1)), weights=((120, 400, 5, 5), (120,)), parameters=1200120
+                  (fc1): Linear(in_features=400, out_features=120), weights=((120, 400), (120,)), parameters=48120
+                    (fc2): Linear(in_features=120, out_features=84), weights=((84, 120), (84,)), parameters=10164
+                      (fc3): Linear(in_features=84, out_features=10), weights=((10, 84), (10,)), parameters=850
+    )
+
+
+
+Net (
+          (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+            (conv2): Conv2d (32, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 32, 3, 3), (32,)), parameters=9248
+              (conv3): Conv2d (32, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 32, 3, 3), (64,)), parameters=18496
+                (conv4): Conv2d (64, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 64, 3, 3), (64,)), parameters=36928
+                  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+                    (conv2_dropout): Dropout2d(p=0.25), weights=(), parameters=0
+                      (conv2fc1): Conv2d (64, 512, kernel_size=(5, 5), stride=(1, 1)), weights=((512, 64, 5, 5), (512,)), parameters=819712
+                        (conv2fc2): Conv2d (512, 10, kernel_size=(1, 1), stride=(1, 1)), weights=((10, 512, 1, 1), (10,)), parameters=5130
+                          (classifier): Softmax(), weights=(), parameters=0
+    )
+###################
+     Number of trainable params: 890410
+
+
+Net (
+  (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+  (conv2): Conv2d (32, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 32, 3, 3), (32,)), parameters=9248
+  (conv3): Conv2d (32, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 32, 3, 3), (64,)), parameters=18496
+  (conv4): Conv2d (64, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 64, 3, 3), (64,)), parameters=36928
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (conv2_dropout): Dropout2d(p=0.25), weights=(), parameters=0
+  (conv2fc2): Conv2d (512, 10, kernel_size=(1, 1), stride=(1, 1)), weights=((10, 512, 1, 1), (10,)), parameters=5130
+  (cpdfc1): Conv2d (64, 1, kernel_size=(1, 1), stride=(1, 1)), weights=((1, 64, 1, 1), (1,)), parameters=65
+  (cpdfc2): Conv2d (1, 5, kernel_size=(5, 1), stride=(1, 1)), weights=((5, 1, 5, 1), (5,)), parameters=30
+  (cpdfc3): Conv2d (1, 5, kernel_size=(1, 5), stride=(1, 1)), weights=((5, 1, 1, 5), (5,)), parameters=30
+  (cpdfc4): Conv2d (5, 512, kernel_size=(1, 1), stride=(1, 1)), weights=((512, 5, 1, 1), (512,)), parameters=3072
+  (fc3): Linear(in_features=10, out_features=10), weights=((10, 10), (10,)), parameters=110
+)
+###################
+Number of trainable params: 74005
+
+
+#################################################################################################################
+Model LeNet 4-Conv
+Keras_Cifar (
+          (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+            (conv2): Conv2d (32, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 32, 3, 3), (32,)), parameters=9248
+              (conv3): Conv2d (32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((64, 32, 3, 3), (64,)), parameters=18496
+                (conv4): Conv2d (64, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 64, 3, 3), (64,)), parameters=36928
+                  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+                    (dropout_1): Dropout2d(p=0.25), weights=(), parameters=0
+                      (dropout_2): Dropout2d(p=0.5), weights=(), parameters=0
+                        (fc1): Linear(in_features=2304, out_features=512), weights=((512, 2304), (512,)), parameters=1180160
+                          (fc2): Linear(in_features=512, out_features=10), weights=((10, 512), (10,)), parameters=5130
+        )
+###################
+         Number of trainable params: 1250858
+
+#################################################################################################################
+MODEL LENET 4 ALL-DECOMPOSED WITH CP
+
+Keras_Cifar (
+  (conv1): Sequential (
+    (0): Conv2d (3, 10, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((10, 3, 1, 1),), parameters=30
+    (1): Conv2d (10, 10, kernel_size=(3, 1), stride=(1, 1), padding=(1, 0), groups=10, bias=False), weights=((10, 1, 3, 1),), parameters=30
+    (2): Conv2d (10, 10, kernel_size=(1, 3), stride=(1, 1), padding=(0, 1), groups=10, bias=False), weights=((10, 1, 1, 3),), parameters=30
+    (3): Conv2d (10, 32, kernel_size=(1, 1), stride=(1, 1)), weights=((32, 10, 1, 1), (32,)), parameters=352
+  ), weights=((10, 3, 1, 1), (10, 1, 3, 1), (10, 1, 1, 3), (32, 10, 1, 1), (32,)), parameters=442
+  (conv2): Sequential (
+    (0): Conv2d (32, 10, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((10, 32, 1, 1),), parameters=320
+    (1): Conv2d (10, 10, kernel_size=(3, 1), stride=(1, 1), groups=10, bias=False), weights=((10, 1, 3, 1),), parameters=30
+    (2): Conv2d (10, 10, kernel_size=(1, 3), stride=(1, 1), groups=10, bias=False), weights=((10, 1, 1, 3),), parameters=30
+    (3): Conv2d (10, 32, kernel_size=(1, 1), stride=(1, 1)), weights=((32, 10, 1, 1), (32,)), parameters=352
+  ), weights=((10, 32, 1, 1), (10, 1, 3, 1), (10, 1, 1, 3), (32, 10, 1, 1), (32,)), parameters=732
+  (conv3): Sequential (
+    (0): Conv2d (32, 21, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((21, 32, 1, 1),), parameters=672
+    (1): Conv2d (21, 21, kernel_size=(3, 1), stride=(1, 1), padding=(1, 0), groups=21, bias=False), weights=((21, 1, 3, 1),), parameters=63
+    (2): Conv2d (21, 21, kernel_size=(1, 3), stride=(1, 1), padding=(0, 1), groups=21, bias=False), weights=((21, 1, 1, 3),), parameters=63
+    (3): Conv2d (21, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 21, 1, 1), (64,)), parameters=1408
+  ), weights=((21, 32, 1, 1), (21, 1, 3, 1), (21, 1, 1, 3), (64, 21, 1, 1), (64,)), parameters=2206
+  (conv4): Sequential (
+    (0): Conv2d (64, 21, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((21, 64, 1, 1),), parameters=1344
+    (1): Conv2d (21, 21, kernel_size=(3, 1), stride=(1, 1), groups=21, bias=False), weights=((21, 1, 3, 1),), parameters=63
+    (2): Conv2d (21, 21, kernel_size=(1, 3), stride=(1, 1), groups=21, bias=False), weights=((21, 1, 1, 3),), parameters=63
+    (3): Conv2d (21, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 21, 1, 1), (64,)), parameters=1408
+  ), weights=((21, 64, 1, 1), (21, 1, 3, 1), (21, 1, 1, 3), (64, 21, 1, 1), (64,)), parameters=2878
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (dropout_1): Dropout2d(p=0.25), weights=(), parameters=0
+  (dropout_2): Dropout2d(p=0.5), weights=(), parameters=0
+  (fc1): Linear(in_features=2304, out_features=512), weights=((512, 2304), (512,)), parameters=1180160
+  (fc2): Linear(in_features=512, out_features=10), weights=((10, 512), (10,)), parameters=5130
+)
+###################
+Number of trainable params: 1191548
+
+
+
+##################################################################################################################
+Model LeNet 4-Conv: 2nd layer decomposed with CPD (wt. tensorly) 
+
+GroundTruth:    cat  ship  ship plane
+Predicted:    cat  ship truck plane
+Accuracy of the network on the 10000 test images: 75 %
+Accuracy of plane : 76 %
+Accuracy of   car : 85 %
+Accuracy of  bird : 61 %
+Accuracy of   cat : 56 %
+Accuracy of  deer : 70 %
+Accuracy of   dog : 66 %
+Accuracy of  frog : 81 %
+Accuracy of horse : 77 %
+Accuracy of  ship : 88 %
+Accuracy of truck : 86 %
+

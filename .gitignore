@@ -1,0 +1,9 @@
+*.png 
+*.jpg 
+*data*
+*batch*
+*test
+*train
+*events* 
+*.pth*
+*__pycache__*

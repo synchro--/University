@@ -1,0 +1,259 @@
+Alma Mater Studiorum 
+Thesis: Experimenting libraries for categorization of different objects in images. 2014 
+
+NOTES
+
+
+
+############ Comments about Torch7: ############################################################################################################################################################################################################################################################
+
+Intro: 
+Torch7 is an interactive development environment for machine learning and computer vision. It is an extension of the Lua language with a multidimensional numerical array library.
+
+Lua is a very simple, compact and efficient interpreter/compiler with a straightforward syntax. It is used widely as a scripting language in the computer game industry. Torch extends Lua with an extensive numerical library and various facilities for machine learning and computer vision.
+
+Torch has computational back-ends for multicore/multi-CPU machines (using Intel/AVX and OpenMP), NVidia GPUs (using CUDA), and ARM CPUs (using the Neon instruction set).
+
+Many research projects at the CILVR Lab are built with Torch.
+
+The main developers and maintainers of Torch are Ronan Collobert (IDIAP, Switzerland), Clément Farabet (NYU/CILVR), and Koray Kavukcuoglu (DeepMind Technologies).
+
+
+The setup is a little tricky but the script provided on the official page 'torch.ch' are perfect. They install everything without problem. 
+Altough I wrote a simple script that puts together all of the script necessary for a fast ready-to-use installation. 
+
+
+--- comment on a forum 
+"I am one of the maintainers. From information first-hand, Torch is used by:
+
+- Facebook
+
+- Google DeepMind and slowly Google Brain is moving as well.
+
+- Certain people at IBM
+
+- NYU
+
+- IDIAP
+
+- LISA LAB (not exclusively, but some students started using it)
+
+- Purdue e-lab
+
+- Several smaller companies (10-100 companies)
+
+There will definitely be several commonly asked questions, and this is my personal perspective on them.
+
+Why torch/lua, why not python+?*
+
+No reason. Just because. Mostly because LuaJIT is awesome (with it's quirks) and LuaJIT is extremely portable. (we embed torch routinely in tiny devices, afaik not practically possible with python).
+
+Is Torch better than Theano/etc.etc.?
+
+Better and worse. Every framework has it’s oddities. I like the super-simple design and the compactness of traversing from high-level easy-to-use API to bare-metal C/assembly.
+
+Also, torch’s ecosystem was grown not with exclusively lab experiments in mind, with Yann’s strong robotics research, packages were developed with practicality in mind all the time. Custom chips are being developed for convnets (TeraDeep) and they use Torch.
+
+Where’s the doxx???
+
+If there’s documentation, I’ve tried to make people aware of it, mostly by consolidating everything torch to this one page: https://github.com/torch/torch7/wiki/Cheatsheet
+
+What about Julia?
+
+I like Julia a lot, and it’s definitely cool, but the packages for NN and GPUs aren’t very strong, so advantages over Julia are simply code that’s already written.
+
+If there are any more questions, feel free to ask them here or just open an issue on the github package.
+
+Thanks for reading.
+-------
+Hi I am from the LISA Lab. I used pylearn2/Theano for a year before switching to Torch7 nine months ago. So why Torch7 vs Theano?
+
+Torch7 has lots of documentation. And for neural networks, it has much more than Theano (see https://github.com/torch/nn). If you need to optimize a non-standard piece of code (which is a commonplace requirement for research), then Torch7 is for you. It makes it much easier to code components in C/Cuda.
+
+In Theano you have to interface with python's complicated C API hidden in the strings of a huge compiler. Theano is a C/CUDA compiler, which makes it suitable for optimizing a computation graph and performing automatic gradient differentiation. Torch7 on the other hand is not a compiler, so you do not need to think symbolically. This also means that you can code complex computation graphs without needing to wait 5 minutes for it to compile (imagine debugging).
+
+Pylearn2 adds stuff to Theano like ready-to-use datasets, higher-level models and unsupervised learning. However, using Pylearn2 isn't easy. Its very different from the mainstream programming you would have learned in school. You always have to think symbolically, but then there are tons of exceptions, which further complicate things. For the year that I used Pylearn2, I loved and got to know it very well. But I eventually got tired of wrestling with the constant changes to the master branch, spending hours going around the code to find how to implement what seemed like a simple extension for my research.
+
+I wanted to get back to non-symbolic programming. It is much easier to navigate and understand. So I switched to Torch7. I haven't stopped contributing to Torch7 ever since. Even working on my own Pylearn2-like alternative: https://github.com/nicholas-leonard/dp (pylearn2 had some good ideas, like datasets, early-stopping, plugins, which Torch7 doesn't provide out of the box), and some experimental CUDA extensions: https://github.com/nicholas-leonard/cunnx.﻿
+
+
+LuaJIT addressing limit trick with XPlane plugin: 
+
+    The host sim pre-allocates as much of the 2 GB region as it can early on, in fixed size chunks.  Currently we're using 32 MB chunks, but this may change.
+    The host provides a custom Lua realloc function that is implemented using a hacked version of dlmalloc; dlmalloc uses the pool of pre-grabbed 32 MB chunks to form its pools.
+    Plugins use lua_newstate to connect the host's "chunk" allocator to the Lua runtime.
+
+
+################# EBlearn ###############################
+
+Pro: 
+Nice tutorials on : 
+       -making your dataset from images 
+       -training a classifier (for digit and end-to-end face detection)
+       -testing your classifier with the detect tool. 
+       -bootstrapping a net to make it more accurate: train the network on lots of images so that it can improve its perfomances. Whenever it make a mistake we should put the errors images in the next round of training (labeled in the correct manner). Make this process 3,4,5 times to see a notable improvement. 
+
+
+Cons:  it looks like it has been abandoned through the years. 
+
+
+Why use EBLearn?
+
+EBLearn allows you to quickly build complex classifiers and regressors without writing a single line of code. Convenient tools are provided to package datasets, train your system and do a real-time test of your system using cameras and kinects.
+
+EBLearn is self-contained and does not depend on external libraries for its core functionalities.
+
+EBLearn includes several CPU optimizations including Intel IPP, SSE(experimental) and OpenMP(experimental) support as well as OpenMPI cluster support for training and detection. 
+
+################ CAFFE  #################################
+
+-there's really lots of software to install before you can actually configure Caffe
+-useful command to remove opencv "sudo find / -name "*opencv*" -exec rm -rf {} \;"
+-just a comment on the solver for choosing between CPU or GPU
+-you actually have to know the basic of python (fast) and Google protocol buffers (not hard for sure)
+-the nn is defined in proto files according to the format from protobuff. That's nice. 
+-I think editing the neural network structure is faster than Torch7.
+
+
+
+####### SOME DEFINITIONS TO KEEP IN MIND #######
+
+PERCEPTRON: the simplest feed-forward neural network possible 
+http://it.wikipedia.org/wiki/Percettrone
+
+L'algoritmo di apprendimento standard è un algoritmo iterativo, definito come segue: ad ogni iterazione t, un vettore di input xt viene presentato al percettrone, che calcola l'output f(xt) e lo confronta con il risultato desiderato g(xt); quindi, il vettore dei pesi wt viene aggiornato come segue:
+
+wt+1=wt+α(g(xt)−f(xt))xt
+dove α è una costante di apprendimento strettamente positiva che regola la velocità dell'apprendimento. Al passo successivo, il nuovo input xt+1 verrà pesato secondo il nuovo vettore wt+1, che verrà poi nuovamente modificato in wt+2 e così via.
+Feature Maps: A feature map is obtained by repeated application of a function across sub-regions of the entire image, in other words, by convolution of the input image with a linear filter, adding a bias term and then applying a non-linear function. If we denote the k-th feature map at a given layer as h^k, whose filters are determined by the weights W^k and bias b_k, then the feature map h^k is obtained as follows (for tanh non-linearities):
+h^k_{ij} = \tanh ( (W^k * x)_{ij} + b_k ).
+
+LOSS FUNCTIONS : 
+In mathematical optimization, statistics, decision theory and machine learning, a loss function or cost function is a function that maps an event or values of one or more variables onto a real number intuitively representing some "cost" associated with the event. An optimization problem seeks to minimize a loss function. An objective function is either a loss function or its negative (sometimes called a reward function or a utility function), in which case it is to be maximized.
+In parole povere: Parameter estimation for supervised learning tasks such as regression or classification can be formulated as the minimization of a loss function over a training set. The goal of estimation is to find a function that models its input well: if it were applied to the training set, it should predict the values (or class labels) associated with the samples in that set. The loss function quantifies the amount by which the prediction deviates from the actual values.
+
+Likelihood = funzione di verosimiglianza : http://it.wikipedia.org/wiki/Funzione_di_verosimiglianza
+
+CONVOLUTIONAL LAYERS (from Torch7 doc): 
+A convolution is an integral that expresses the amount of overlap of one function g as it is shifted over another function f. It therefore "blends" one function with another. The neural network package supports convolution, pooling, subsampling and other relevant facilities. These are divided base on the dimensionality of the input and output Tensors:
+
+SUPERVISED LEARNING: vedere wikipedia http://it.wikipedia.org/wiki/Apprendimento_supervisionato (abbastanza chiaro)
+
+CUDA:
+(Compute Unified Device Architecture) is a parallel computing platform and programming model created by NVIDIA and implemented by the graphics processing units (GPUs) that they produce.[1] CUDA gives program developers direct access to the virtual instruction set and memory of the parallel computational elements in CUDA GPUs.
+Using CUDA, the GPUs can be used for general purpose processing (i.e., not exclusively graphics); this approach is known as GPGPU. Unlike CPUs, however, GPUs have a parallel throughput architecture that emphasizes executing many concurrent threads slowly, rather than executing a single thread very quickly. C/C++ programmers use 'CUDA C/C++', compiled with "nvcc", NVIDIA's LLVM-based C/C++ compiler.
+
+
+BACKPROPAGATION: 
+Backpropagation, an abbreviation for "backward propagation of errors", is a common method of training artificial neural networks used in conjunction with an optimization method such as gradient descent. The method calculates the gradient of a loss function with respects to all the weights in the network. The gradient is fed to the optimization method which in turn uses it to update the weights, in an attempt to minimize the loss function.
+
+Backpropagation requires a known, desired output for each input value in order to calculate the loss function gradient. It is therefore usually considered to be a supervised learning method, although it is also used in some unsupervised networks such as autoencoders. It is a generalization of the delta rule to multi-layered feedforward networks, made possible by using the chain rule to iteratively compute gradients for each layer. Backpropagation requires that the activation function used by the artificial neurons (or "nodes") be differentiable.
+
+AUTOMATIC DIFFERENTATION:
+From Wikipedia, the free encyclopedia
+In mathematics and computer algebra, automatic differentiation (AD), also called algorithmic differentiation or computational differentiation, is a set of techniques to numerically evaluate the derivative of a function specified by a computer program. AD exploits the fact that every computer program, no matter how complicated, executes a sequence of elementary arithmetic operations (addition, subtraction, multiplication, division, etc.) and elementary functions (exp, log, sin, cos, etc.). By applying the chain rule repeatedly to these operations, derivatives of arbitrary order can be computed automatically, accurately to working precision, and using at most a small constant factor more arithmetic operations than the original program.
+
+NORMALIZATION (IMAGE PROCESSING)
+Color normalization is a topic in computer vision concerned with artificial color vision and object recognition. In general, the distribution of color values in an image depends on the illumination - which may vary i.e. depending on different lighting conditions or different cameras. Colour normalisation allows for object recognition techniques based on colour, to compensate for these variations.
+Issue: The main issue about certain applications of color normalization is that the end result looks unnatural or too distant from the original colors.[4] In cases where there is a subtle variation between important aspects, this can be problematic. More specifically, the side effect can be that pixels become divergent and not reflect the actual color value of the image. A way of combating this issue is to use color normalization in combination with thresholding (image processing) to correctly and consistently segment a colored image.[5]
+---
+In image processing, normalization is a process that changes the range of pixel intensity values. Applications include photographs with poor contrast due to glare, for example. Normalization is sometimes called contrast stretching or histogram stretching. In more general fields of data processing, such as digital signal processing, it is referred to as dynamic range expansion.[1]
+The purpose of dynamic range expansion in the various applications is usually to bring the image, or other type of signal, into a range that is more familiar or normal to the senses, hence the term normalization. Often, the motivation is to achieve consistency in dynamic range for a set of data, signals, or images to avoid mental distraction or fatigue. For example, a newspaper will strive to make all of the images in an issue share a similar range of grayscale.
+
+fast definition: Dividing each element in the kernel by the sum of all the absolute values of the elements in the kernel. Normalization ensures that the pixel values in the output image are of the same relative magnitude as those in the input image
+
+KERNEL: MATRICE DI CONVOLUZIONE 
+Si usa per applicare filtri alle immagini. Vedi appunti scritti sul foglio protocollo o eventuali video di Youtube. 
+
+
+#HIDDEN LAYERS 
+Three sentence version:
+
+Each layer can apply any function you want to the previous layer to produce an output (usually a linear transformation followed by a squashing nonlinearity).
+
+The hidden layer's job is to transform the inputs into something that the output layer can use.
+
+The output layer transforms the hidden layer activations into whatever scale you wanted your output to be on.
+
+Like you're 5:
+
+If you want a computer to tell you if there's a bus in a picture, the computer might have an easier time if it had the right tools.
+
+So your bus detector might be made of a wheel detector (to help tell you it's a vehicle) and a box detector (since the bus is shaped like a big box) and a size detector (to tell you it's too big to be a car). These are the three elements of your hidden layer: they're not part of the raw image, they're tools you designed to help you identify busses.
+
+If all three of those detectors turn on (or perhaps if they're especially active), then there's a good chance you have a bus in front of you.
+
+Neural nets are useful because there are good tools (like backpropagation) for building lots of detectors and putting them together.
+
+Like you're an adult
+
+A feed-forward neural network applies a series of functions to the data. The exact functions will depend on the neural network you're using: most frequently, these functions each compute a linear transformation of the previous layer, followed by a squashing nonlinearity. Sometimes the functions will do something else (like computing logical functions in your examples, or averaging over adjacent pixels in an image). So the roles of the different layers could depend on what functions are being computed, but I'll try to be very general.
+
+Let's call the input vector x, the hidden layer activations h, and the output activation y. You have some function f that maps from x to h and another function g that maps from h to y.
+
+So the hidden layer's activation is f(x) and the output of the network is g(f(x)).
+
+Why have two functions (f and g) instead of just one?
+
+If the level of complexity per function is limited, then g(f(x)) can compute things that f and g can't do individually.
+
+An example with logical functions:
+
+For example, if we only allow f and g to be simple logical operators like "AND", "OR", and "NAND", then you can't compute other functions like "XOR" with just one of them. On the other hand, we could compute "XOR" if we were willing to layer these functions on top of each other:
+
+First layer functions:
+
+Make sure that at least one element is "TRUE" (using OR)
+Make sure that they're not all "TRUE" (using NAND)
+Second layer function:
+
+Make sure that both of the first-layer criteria are satisfied (using AND)
+The network's output is just the result of this second function. The first layer transforms the inputs into something that the second layer can use so that the whole network can perform XOR.
+
+An example with images:
+
+Slide 61 from this talk--also available here as a single image--shows (one way to visualize) what the different hidden layers in a particular neural network are looking for.
+
+The first layer looks for short pieces of edges in the image: these are very easy to find from raw pixel data, but they're not very useful by themselves for telling you if you're looking at a face or a bus or an elephant.
+
+The next layer composes the edges: if the edges from the bottom hidden layer fit together in a certain way, then one of the eye-detectors in the middle of left-most column might turn on. It would be hard to make a single layer that was so good at finding something so specific from the raw pixels: eye detectors are much easier to build out of edge detectors than out of raw pixels.
+
+The next layer up composes the eye detectors and the nose detectors into faces. In other words, these will light up when the eye detectors and nose detectors from the previous layer turn on with the right patterns. These are very good at looking for particular kinds of faces: if one or more of them lights up, then your output layer should report that a face is present.
+
+This is useful because face detectors are easy to build out of eye detectors and nose detectors, but really hard to build out of pixel intensities.
+
+So each layer gets you farther and farther from the raw pixels and closer to your ultimate goal (e.g. face detection or bus detection).
+
+Answers to assorted other questions
+
+"Why are some layers in the input layer connected to the hidden layer and some are not?"
+
+The disconnected nodes in the network are called "bias" nodes. There's a really nice explanation here. The short answer is that they're like intercept terms in regression.
+
+"Where do the "eye detector" pictures in the image example come from?"
+
+I haven't double-checked the specific images I linked to, but in general, these visualizations show the set of pixels in the input layer that maximize the activity of the corresponding neuron. So if we think of the neuron as an eye detector, this is the image that the neuron considers to be most eye-like. Folks usually find these pixel sets with an optimization (hill-climbing) procedure.
+
+In this paper by some Google folks with one of the world's largest neural nets, they show a "face detector" neuron and a "cat detector" neuron this way, as well as a second way: They also show the actual images that activate the neuron most strongly (figure 3, figure 16). The second approach is nice because it shows how flexible and nonlinear the network is--these high-level "detectors" are sensitive to all these images, even though they don't particularly look similar at the pixel level.
+
+Let me know if anything here is unclear or if you have any more questions.
+
+####LAYERS#########
+Convolutional Networks are a particular form of MLP, which was tailored to efficiently learn to classify images. Convolutional Networks are trainable architectures composed of multiple stages. The input and output of each stage are sets of arrays called feature maps. For example, if the input is a color image, each feature map would be a 2D array containing a color channel of the input image (for an audio input each feature map would be a 1D array, and for a video or volumetric image, it would be a 3D array). At the output, each feature map represents a particular feature extracted at all locations on the input. Each stage is composed of three layers: a filter bank layer, a non-linearity layer, and a feature pooling layer. A typical ConvNet is composed of one, two or three such 3-layer stages, followed by a classification module. Each layer type is now described for the case of image recognition.
+
+
+Trainable hierarchical vision models, and more generally image processing algorithms are usually expressed as sequences of operations or transformations. They can be well described by a modular approach, in which each module processes an input image bank and produces a new bank. The figure above is a nice graphical illustration of this approach. Each module requires the previous bank to be fully (or at least partially) available before computing its output. This causality prevents simple parallelism to be implemented across modules. However parallelism can easily be introduced within a module, and at several levels, depending on the kind of underlying operations. These forms of parallelism are exploited in Torch7.
+
+Typical ConvNets rely on a few basic modules:
+
+Filter bank layer: the input is a 3D array with n1 2D feature maps of size n2 x n3. Each component is denoted xijk, and each feature map is denoted xi. The output is also a 3D array, y composed of m1 feature maps of size m2 x m3. A trainable filter (kernel) kij in the filter bank has size l1 x l2 and connects input feature map x to output feature map yj. The module computes yj=bj+ikij∗xi where ∗ is the 2D discrete convolution operator and bj is a trainable bias parameter. Each filter detects a particular feature at every location on the input. Hence spatially translating the input of a feature detection layer will translate the output but leave it otherwise unchanged.
+
+Non-Linearity Layer: In traditional ConvNets this simply consists in a pointwise tanh() sigmoid function applied to each site (ijk). However, recent implementations have used more sophisticated non-linearities. A useful one for natural image recognition is the rectified sigmoid Rabs: abs(tanh(gi)) where gi is a trainable gain parameter. The rectified sigmoid is sometimes followed by a subtractive and divisive local normalization N, which enforces local competition between adjacent features in a feature map, and between features at the same spatial location.
+
+Feature Pooling Layer: This layer treats each feature map separately. In its simplest instance, it computes the average values over a neighborhood in each feature map. Recent work has shown that more selective poolings, based on the LP-norm, tend to work best, with P=2, or P=inf (also known as max pooling). The neighborhoods are stepped by a stride larger than 1 (but smaller than or equal the pooling neighborhood).This results in a reduced-resolution output feature map which is robust to small variations in the location of features in the previous layer. The average operation is sometimes replaced by a max PM. Traditional ConvNets use a pointwise tanh() after the pooling layer, but more recent models do not. Some ConvNets dispense with the separate pooling layer entirely, but use strides larger than one in the filter bank layer to reduce the resolution. In some recent versions of ConvNets, the pooling also pools similar feature at the same location, in addition to the same feature at nearby locations.
+
+EPOCH: Un'epoca è la presentazione di tutte le coppie di addestramento 
+
+Momentum: è una costante tipicamente fissata a 0.8 che controlla la quantità di inerzia della modifica dei pesi delle connessione (modifica sinaptica). Questa costante da un contributo in questo modo: 
+delta_wij(t) = n*di*xj + alfa*delta_wij(t-1) , ove w sono i pesi, alfa è il momentum, n è il learning rate
+In questo modo si riducono le oscillazioni nella ricerca della soluzioni permettendo di usare learning rate più alti. 

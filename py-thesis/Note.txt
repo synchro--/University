@@ -1,0 +1,4 @@
+##Dataset 
+Dovremmo avere un dataset composto, per ogni GT, da un esempio negativo ed un esempio positivo forse? O questa cosa non c'entra nulla col tipo approccio che dobbiamo fare noi? 
+
+Le due subnetwork devono essere runnate solo 1 volta per ogni coordinata di pixel (x,y) mentre i FC devono essere eseguiti d-volte per avere un matching cost affidabile. 
