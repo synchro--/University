@@ -147,7 +147,8 @@ def decompose_model(model, layer_name, model_file):
             conv_layer = model._modules[key]
             if args.cp:
                 rank = max(conv_layer.weight.data.shape) // 3
-                rank = 50
+                if 'conv2fc' in layer_name: 
+                    rank = 50
                 decomposed = cp_decomposition_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
@@ -188,9 +189,10 @@ if __name__ == '__main__':
     
     elif args.fine_tune:
         # 1st time decomposition
-        # model = Keras_Cifar_AllConv()
+        model = Keras_Cifar_AllConv()
         # model = Keras_Cifar_classic()
-        model = torch.load('full_decomposed.pth')
+        model = torch.load('decomposed_model.pth')
+        # model = torch.load('full_decomposed.pth')
         model.load_state_dict(torch.load(args.model))
         print(torch_summarize(model))
         
@@ -226,8 +228,8 @@ if __name__ == '__main__':
                                 optimizer, exp_lr_scheduler, 50)
             test_model_cifar10(dataset.cifar10_testloader(), dec)
             
-            logname = "cp-reverse." + str(layer) + ".csv"
-            modelname = "s_cp-reverse." + str(layer) + ".pth"
+            logname = "tucker-reverse." + str(layer) + ".csv"
+            modelname = "s_tucker-reverse." + str(layer) + ".pth"
             cmd1 = "mv cifar10.csv " + logname
             cmd2 = "cp s_trained.pth " + modelname
 

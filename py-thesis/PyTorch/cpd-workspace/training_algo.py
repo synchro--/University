@@ -189,7 +189,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, epochs=25):
                     torch.save(model, "dump_model.pth")
                 
                 ## EARLY STOPPING ## 
-                if best_loss <= 0.199:
+                if best_loss <= 0.199 and epoch >= 9:
                     print('EARLY STOPPING!')
                     time_elapsed = time.time() - since
                     print('Training complete in {:.0f}m {:.0f}s'.format(
@@ -239,7 +239,7 @@ def test_model_cifar10(testloader, model):
 
     print('Accuracy of the network on the 10000 test images: %d %%' %
           (100 * correct / total))
-    print("Average prediction time %.4f %d" % (float(total_time)/(i + 1), i + 1))   
+    print("Average prediction time %.6f %d" % (float(total_time)/(i + 1), i + 1))   
 
     class_correct = list(0. for i in range(10))
     class_total = list(0. for i in range(10))
