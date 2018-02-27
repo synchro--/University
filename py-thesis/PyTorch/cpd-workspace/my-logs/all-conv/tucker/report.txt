@@ -1,0 +1,122 @@
+Modello normale allconv, senza decomposizioni. 
+Trainato da conv4 verso conv1 (reverse). 
+
+Partenza: Accuracy: 79% dopo 10 epochs
+          Loss: bassa, 0.193 
+
+
+Conv4:              acc 79% Loss: 0.023
+4+3:                acc 78% Loss: 0.018 
+4+3+2:              acc 77% Loss: 0.033
+4+3+2+1:            acc 76% Loss: 0.032
+4+3+2+CONV2FC1      acc 79% Loss: 0.184 
+
+Accuracy of the network on the 10000 test images: 80 %
+Average prediction time 0.0042 313
+Accuracy of plane : 81 %
+Accuracy of   car : 91 %
+Accuracy of  bird : 67 %
+Accuracy of   cat : 67 %
+Accuracy of  deer : 75 %
+Accuracy of   dog : 79 %
+Accuracy of  frog : 82 %
+Accuracy of horse : 86 %
+Accuracy of  ship : 91 %
+Accuracy of truck : 92 %
+
+
+drop di circa 2% 
+
+# COMPARAZIONE PARAMETRI--------------------TOTAL
+All Conv classic:                           1252480
+
+4           4154    vs.    36928            1219706   9x
+4+3         4112           18496            1205322   4.5x
+4+3+2       2218            9248            1198292   4x
+4+3+2+1     76              896             1197472   11x
+
+CONV2FC1    1180160  vs.   222140           240272    5.3x  rank1=51 rank2=93  Acc 79%
+              ""           51872            69184     17x   rank1=25 rank2=40  Acc 75%
+              ""           19064            36376     32x   rank1=15 rank2=18  Acc 75%
+
+COMBINATION OF CP AND TUCKER              
+CONV2FC1      ""           31236            48548           Acc 77%!!  
+
+
+CPU        vs.      GPU 
+0.0451              0.0030
+
+Normal              CPD 
+0.0017              0.0017 
+
+
+Conv2d (32, 32, kernel_size=(3, 3), stride=(1, 1)) VBMF Estimated ranks [11, 14]
+Keras_Cifar_AllConv (
+  (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+  (conv2): Sequential (
+    (0): Conv2d (32, 14, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((14, 32, 1, 1),), parameters=448
+    (1): Conv2d (14, 11, kernel_size=(3, 3), stride=(1, 1), bias=False), weights=((11, 14, 3, 3),), parameters=1386
+    (2): Conv2d (11, 32, kernel_size=(1, 1), stride=(1, 1)), weights=((32, 11, 1, 1), (32,)), parameters=384
+  ), weights=((14, 32, 1, 1), (11, 14, 3, 3), (32, 11, 1, 1), (32,)), parameters=2218
+  (conv3): Sequential (
+    (0): Conv2d (32, 16, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((16, 32, 1, 1),), parameters=512
+    (1): Conv2d (16, 17, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False), weights=((17, 16, 3, 3),), parameters=2448
+    (2): Conv2d (17, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 17, 1, 1), (64,)), parameters=1152
+  ), weights=((16, 32, 1, 1), (17, 16, 3, 3), (64, 17, 1, 1), (64,)), parameters=4112
+  (conv4): Sequential (
+    (0): Conv2d (64, 18, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((18, 64, 1, 1),), parameters=1152
+    (1): Conv2d (18, 13, kernel_size=(3, 3), stride=(1, 1), bias=False), weights=((13, 18, 3, 3),), parameters=2106
+    (2): Conv2d (13, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 13, 1, 1), (64,)), parameters=896
+  ), weights=((18, 64, 1, 1), (13, 18, 3, 3), (64, 13, 1, 1), (64,)), parameters=4154
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (bn_1): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True), weights=((1,), (1,)), parameters=2
+  (bn_conv1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_conv2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_conv3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (bn_conv4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (bn_4): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True), weights=((512,), (512,)), parameters=1024
+  (bn_5): BatchNorm2d(10, eps=1e-05, momentum=0.1, affine=True), weights=((10,), (10,)), parameters=20
+  (bn_6): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_7): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (conv2fc1): Conv2d (64, 512, kernel_size=(6, 6), stride=(1, 1)), weights=((512, 64, 6, 6), (512,)), parameters=1180160
+  (conv2fc2): Conv2d (512, 10, kernel_size=(1, 1), stride=(1, 1)), weights=((10, 512, 1, 1), (10,)), parameters=5130
+)
+###################
+Number of trainable params: 1198292
+
+
+
+
+
+Keras_Cifar_AllConv (
+  (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+  (conv2): Sequential (
+    (0): Conv2d (32, 14, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((14, 32, 1, 1),), parameters=448
+    (1): Conv2d (14, 11, kernel_size=(3, 3), stride=(1, 1), bias=False), weights=((11, 14, 3, 3),), parameters=1386
+    (2): Conv2d (11, 32, kernel_size=(1, 1), stride=(1, 1)), weights=((32, 11, 1, 1), (32,)), parameters=384
+  ), weights=((14, 32, 1, 1), (11, 14, 3, 3), (32, 11, 1, 1), (32,)), parameters=2218
+  (conv3): Sequential (
+    (0): Conv2d (32, 16, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((16, 32, 1, 1),), parameters=512
+    (1): Conv2d (16, 17, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False), weights=((17, 16, 3, 3),), parameters=2448
+    (2): Conv2d (17, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 17, 1, 1), (64,)), parameters=1152
+  ), weights=((16, 32, 1, 1), (17, 16, 3, 3), (64, 17, 1, 1), (64,)), parameters=4112
+  (conv4): Sequential (
+    (0): Conv2d (64, 18, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((18, 64, 1, 1),), parameters=1152
+    (1): Conv2d (18, 13, kernel_size=(3, 3), stride=(1, 1), bias=False), weights=((13, 18, 3, 3),), parameters=2106
+    (2): Conv2d (13, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 13, 1, 1), (64,)), parameters=896
+  ), weights=((18, 64, 1, 1), (13, 18, 3, 3), (64, 13, 1, 1), (64,)), parameters=4154
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (bn_1): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True), weights=((1,), (1,)), parameters=2
+  (bn_conv1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_conv2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_conv3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (bn_conv4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (bn_4): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True), weights=((512,), (512,)), parameters=1024
+  (bn_5): BatchNorm2d(10, eps=1e-05, momentum=0.1, affine=True), weights=((10,), (10,)), parameters=20
+  (bn_6): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_7): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (conv2fc1): Conv2d (64, 512, kernel_size=(6, 6), stride=(1, 1)), weights=((512, 64, 6, 6), (512,)), parameters=1180160
+  (conv2fc2): Conv2d (512, 10, kernel_size=(1, 1), stride=(1, 1)), weights=((10, 512, 1, 1), (10,)), parameters=5130
+)
+###################
+Number of trainable params: 1198292

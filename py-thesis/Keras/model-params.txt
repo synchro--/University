@@ -1,0 +1,6 @@
+## MobileNet-All Conv    ##
+---------------------------
+Total params: 26,655
+Trainable params: 25,077
+Non-trainable params: 1,578
+

@@ -25,12 +25,13 @@ import copy
 
 
 # Train and Validation
-def train_model_val(dataloader, model, criterion, optimizer, scheduler, epochs=25):
-    model_file='newcifar10.pth'
+def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=50):
+    model_file='s_val.pth'
     since = time.time()
     use_gpu = torch.cuda.is_available()
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+    train_loss_to_plot = 10    
 
     for epoch in range(epochs):
         print('Epoch {}/{}'.format(epoch+1, epochs))
@@ -46,11 +47,12 @@ def train_model_val(dataloader, model, criterion, optimizer, scheduler, epochs=2
 
             running_loss = 0.0
             running_corrects = 0
+            total = 0
 
             # Iterate over data.
-            for data in dataloaders[phase]:
+            for i,batch in enumerate(dataloaders[phase]):
                 # get the inputs
-                inputs, labels = data
+                inputs, labels = batch
 
                 # wrap them in Variable
                 if use_gpu:
@@ -74,19 +76,53 @@ def train_model_val(dataloader, model, criterion, optimizer, scheduler, epochs=2
 
                 # statistics
                 # loss * batch_size
-                running_loss += loss.data[0] * inputs.size(0)
+                running_loss += loss.data[0]
                 running_corrects += torch.sum(preds == labels.data)
+                total+= inputs.size(0)
 
-            epoch_loss = running_loss / dataset_sizes[phase]
-            epoch_acc = running_corrects / dataset_sizes[phase]
+            batch_size = inputs.size(0) # len(batch) or dataloader[phase].batch_size
+            epoch_loss = running_loss / i+1
+            epoch_acc = 100* running_corrects / (total)
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
 
+            if phase == 'train':
+                train_loss_to_plot = epoch_loss
+            
+            else: 
+                # ============ Logging ============#
+                # (1) Log the scalar values
+                info={
+                    'loss': train_loss_to_plot, #train loss
+                    'accuracy': epoch_acc #val accuracy 
+                }
+
+                # (2) Log CSV file
+                log_csv(epoch, info['accuracy'], info['loss'])
+                # (3) Tensorboard specific logging
+                tensorboard_log(epoch, model, info)
+
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
+                print('Acc improved from %.3f to %.3f'
+                        % (best_acc, epoch_acc))
+                print('Saving model to ' + model_file + "...\n")
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
+                torch.save(model.state_dict(), model_file)            
+            
+            ## EARLY STOPPING ##
+            if train_loss_to_plot <= 0.150 and epoch >= 2:
+                print('EARLY STOPPING!')
+                print(train_loss_to_plot)
+                time_elapsed=time.time() - since
+                print('Training complete in {:.0f}m {:.0f}s'.format(
+                    time_elapsed // 60, time_elapsed % 60))
+                print('Best val Acc: {:4f}'.format(best_acc))
+                # load best model weights
+                model.load_state_dict(best_model_wts)
+                return model
 
         print()
 
@@ -103,6 +139,8 @@ def train_model_val(dataloader, model, criterion, optimizer, scheduler, epochs=2
 # Train without a validation folder
 def train_model(trainloader, model, criterion, optimizer, scheduler, epochs=25):
     use_gpu = torch.cuda.is_available()
+    if use_gpu: 
+        model.cuda() 
     model.train(True)  # Set model to training mode
     since = time.time()
 

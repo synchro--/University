@@ -5,6 +5,13 @@
 *test
 *train
 *events* 
+
+#Pytorch 
 *.pth*
 *__pycache__*
 *.mat*
+*inferno*
+
+# Keras models 
+*.h5
+*.hdf5

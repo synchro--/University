@@ -1,0 +1,45 @@
+############################
+CIFAR custom CPD model: Finetuning
+Freeze layer below: 1 Freeze layer above: 1
+4th convolutional layer with  CPD
+rank=128lr=0.0010 epochs=6
+Testing:
+Test loss: 14.506286
+Test accuracy: 0.100000
+
+############################
+CIFAR custom CPD model: Finetuning
+Freeze layer below: 1 Freeze layer above: 0
+4th convolutional layer with  CPD
+rank=128lr=0.0001 epochs=6
+Testing:
+Test loss: 14.506286
+Test accuracy: 0.100000
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below: 1 Freeze layer above: 1
+2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=6
+Testing:
+Test loss: 2.528935
+Test accuracy: 0.841700
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below: 1 Freeze layer above: 0
+2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=6
+Testing:
+Test loss: 2.091849
+Test accuracy: 0.867800
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below: 1 Freeze layer above: 0
+2nd convolutional layer with  CPD
+rank=100 lr=0.0000 epochs=6
+Testing:
+Test loss: 2.027515
+Test accuracy: 0.872800
+

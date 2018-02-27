@@ -1,0 +1,198 @@
+############################
+MNIST simple model: Finetuning
+2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=6
+Testing:
+Test loss: 11.964462
+Test accuracy: 0.257700
+
+############################
+MNIST simple model: Finetuning
+2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=12
+Testing:
+Test loss: 14.446649
+Test accuracy: 0.103700
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=12
+Testing:
+Test loss: 14.425695
+Test accuracy: 0.105000
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=6
+Testing:
+Test loss: 11.072792
+Test accuracy: 0.313000
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=12
+Testing:
+Test loss: 10.392948
+Test accuracy: 0.355200
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=12
+Testing:
+Test loss: 12.792932
+Test accuracy: 0.206300
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=6
+Testing:
+Test loss: 14.288691
+Test accuracy: 0.113500
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=5
+Testing:
+Test loss: 4.001822
+Test accuracy: 0.750500
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=5
+Testing:
+Test loss: 3.600867
+Test accuracy: 0.775500
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=5
+Testing:
+Test loss: 3.204379
+Test accuracy: 0.799000
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=5
+Testing:
+Test loss: 2.207209
+Test accuracy: 0.213200
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=6
+Testing:
+Test loss: 2.206073
+Test accuracy: 0.210400
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=6
+Testing:
+Test loss: 2.206073
+Test accuracy: 0.210400
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=6
+Testing:
+Test loss: 3.921398
+Test accuracy: 0.755500
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=6
+Testing:
+Test loss: 2.064136
+Test accuracy: 0.871300
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=5
+Testing:
+Test loss: 8.831720
+Test accuracy: 0.451900
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=5
+Testing:
+Test loss: 8.605238
+Test accuracy: 0.466100
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=5
+Testing:
+Test loss: 8.827299
+Test accuracy: 0.452300
+
+############################
+MNIST simple model: Finetuning
+Freeze-other-layers %d2nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=5
+Testing:
+Test loss: 14.454708
+Test accuracy: 0.103200
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below 1Freeze layer above 02nd convolutional layer with  CPD
+rank=100 lr=0.0010 epochs=6
+Testing:
+Test loss: 14.454708
+Test accuracy: 0.103200
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below 1Freeze layer above 12nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=6
+Testing:
+Test loss: 12.873523
+Test accuracy: 0.201300
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below: 1 Freeze layer above: 1
+2nd convolutional layer with  CPD
+rank=100 lr=0.0001 epochs=6
+Testing:
+Test loss: 12.641240
+Test accuracy: 0.215600
+
+############################
+MNIST simple model: Finetuning
+Freeze layer below: 1 Freeze layer above: 0
+2nd convolutional layer with  CPD
+rank=100 lr=0.0000 epochs=6
+Testing:
+Test loss: 8.237460
+Test accuracy: 0.488300
+
+############################
+MNIST All Convolutional CPD Architecture
+wt BN - but not on the last conv layers 
+optimization: Adam 
+Epochs=12
+Test loss: 0.0848119822705
+Test accuracy: 0.9734
+
+wt BN on all layers
+Test loss: 0.0808097329205
+Test accuracy: 0.9747
+

@@ -31,6 +31,28 @@ class TwoLayerNet(nn.Module):
         y_pred = self.linear2(h_relu)
         return y_pred
 
+
+
+class LenetZhang(nn.Module):
+    def __init__(self):
+        super(LenetZhang, self).__init__()
+
+        self.conv1 = nn.Conv2d(3, 192, 5)
+        self.conv2 = nn.Conv2d(3, 128, 5)
+        self.conv3 = nn.Conv2d(3, 256, 5)
+        self.fc1 = nn.Linear(2304, 512)
+        self.fc2 = nn.Linear(512, 10)
+    
+    def forward(self, x): 
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        x.view(-1, 3*3*256)
+        x = self.fc1(x)
+        x = self.fc2(x)
+        return x
+
+
 # Network defined as CP-Decomposed architecture
 class CPD_All_Conv(nn.Module):
 
@@ -291,7 +313,7 @@ class Keras_Cifar_Separable(nn.Module):
 # Network defined as in Keras, with BN and groups 
 class Keras_Cifar_Separable_Old(nn.Module):
     def __init__(self, rank1, rank2):
-        super(Keras_Cifar_Separable_old, self).__init__()
+        super(Keras_Cifar_Separable_Old, self).__init__()
         # hyperparams
         self.kern = 3  # for all layers
         self.filt_size1 = 32

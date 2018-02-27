@@ -5,6 +5,8 @@ import torch
 import torch.nn as nn
 from VBMF import VBMF
 
+from pytorch_utils import xavier_init
+
 
 
 def cp_decomposition_conv_layer(layer, rank):
@@ -122,15 +124,18 @@ def cp_decomposition_conv_layer_BN(layer, rank):
             dilation = layer.dilation,
             groups = horizontal.shape[1],
             bias = False)
-
+    
+    add_bias = True and layer.bias is not None or False and not layer.bias
+    
     pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels = last.shape[1], \
             out_channels = last.shape[0],
             kernel_size = 1, \
             stride = layer.stride,
             padding = 0,
             dilation = layer.dilation,
-            bias = True)
-    pointwise_r_to_t_layer.bias.data = layer.bias.data
+            bias = add_bias)
+    if add_bias:
+        pointwise_r_to_t_layer.bias.data = layer.bias.data
 
     # Transpose dimensions back to what PyTorch expects
     depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(\
@@ -154,11 +159,13 @@ def cp_decomposition_conv_layer_BN(layer, rank):
 
     # create BatchNorm layers wrt to decomposed layers weights
     bn_first = nn.BatchNorm2d(first.shape[1])
-    bn_middle = nn.BatchNorm2d(vertical.shape[1]) 
+    bn_vertical = nn.BatchNorm2d(vertical.shape[1]) 
+    bn_horizontal = nn.BatchNorm2d(horizontal.shape[1])
     bn_last = nn.BatchNorm2d(last.shape[0]) 
 
-    new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer, \
-                    depthwise_horizontal_layer, pointwise_r_to_t_layer]
+    new_layers = [pointwise_s_to_r_layer, bn_first, depthwise_vertical_layer, bn_vertical, \
+                    depthwise_horizontal_layer, bn_horizontal, pointwise_r_to_t_layer, \
+                    bn_last]
     return nn.Sequential(*new_layers)
 
 def estimate_ranks(layer):
@@ -182,7 +189,8 @@ def tucker_decomposition_conv_layer(layer):
         https://github.com/CasvandenBogaard/VBMF
     """
 
-    ranks = estimate_ranks(layer)
+    #ranks = estimate_ranks(layer)
+    ranks = [25,40]
     print(layer, "VBMF Estimated ranks", ranks)
     core, [last, first] = \
         partial_tucker(layer.weight.data.numpy(), \
@@ -290,3 +298,75 @@ def tucker_decomposition_conv_layer_BN(layer):
     new_layers = [first_layer, bn_first, core_layer, bn_core, last_layer, bn_last]
     return nn.Sequential(*new_layers)
 
+
+def cp_xavier_conv_layer(layer, rank):
+    """ Gets a conv layer and a target rank, 
+        returns a nn.Sequential object with the decomposition """
+
+    # Perform CP decomposition on the layer weight tensor.
+    print(layer, rank)
+    X = layer.weight.data.numpy()
+    size = max(X.shape)
+    # Using the SVD init gives better results, but stalls for large matrices.
+    if size >= 256:
+        print("Init random")
+        last, first, vertical, horizontal = parafac(
+            X, rank=rank, init='random')
+    else:
+        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
+
+    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
+                                             out_channels=first.shape[1],
+                                             kernel_size=1,
+                                             stride=layer.stride,
+                                             padding=0,
+                                             dilation=layer.dilation,
+                                             bias=False)
+
+    depthwise_vertical_layer = torch.nn.Conv2d(in_channels=vertical.shape[1],
+                                               out_channels=vertical.shape[1],
+                                               kernel_size=(
+                                                   vertical.shape[0], 1),
+                                               stride=layer.stride,
+                                               padding=(layer.padding[0], 0),
+                                               dilation=layer.dilation,
+                                               groups=vertical.shape[1],
+                                               bias=False)
+
+    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels=horizontal.shape[1],
+                                                 out_channels=horizontal.shape[1],
+                                                 kernel_size=(
+                                                     1, horizontal.shape[0]),
+                                                 stride=layer.stride,
+                                                 padding=(0, layer.padding[0]),
+                                                 dilation=layer.dilation,
+                                                 groups=horizontal.shape[1],
+                                                 bias=False)
+
+    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels=last.shape[1],
+                                             out_channels=last.shape[0],
+                                             kernel_size=1,
+                                             stride=layer.stride,
+                                             padding=0,
+                                             dilation=layer.dilation,
+                                             bias=True)
+    pointwise_r_to_t_layer.bias.data = layer.bias.data
+
+    # Transpose dimensions back to what PyTorch expects
+    depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(
+        vertical.transpose(1, 0), axis=1), axis=-1)
+    depthwise_horizontal_layer_weights = np.expand_dims(np.expand_dims(
+        horizontal.transpose(1, 0), axis=1), axis=1)
+    pointwise_s_to_r_layer_weights = np.expand_dims(
+        np.expand_dims(first.transpose(1, 0), axis=-1), axis=-1)
+    pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(
+        last, axis=-1), axis=-1)
+
+    new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer,
+                  depthwise_horizontal_layer, pointwise_r_to_t_layer]
+    
+    # Xavier init: 
+    for l in new_layers:
+        xavier_init(l)
+
+    return nn.Sequential(*new_layers)

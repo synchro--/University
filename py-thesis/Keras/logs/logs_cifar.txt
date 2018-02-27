@@ -1,0 +1,38 @@
+############################
+CIFAR custom CPD model: Finetuning
+Freeze layer below: 1 Freeze layer above: 1
+4th convolutional layer with  CPD
+rank=128 lr=0.0010 epochs=6
+Testing:
+Test loss: 14.506286
+Test accuracy: 0.100000
+
+############################
+CIFAR custom CPD model: Finetuning
+Freeze layer below: 1 Freeze layer above: 0
+4th convolutional layer with  CPD
+rank=128 lr=0.0001 epochs=6
+Testing:
+Test loss: 14.506286
+Test accuracy: 0.100000
+
+############################
+CIFAR custom CPD model: Finetuning
+Freeze layer below: 0 Freeze layer above: 0
+4th convolutional layer with  CPD
+rank=128 lr=0.0001 epochs=6
+Testing:
+Test loss: 14.506286
+Test accuracy: 0.100000
+
+############################
+CIFAR custom architecture: 
+4-decomposition layers with BatchNorm
+optimization: Adam
+Test loss: 0.457540299761
+Test accuracy: 0.8473
+
+
+Val Acc 25  epochs: 0.783
+Val Acc 50  epochs: 0.817
+Val Acc 100 epochs: 0.

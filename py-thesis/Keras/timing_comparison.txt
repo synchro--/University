@@ -1,0 +1,18 @@
+## PAPER IMPLEMENTATION 
+Training total time: ====>  2564.1861157417297
+10000/10000 [==============================] - 10s 1ms/step
+
+Testing total time: ====>  10.050838470458984
+Test loss: 1.05452509613
+Test accuracy: 0.6202
+
+
+## CPD Arch IMPLEMENTATION, without input_shape spec
+Training total time: ====>  2544.0237996578217
+10000/10000 [==============================] - 10s 969us/step
+
+Testing total time: ====>  9.689671516418457
+Test loss: 0.898308576202
+Test accuracy: 0.6874
+
+

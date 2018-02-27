@@ -14,9 +14,8 @@ import time
 import tensorly as tl
 import tensorly
 from itertools import chain
-from decompositions import cp_decomposition_conv_layer, tucker_decomposition_conv_layer
 
-
+from decompositions import *
 from pytorch_utils import *
 from training_algo import *
 from torch.optim import lr_scheduler
@@ -64,7 +63,9 @@ class Trainer:
     def __init__(self, train_path, test_path, model, optimizer):
         # self.train_data_loader = dataset.loader(train_path)
         # self.test_data_loader = dataset.test_loader(test_path)
-        self.train_data_loader = dataset.cifar10_trainloader()
+        # self.train_data_loader = dataset.cifar10_trainloader()
+        self.train_data_loader, self.valid_data_loader = get_train_valid_loader(data_dir='./data',
+         batch_size=32, augment=False, random_seed=7)
         self.test_data_loader = dataset.cifar10_testloader()
 
         self.optimizer = optimizer
@@ -136,28 +137,24 @@ def get_args():
 
 
 
-## TODO: add support for Sequential models. 
-## This works only for standard models, without submodules 
 def decompose_model(model, layer_name, model_file):
     print(model)
     model.cpu()
-    # N = len(model._modules.keys())
-    for i, key in enumerate(model._modules.keys()):
-        if key == layer_name:
-            conv_layer = model._modules[key]
+    for i, (name, conv_layer) in enumerate(model.named_modules()):
+        if name == layer_name:
             if args.cp:
                 rank = max(conv_layer.weight.data.shape) // 3
-                if 'conv2fc' in layer_name: 
-                    rank = 50
-                decomposed = cp_decomposition_conv_layer(conv_layer, rank)
+                if 'conv2fc' in layer_name:
+                    rank = 20
+                # decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank)
+                decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
 
-            model._modules[key] = decomposed
+    model._modules[layer_name] = decomposed
 
     torch.save(model, model_file)
-    return model 
-
+    return model
 
 
 if __name__ == '__main__':
@@ -177,6 +174,7 @@ if __name__ == '__main__':
     elif args.full_decompose: 
         layers = args.layers
         model = Keras_Cifar_AllConv()
+        model.load_state_dict(torch.load(args.model))
         for i, layer in enumerate(layers):
             dec = decompose_model(model, layer, 'decomposed_model.pth')
             for param in dec.parameters():
@@ -194,14 +192,14 @@ if __name__ == '__main__':
         model = torch.load('decomposed_model.pth')
         # model = torch.load('full_decomposed.pth')
         model.load_state_dict(torch.load(args.model))
+        # model = torch.load('LAST-tucker.pth')
         print(torch_summarize(model))
         
         layers = args.layers
 
         for i, layer in enumerate(layers):
-	    #if i!=0: 
-            #    dec.load_state_dict(torch.load("s_trained.pth"))
             dec = decompose_model(model, layer, 'decomposed_model.pth')
+            dec = model 
             dec.cuda()
 
             for param in dec.parameters():
@@ -210,11 +208,10 @@ if __name__ == '__main__':
             print('###################')
             print('Number of trainable params:', sum([param.nelement() for param in dec.parameters()]))
 
-
             ### Training with my training procedure ###
             if args.cp:
                 lr = 0.001
-                step_size = 25 
+                step_size = 10
             else:
                 lr = 0.001
                 step_size = 35
@@ -222,20 +219,35 @@ if __name__ == '__main__':
             optimizer = optim.Adam(dec.parameters(), lr=lr)
             # Decay LR by a factor of 0.1 every X epochs
             exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
-            trainloader = dataset.cifar10_trainloader()
+            loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=False,
+            random_seed=7)
+            dataloaders = {'train': loaders[0], 'val': loaders[1]}
             criterion = torch.nn.CrossEntropyLoss()
-            dec = train_model(trainloader, dec, criterion,
-                                optimizer, exp_lr_scheduler, 50)
-            test_model_cifar10(dataset.cifar10_testloader(), dec)
             
-            logname = "tucker-reverse." + str(layer) + ".csv"
-            modelname = "s_tucker-reverse." + str(layer) + ".pth"
-            cmd1 = "mv cifar10.csv " + logname
-            cmd2 = "cp s_trained.pth " + modelname
+            dec = train_model(dataset.cifar10_trainloader(), dec, criterion,
+                            optimizer, exp_lr_scheduler, 25)
+            
+            
+            train_model_val(dataloaders, dec, criterion, 
+                                optimizer, exp_lr_scheduler, 25)
+            
+            # test_model_cifar10(dataset.cifar10_testloader(), dec)
+            
+            if args.cp:
+                logname = "cp-reverse." + str(layer) + ".csv"
+                modelname = "s_cp-reverse." + str(layer) + ".pth"
+                cmd1 = "mv cifar10.csv " + logname
+                cmd2 = "cp s_trained.pth " + modelname
+            else:
+                logname = "tucker-reverse." + str(layer) + ".csv"
+                modelname = "s_tucker-reverse." + str(layer) + ".pth"
+                cmd1 = "mv cifar10.csv " + logname
+                cmd2 = "cp s_trained.pth " + modelname
 
             subprocess.call(cmd1.split())
             subprocess.call(cmd2.split())
-        
-        # Save last model
-        torch.save(dec, 'finetuned.pth')
+            
+            # Save last model
+            torch.save(dec, 'finetuned.pth')
+
 
