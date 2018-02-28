@@ -1,0 +1,137 @@
+% Appendix A
+
+\chapter{MLP: Codice addizionale} % Main appendix title
+
+\label{AppendixA} % Change X to a consecutive letter; for referencing this appendix elsewhere, use \ref{AppendixX}
+
+\section{Classi in Lua}
+In Lua manca il costrutto delle classi. Si può tuttavia crearle utilizzando tables e meta-tables. Per realizzare il multi-layer perceptron si è utilizzato una piccola libreria, di seguito riportata. 
+
+\begin{lstlisting}[language={[5.2]Lua}]
+-- class.lua
+-- Compatible with Lua 5.1 (not 5.0).
+function class(base, init)
+   local c = {} -- a new class instance
+   if not init and type(base) == 'function' then
+      init = base
+      base = nil
+   elseif type(base) == 'table' then
+      -- our new class is a shallow copy of the base class!
+      for i,v in pairs(base) do
+         c[i] = v
+      end
+      c._base = base
+   end
+   -- the class will be the metatable for all its objects,
+   -- and they will look up their methods in it.
+   c.__index = c
+
+   -- expose a constructor which can be called by <classname>(<args>)
+   local mt = {}
+   mt.__call = function(class_tbl, ...)
+      local obj = {}
+      setmetatable(obj,c)
+      if init then
+         init(obj,...)
+      else
+         -- make sure that any stuff from the base class is initialized!
+         if base and base.init then
+            base.init(obj, ...)
+         end
+      end
+      return obj
+   end
+   c.init = init
+   c.is_a = function(self, klass)
+      local m = getmetatable(self)
+      while m do
+         if m == klass then return true end
+         m = m._base
+      end
+      return false
+   end
+   setmetatable(c, mt)
+   return c
+end
+\end{lstlisting}
+\section{La classe Neural\_Network}
+Nel capitolo \ref{Capitolo2} si sono mostrati i vari snippet di codice man mano che si introducevano i concetti teorici che stanno alla base di questa implementazione. Di seguito è presentata l'intera classe \texttt{Neural\_Network} :
+
+\begin{lstlisting}[language={[5.2]Lua}]
+--creating class NN in Lua, using a nice class utility
+class = require 'class'
+
+Neural_Network = class('Neural_Network')
+
+--init NN
+function Neural_Network:__init(inputs, hiddens, outputs)
+      self.inputLayerSize = inputs
+      self.hiddenLayerSize = hiddens
+      self.outputLayerSize = outputs
+      self.W1 = th.randn(net.inputLayerSize, self.hiddenLayerSize)
+      self.W2 = th.randn(net.hiddenLayerSize, self.outputLayerSize)
+end
+
+--define a forward method
+function Neural_Network:forward(X)
+   --Propagate inputs though network
+   self.z2 = th.mm(X, self.W1)
+   self.a2 = th.sigmoid(self.z2)
+   self.z3 = th.mm(self.a2, self.W2)
+   yHat = th.sigmoid(self.z3)
+   return yHat
+end
+
+function Neural_Network:d_Sigmoid(z)
+   --derivative of the sigmoid function
+   return th.exp(-z):cdiv( (th.pow( (1+th.exp(-z)),2) ) )
+end
+
+function Neural_Network:costFunction(X, y)
+   --Compute the cost for given X,y, use weights already stored in class
+   self.yHat = self:forward(X)
+   --NB torch.sum() isn't equivalent to python sum() built-in method
+   --However, for 2D arrays whose one dimension is 1, it won't make any difference
+   J = 0.5 * th.sum(th.pow((y-yHat),2))
+   return J
+end
+
+function Neural_Network:d_CostFunction(X, y)
+   --Compute derivative wrt to W1 and W2 for a given X and y
+   self.yHat = self:forward(X)
+   delta3 = th.cmul(-(y-self.yHat), self:d_Sigmoid(self.z3))
+   dJdW2 = th.mm(self.a2:t(), delta3)
+
+   delta2 = th.mm(delta3, self.W2:t()):cmul(self:d_Sigmoid(self.z2))
+   dJdW1 = th.mm(X:t(), delta2)
+
+   return dJdW1, dJdW2
+end
+
+\end{lstlisting}
+
+\section{Metodi getter e setter}
+Nella sottosezione \ref{sec:gradcheck} del capitolo \ref{Capitolo2} si è dimostrato come calcolare numericamente il gradiente. Si è fatto cenno ai \emph{getter e setter} per ottenere dei \emph{flattened gradients}, ovvero "srotolare" i tensori dei gradienti in vettori monodimensionali. I metodi, qui mostrati, necessitano di una comprensione dei comandi di Torch. Data la maggiore popolarità di Python \emph{Numpy}, nel caso il lettore fosse più familiare con quest'ultimo, nell'appendice \ref{AppendixB} è mostrata anche una tabella di equivalenza dei metodi fra i due. 
+\begin{lstlisting}[language={[5.2]Lua}]
+--Helper Functions for interacting with other classes:
+function Neural_Network:getParams()
+   --Get W1 and W2 unrolled into a vector
+   params = th.cat((self.W1:view(self.W1:nElement())), (self.W2:view(self.W2:nElement())))
+   return params
+end
+
+function Neural_Network:setParams(params)
+   --Set W1 and W2 using single paramater vector.
+   W1_start = 1 --index starts at 1 in Lua
+   W1_end = self.hiddenLayerSize * self.inputLayerSize
+   self.W1 = th.reshape(params[{ {W1_start, W1_end} }], self.inputLayerSize, self.hiddenLayerSize)
+   W2_end = W1_end + self.hiddenLayerSize*self.outputLayerSize
+   self.W2 = th.reshape(params[{ {W1_end+1, W2_end} }], self.hiddenLayerSize, self.outputLayerSize)
+end
+
+--this is like the getParameters(): method in the NN module of torch, i.e. compute the gradients and returns a flattened grads array
+function Neural_Network:computeGradients(X, y)
+   dJdW1, dJdW2 = self:d_CostFunction(X, y)
+   return th.cat((dJdW1:view(dJdW1:nElement())), (dJdW2:view(dJdW2:nElement())))
+end
+\end{lstlisting}
