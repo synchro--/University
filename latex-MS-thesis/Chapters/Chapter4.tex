@@ -118,14 +118,37 @@ For this purpose, given a matrix $M$, the best method to find a truncated matrix
 
 The Eckart-Young theorem \parencite{Weckart} states that the best solution to the problem is given by its SVD decomposition. 
 
-
 \subsubsection{SVD on Convnets}
+Given its application to speed up convolution filters, it is not surprising that SVD has been one of the methods used in recent developments on deep CNN compression, as portrayed in chapter \ref{Chapter2}.
+In particular, the work of Cheng et al. \parencite{tai2015SVD} applies an original decomposition scheme which is based on top of SVD. 
 
+Given a conv layer with weights $\mathcal{W} = [T \times S \times d \times d]$, it consists in constructing a bigger matrix $\mathcal{B}$ built with the stack of feature maps, namely spreading the input channels kernels on rows and kernel composing the filter bank on column. Then, it computes the SVD of the so obtained matrix and ... 
+ 
 
-$$ (U_{n \times t}\Sigma_{t \times t}V^T_{m \times t})x + b $$ = $$ U_{n \times t} ( \Sigma_{t \times t}V^T_{m \times t} x ) + b $$
+\subsubsection{SVD on fully-connected layers}
+Beside convolution, there is another way to leverage on SVD in convnets and that is the fully-connected layers. In practice, fully-connected layers are just plain matrix multiplication plus a bias:
+\begin{equation}
+\label{eq:fc}
+Y = W*X+B 
+\end{equation}
+where X are the input maps and $W$ is an $m \times n$ matrix that holds the weights of the layer.  
 
+From this observation, a recipe to speed up fully-connected layers can be spotted: 
+\begin{enumerate}
+	\item compute the truncated SVD of the weight matrix $W$ keeping only the first $\mathit{r}$ singular values; 
+	\item substitute the layer with 2 smaller fully-connected ones; 
+	\item the first one will have a shape of $[m \times r]$ and no bias; 
+	\item the second will have a shape of $[ r \tiems n]$ and a bias equal to its original bias $B$.   
+\end{enumerate}
 
+The SVD decomposition of the layer is formalized as follows: 
+\begin{equation}
 
+\end{equation}
+(U_{m \times r} \Sigma_{r \times r} V^T_{n \times t}) X+ B = U_{m \times r} ( \Sigma_{r \times r}V^T_{n \times r} X) + B 
+
+This way, the total number of weights dropped from $n \times m$ to $r(n+m)$, which is dependent on the choice of the rank of the approximation $r$ and can be significant when $r$ is a much smaller than $min(n, m)$.\\
+The first reference of this approach could be find in the \emph{Fast R-CNN} paper \parencit{fast-rcnn}, an efficient implementation of RCNN \parencite{rcnn}, a very famous CNN built for region proposal and object detection. The implementation for Caffe is also available on the author github page, at \parencite{Wgithub-rcnn}.
 %--------------------------------------------------------------------
 %	SECTION 2
 %--------------------------------------------------------------------

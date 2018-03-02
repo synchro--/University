@@ -145,8 +145,8 @@ def decompose_model(model, layer_name, model_file):
             if args.cp:
                 rank = max(conv_layer.weight.data.shape) // 3
                 if 'conv2fc' in layer_name:
-                    rank = 20
-                # decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank)
+                    rank = 40
+                #decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank)
                 decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
@@ -187,12 +187,13 @@ if __name__ == '__main__':
     
     elif args.fine_tune:
         # 1st time decomposition
-        model = Keras_Cifar_AllConv()
+        # model = Keras_Cifar_AllConv()
         # model = Keras_Cifar_classic()
-        model = torch.load('decomposed_model.pth')
+        # model = torch.load('decomposed_model.pth')
         # model = torch.load('full_decomposed.pth')
-        model.load_state_dict(torch.load(args.model))
+        # model.load_state_dict(torch.load(args.model))
         # model = torch.load('LAST-tucker.pth')
+        model = torch.load('finetuned.pth') 
         print(torch_summarize(model))
         
         layers = args.layers
@@ -211,7 +212,7 @@ if __name__ == '__main__':
             ### Training with my training procedure ###
             if args.cp:
                 lr = 0.001
-                step_size = 10
+                step_size = 30
             else:
                 lr = 0.001
                 step_size = 35
@@ -225,13 +226,13 @@ if __name__ == '__main__':
             criterion = torch.nn.CrossEntropyLoss()
             
             dec = train_model(dataset.cifar10_trainloader(), dec, criterion,
-                            optimizer, exp_lr_scheduler, 25)
+                            optimizer, exp_lr_scheduler, 50)
             
             
-            train_model_val(dataloaders, dec, criterion, 
-                                optimizer, exp_lr_scheduler, 25)
+           # train_model_val(dataloaders, dec, criterion, 
+           #                     optimizer, exp_lr_scheduler, 25)
             
-            # test_model_cifar10(dataset.cifar10_testloader(), dec)
+            test_model_cifar10(dataset.cifar10_testloader(), dec)
             
             if args.cp:
                 logname = "cp-reverse." + str(layer) + ".csv"
@@ -249,5 +250,6 @@ if __name__ == '__main__':
             
             # Save last model
             torch.save(dec, 'finetuned.pth')
+
 
 

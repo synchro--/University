@@ -260,19 +260,20 @@ def test_model_cifar10(testloader, model):
     total = 0
     total_time = 0 
     model.eval()
+    model.cpu() 
 
     for i, (batch, labels) in enumerate(testloader):
-        batch = batch.cuda()
+        batch = batch
         inputs = Variable(batch, volatile=True)
         t0 = time.time() 
         outputs = model(inputs)
         t1 = time.time() 
         if i % 10 == 9 or i == 0:  
             print('Prediction time for batch %d: %.6f ' % (i+1, t1-t0))
-        if not i: 
-            total_time = total_time + (t1 - t0)
+        
+        total_time = total_time + (t1 - t0)
         _, predicted = torch.max(outputs.data, 1)
-        correct += (predicted == labels.cuda()).sum()      
+        correct += (predicted == labels.cpu()).sum()      
         total += labels.size(0)
 
     print('Accuracy of the network on the 10000 test images: %d %%' %
@@ -283,9 +284,9 @@ def test_model_cifar10(testloader, model):
     class_total = list(0. for i in range(10))
     for data in testloader:
         images, labels = data
-        outputs = model(Variable(images.cuda(), volatile=True))
+        outputs = model(Variable(images, volatile=True))
         _, predicted = torch.max(outputs.data, 1)
-        c = (predicted == labels.cuda()).squeeze()
+        c = (predicted == labels).squeeze()
         for i in range(4):
             label = labels[i]
             class_correct[label] += c[i]

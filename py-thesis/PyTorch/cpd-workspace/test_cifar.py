@@ -34,8 +34,8 @@ if len(sys.argv) == 3:
 
 model_weights = sys.argv[1]
 model.load_state_dict(torch.load(model_weights))
-model.cuda()
-#model.eval()
+model.cpu()
+model.eval()
 
 print(torch_summarize(model)) 
 print('Number of trainable params: ',sum([param.nelement() for param in model.parameters()])) 

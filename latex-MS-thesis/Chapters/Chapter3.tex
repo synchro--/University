@@ -1,21 +1,21 @@
 % Chapter Template
 
-\chapter{Reti Neurali Convoluzionali} % Main chapter title
-\label{Capitolo3}
+\chapter{Convolutional Neural Networks} % Main chapter title
+\label{Chapter3}
 \def \teoria {Figures/teoria}
 \def \path	 {Figures/C3}
 %--------------------------------------------------------------------%	SECTION 1
 %--------------------------------------------------------------------
 %% da completare
 In questo capitolo si introduce una panoramica generale sulle reti neurali convoluzionali. Essendo un argomento vasto, una trattazione teorica approfondita sarebbe materia di una tesi di laurea, ragion per cui gli argomenti sono introdotti con lo scopo di avere un'infarinatura per comprendere le applicazioni sviluppate nei capitoli successivi. 
-\section{Breve introduzione}
+\section{Introduction}
 La reti neurali convoluzionali, alle quali ci riferiremo con l'abbrevazione \emph{CNN} - dall'inglese \emph{Convolutional Neural Network}, sono un'evoluzione delle normali reti artificiali profonde caratterizzate da una particolare architettura estremamente vantaggiosa per compiti visivi (e non), che le ha rese negli anni molto efficaci e popolari. Sono state ispirate dalle ricerche biologiche di Hubel e Wiesel i quali, studiando il cervello dei gatti, avevano scoperto che la loro corteccia visiva conteneva una complessa struttura di cellule. Quest'ultime erano sensibili a piccole parti locali del campo visivo, detti campi recettivi \emph{(receptive fields)}. Agivano quindi da filtri locali perfetti per comprendere la correlazione locale degli oggetti in un'immagine. Essendo questi sistemi i più efficienti in natura per la comprensione delle immagini, i ricercatori hanno tentato di simularli. 
 
 %--------------------------------------------------------------------
 %	SECTION 2
 %--------------------------------------------------------------------
 
-\section{Architettura}
+\section{Architecture overview}
 Le CNN sono reti neurali profonde costituite da diversi strati che fungono da estrattori delle features ed una rete completamente connessa alla fine, che funge da classificatore, come raffigurato in figura \ref{fig:cnn1}. \\
 \begin{figure}[h!]
  \centering
@@ -36,7 +36,8 @@ Infine, terminati i convolutional layers, le feature maps vengono “srotolate�
 
 Il numero di strati di convoluzione è arbitrario. Inizialmente, quando le CNN divennero famose grazie a Y. LeCun, che addestrò una CNN chiamata \emph{"LeNet5"} al riconoscimento dei numeri \parencite{lenet}, questo numero era compreso tra 2-5. Nel 2012, Alex Krizhevsky et al \parencite{imagenet2012} addestrarono una rete costituita da 5 strati di convoluzione, 60 milioni di parametri e 650 mila neuroni. Ottennero la migliore percentuale d'errore al mondo sul dataset ImageNet ILSVRC-2010, contenente 1,2 milioni di immagini divise in 1000 categorie. \\
 Da allora le cose si sono evolute con una velocità disaramente, e l'ImageNet challenge del 2015, è stata vinta da una rete con 152 strati \parencite{resnet}. Nel capitolo \ref{Capitolo5} si farà un confronto tra quest'ultima rete, soprannominata \emph{"ResNet"} e la capostipite LeNet5 su un task di classificazione.   
-\subsection{Strato di Convoluzione}
+
+\subsection{Convolutional layer}
 Per comprendere appieno quello che avviene in una CNN, occorre introdurre il concetto di convoluzione fra matrici, e capire come questo sia importante per applicare dei filtri ad un'immagine digitale.
 \\
 Un’immagine digitale può essere considerata come una matrice A di dimensione MxN valori reali o discreti. Ogni valore della matrice prende il nome di pixel e i suoi indici sono anche chiamati coordinate: ogni pixel $A(m,n)$ rappresenta l’intensità nella posizione indicata dagli indici. \\ 
@@ -91,7 +92,16 @@ A questo proposito si osservi un esempio di "volume di neuroni" del primo strato
 \end{figure}\\
 Gli strati di convoluzione mostrano molte proprietà interessanti.
 In primo luogo, se l'immagine in input viene traslata, l'output della feature map sarà traslato della stessa quantità ma rimarrà invariato altrove. Questa proprietà è alla base della robustezza rispetto alle traslazioni e alle distorsioni dell'immagine in ingresso; in secondo luogo, mettendo in fila diversi strati di convoluzione si ottiene una rete capace di avere una comprensione più "astratta" dell'immagine in ingresso. Il primo strato di convoluzione si occupa di estrarre features direttamente dai pixel grezzi dell'immagine e li memorizza nelle feature maps. Questo output diviene poi l'input di un successivo livello di convoluzione, il quale andrà a fare una seconda estrazione delle caratteristiche, combinando le informazioni dello strato precedente. Da questa astrazione a più livelli deriva una maggior comprensione delle features. \\
-\subsection{Strato di ReLU}
+
+\subsection{One by one convolution}
+
+\subsection{Depthwise convolution}
+
+\subsubsection{MobileNets}
+ In the lights of these results, MobileNets have been integrated as the standard mobile-ready networks in a recent update of the popular framework Tensorflow [CITE].
+
+
+\subsection{ReLU}
 Nel capitolo \ref{Capitolo2} si è detto che la funzione sigmoide non era la più efficace. Difatti, negli anni si è stabilita con sicurezza la \emph{Rectified Linear Unit} (ReLU). La ReLU è più verosimile alla modalità di attivazione biologica dei nostri neuroni\parencite{Relu}, ed è definita come: 
 $$
 f(x) = max(0,x)
@@ -102,7 +112,9 @@ singolo più importante di tutta l'architettura per un sistema di riconoscimento
 \item la polarità delle caratteristiche è molto spesso irrilevante per riconoscere gli oggetti;
 \item la ReLU evita che quando si esegue pooling (sezione \ref{subsec:pooling}) due caratteristiche entrambe importanti ma con polarità opposte si cancellino fra loro.
 \end{enumerate}
-\subsection{Strato di Pooling}
+
+
+\subsection{Pooling layer}
 \label{subsec:pooling}
 Un'altra proprietà che si vuole ottenere per migliorare i risultati sulla visione artificiale è il riconoscimento delle features indipendentemente dalla posizione nell'immagine, perché
 l'obiettivo è quello di rafforzare l'efficacia contro le
@@ -127,7 +139,7 @@ Di questi, quello che si è dimostrato più efficace è il \emph{max pooling}, f
 \\
 Attraversando la rete si avrà gradualmente un numero di feature maps  più alto e quindi della ricchezza della rappresentazione delle features; ed una diminuzione della risoluzione dell'input. Questi fattori combinati insieme donano un forte grado di invarianza alle trasformazioni geometriche dell'input.
  
-\subsection{Strato completamente connesso (FC)}
+\subsection{Fully connected layer (FC)}
 %% menzionare che adesso si usa la convoluzione %% 
 Nello strato completamente connesso, tutti gli input provenienti dai layer di convoluzione vengono dati in ingresso ad una normale rete neurale completamente connessa che fungerà da classificatore. I calcoli in questa parte finale sono quindi uguali alle moltiplicazioni tra matrici visti nel Capitolo \ref{Capitolo2}. \\
 Ultimamente però, si è notato che, eccetto per la modalità di connessione, questi neuroni sono funzionalmente identici a quelli dei layer di convoluzione (entrambi computano moltiplicazioni fra matrici). Quindi si possono sostituire con degli strati di convoluzione che hanno un receptive field pari alla risoluzione delle immagini in input \parencite{WCS231layer}. 
@@ -147,16 +159,32 @@ In figura \ref{fig:cnn3} invece, si può osservare una CNN nell'atto di classifi
  \caption{Tipica CNN in un task di classificazione; la classe vincente è quella con la probabilità più alta, indicata alla fine}
  \label{fig:cnn3}
 \end{figure}
+
+\subsection{Normalization}
+
+\subsubsection{Xavier initialization}
+
+\subsubsection{Batch normalization}
+
+
 %--------------------------------------------------------------------
 %	SECTION 3
 %--------------------------------------------------------------------
-\section{Applicazioni e risultati}
+\section{Transfer learning}
+
+\subsection{Fine-tuning}
+
+
+%--------------------------------------------------------------------
+%	SECTION 4
+%--------------------------------------------------------------------
+\section{Applications}
 L'alta efficacia, la peculiare, vantaggiosa architettura insieme con l'enorme progresso tecnologico dell'hardware, hanno reso le CNN il sistema più promettente per compiti di visivo, con i più svariati ambiti applicativi come: riconoscimento e tagging facciale (si pensi a Facebook), ricerca intelligente di immagini (si pensi a Google Photos), automobili autonome, smartphone, robot, droni, (video)giochi ed altro. Le CNN hanno avuto eccellenti risultati anche nell'elaborazione naturale del linguaggio; nella scoperta di farmaci, poiché predicendo le interazioni tra determinate molecole e proteine hanno contribuito a scoprire potenziali biomolecole per il trattamento dell'ebola \parencite{WCNN}, tanto per citarne altri.\\
 Già 3 anni fa, in un articolo pubblicato dal dipartimento di visione artificiale del KTH \parencite{Overfeat}, si era analizzato l'utilizzo di ”OverFeat”, una CNN allenata per l'ImageNet Challenge del 2013. L'articolo sottolinea come abbiano utilizzato questa CNN “off-the-shelf” ovvero già pronta e, senza allenarla ulteriormente, testandola contro altri metodi allo stato dell'arte finemente perfezionati sviluppati fino ad allora. Come test hanno scelto attività gradualmente sempre più lontane dall'originario compito per cui OverFeat è stata addestrata e, con enorme stupore, hanno verificato che OverFeat surclassa i suddetti metodi su qualsiasi dataset (si rimanda all'articolo per i dettagli) nonostante sia stata allenata solo mediante l'ImageNet. L'articolo si chiude con una frase che qui cito:
 \begin{quote}
 \emph{“Thus, it can be concluded that from now on, deep learning with CNN has to be considered as the primary candidate in essentially any visual recognition task.”}
 \end{quote}\\
-\subsection{Confronto con l'uomo}
+\subsection{Comparison with humans}
 Nel 2011, le CNN hanno la prima volta battuto l’uomo raggiungendo un errore di 0.56\% contro l’1.16\% degli umani sul riconoscimento dei segnali stradali nella competizione “German Traffic Sign competition run by IJCNN 2011”. \\
 \\
 Due anni fa, nell'annuale competizione di ILSVRC, considerata ormai dalla comunità come le "Olimpiadi della Visione Artificale", Microsoft Research Asia ha presentato ResNet \parencite{resnet}: una CNN a 152 strati che ha abbassatto l'errore sulla classificazione (1000 classi) al \emph{solo 3.6\%}. Il risultato è impressionante, dato che un essere umano più o meno abile nel riconoscere tutte le classi ha un errore di circa 5-10\%, si veda \parencite{Wkarpa}. \\

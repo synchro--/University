@@ -51,10 +51,16 @@ def get_layer_weights(layer, numpy=True):
         return layer.weight.data
 
 def set_layer_weights(layer, tensor): 
+    '''
+    Set specified tensor as the layer weights. If sizes don't match raise exception. 
+    Args: 
+        layer: the specified layer 
+        tensor: tensor as an ndarray (Numpy)
+    '''
     if not(layer.weight.data.numpy().shape == tensor.shape):
         raise Exception('Size mismatch! Cannot asssign weights')
 
-    layer.weight.data = tensor
+    layer.weight.data = torch.from_numpy(np.float32(tensor))
         
 # Summary of a model, as in Keras .summary() method
 def torch_summarize(model, show_weights=True, show_parameters=True):

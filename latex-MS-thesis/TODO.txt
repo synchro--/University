@@ -3,7 +3,17 @@ VBMF trova una soluzione globale analitica
 
 Nakajima  et  al.  [19]  shows global  analytic  solution  of VBMF. It automatically denoises the matrix under a low-rank assumption,  therefore,  it  can  find  rank  of  denoised  low-rank matrix. Since  VBMF  can  find  matrix  rank  instead  of  tensor, the  weight  tensors have  to  be  converted  into  matrices,  which process   is   called   matricization.   Matricization   of   a   3-way tensor  can  be  done  in  three  types,such  in Figure 3,as  there are three ways to slice the tensor. Eachcaseslooksfor rank in Tdimension (Figure 3(a)), Sdimension (Figure 3(b)), and D2(Figure 3(c))dimension respectively.Figure 3. Three types of 3-way tensor matricization of a 3-way tensor.(a) Type 1 of size T×SD2. (b) Type 2 of size S×TD2. (c) Type 3 of sizeD2×TS.After calculating rank for each matrix type, we selected the maximum  rank  of  all  the  threeas  we  only  need  one  rank  for the tensor  rank.  Maximum  rank  is  selected  to  make  sure  the restorability   of   the   accuracy.   If   selecting lower   thanthe maximum  rank,  there  is  higher  probability  that  one  or  more Figure 
 
-Risultati: 
+## CPD citare Kolda & Bader (2009)
+CPD sum of outer product of rank-1 tensor, blabla
+
+- scrivere che una volta trovato il rank dobbiamo minimizzare un problema con frobenious norm e poi via ALS o NLS 
+- così poi si confronta NLS con ALS come nell'altro paper. 
+
+#########################################################################
+RISULTATI PAPERS PER IL CONFRONTO: 
+
+Risultati di quei coglioni: 
+non hanno decomposto fc
 +1.52 top1
 +1.05 top5
 x1.03 weights reduction 
@@ -11,9 +21,21 @@ x3.05 theory cost
 x1.38 CPU coast 
 
 
-## CPD citare Kolda & Bader (2009)
-CPD sum of outer product of rank-1 tensor, blabla
 
-- scrivere che una volta trovato il rank dobbiamo minimizzare un problema con frobenious norm e poi via ALS o NLS 
-- così poi si confronta NLS con ALS come nell'altro paper. 
+Risultati di Convolution wt. Low-Rank regularization: 
+
+
+Risultati di Jaderberg et al.:
+4-convnets with softmax output, dataset simile a MNIST 
+The resulting approximations require significantly less op-erations to compute, resulting in large speedups observed with a real CNN trained for scenetext character recognition: a 4.5×speedup, only a drop of 1% in classification accurac
+
+
+Risultati di Lebedev et al.:
+
+
+
+################### DUBBI DA CHIEDERE A SMATT 
+- Usare CNN, Convnets indistintamente ma specificando a inizio file. 
+- Struttura tesi, 2. state of the art 
+- forma attiva e passiva e we us our. 
 

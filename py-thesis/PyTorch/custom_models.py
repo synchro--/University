@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 
-# Example 2-Layer custom network
+# Example 2-Layer custom network 
 class TwoLayerNet(nn.Module):
     def __init__(self, D_in, H, D_out):
         """
@@ -31,9 +31,29 @@ class TwoLayerNet(nn.Module):
         y_pred = self.linear2(h_relu)
         return y_pred
 
+
+
+class LenetZhang(nn.Module):
+    def __init__(self):
+        super(LenetZhang, self).__init__()
+
+        self.conv1 = nn.Conv2d(3, 192, 5)
+        self.conv2 = nn.Conv2d(192, 128, 5)
+        self.conv3 = nn.Conv2d(128, 256, 5)
+        self.fc1 = nn.Linear(2304, 512)
+        self.fc2 = nn.Linear(512, 10)
+    
+    def forward(self, x): 
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        x.view(-1, 3*3*256)
+        x = self.fc1(x)
+        x = self.fc2(x)
+        return x
+
+
 # Network defined as CP-Decomposed architecture
-
-
 class CPD_All_Conv(nn.Module):
 
     def __init__(self, rank1, rank2, filt_size1, filt_size2, filt_fc1, last_kernel_sz, num_classes):
@@ -76,10 +96,8 @@ class CPD_All_Conv(nn.Module):
         # conv2fc
         # 4-way decomposition
         self.cpdfc1 = nn.Conv2d(64, rank1, 1)
-        self.cpdfc2 = nn.Conv2d(
-            rank1, rank1, (last_kernel_sz, 1), groups=rank1)
-        self.cpdfc3 = nn.Conv2d(
-            rank1, rank1, (1, last_kernel_sz), groups=rank1)
+        self.cpdfc2 = nn.Conv2d(rank1, rank1, (last_kernel_sz, 1), groups=rank1)
+        self.cpdfc3 = nn.Conv2d(rank1, rank1, (1, last_kernel_sz), groups=rank1)
         self.cpdfc4 = nn.Conv2d(rank1, filt_fc1, 1)
 
         # self.conv2fc1 = nn.Conv2d(64, self.filt_fc1, 5)
@@ -134,9 +152,9 @@ class CPD_All_Conv(nn.Module):
 
 
 # Network as defined in Keras
-class Keras_Cifar_classic(nn.Module):
+class Keras_Cifar_classic(nn.Module): 
     def __init__(self):
-        super(Keras_Cifar_classic, self).__init__()
+        super(Keras_Cifar_classic, self).__init__() 
 
         self.kern = 3  # for all layers
         self.filt_size1 = 32
@@ -150,14 +168,14 @@ class Keras_Cifar_classic(nn.Module):
         self.conv4 = nn.Conv2d(64, 64, 3)
 
         self.pool = nn.MaxPool2d(2, 2)
-
+        
         self.dropout_1 = nn.Dropout2d(0.25)
         self.dropout_2 = nn.Dropout2d(0.5)
 
         # fully connected
         self.fc1 = nn.Linear(64 * 6 * 6, 512)
         self.fc2 = nn.Linear(512, 10)
-        self.classifier = nn.Linear(10, 10)
+        self.classifier = nn.Linear(10,10)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -167,7 +185,7 @@ class Keras_Cifar_classic(nn.Module):
         x = F.relu(self.conv3(x))
         x = self.pool(F.relu(self.conv4(x)))
         x = self.dropout_2(x)
-        x = x.view(-1, 64 * 6 * 6)
+        x = x.view(-1, 64 * 6*6)
 
         x = self.fc1(x)
         x = self.fc2(x)
@@ -248,7 +266,7 @@ class Keras_Cifar2(nn.Module):
         return x
 
 
-# Network defined as in Keras, with BN and groups
+# Network defined as in Keras, with BN and groups 
 class Keras_Cifar_Separable(nn.Module):
     def __init__(self, rank1, rank2):
         super(Keras_Cifar_Separable, self).__init__()
@@ -264,40 +282,38 @@ class Keras_Cifar_Separable(nn.Module):
             nn.BatchNorm2d(32),
             nn.Conv2d(32, 32, 3),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(32),
+            nn.MaxPool2d(2,2),
+            nn.BatchNorm2d(32), 
             nn.Conv2d(32, 64, 3, padding=1),
             nn.BatchNorm2d(64),
             nn.Conv2d(64, 64, 3),
             nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
+            nn.MaxPool2d(2,2),
             nn.Conv2d(64, rank1, 1),
             nn.BatchNorm2d(rank1),
             nn.Conv2d(rank1, rank1, (6, 1), groups=rank1),
             nn.BatchNorm2d(rank1),
             nn.Conv2d(rank1, rank1, (1, 6), groups=rank1),
-            nn.BatchNorm2d(rank1),
+            nn.BatchNorm2d(rank1),            
             nn.Conv2d(rank1, self.filt_fc1, 1),
-            nn.ReLU(),
             nn.BatchNorm2d(self.filt_fc1),
             nn.Conv2d(self.filt_fc1, self.num_classes, 1),
-            nn.BatchNorm2d(self.num_classes),
+            nn.BatchNorm2d(self.num_classes)
         )
 
-        self.classifier = nn.Linear(10,10)
 
-    def forward(self, x):
+    def forward(self, x):    
         x = self.sequential(x)
         x = x.view(-1, self.num_classes)  # Flatten! <---
-        x = self.classifier(x)
         return x
 
 
-# Network defined as in Keras, with BN and groups
+
+# Network defined as in Keras, with BN and groups 
 class Keras_Cifar_Separable_Old(nn.Module):
     def __init__(self, rank1, rank2):
-        super(Keras_Cifar_Separable_old, self).__init__()
+        super(Keras_Cifar_Separable_Old, self).__init__()
         # hyperparams
         self.kern = 3  # for all layers
         self.filt_size1 = 32
@@ -372,7 +388,7 @@ class Keras_Cifar_AllConv(nn.Module):
         # hyperparams
         rank1 = 20
         rank2 = 5
-
+        
         self.kern = 3  # for all layers
         self.filt_size1 = 32
         self.filt_size2 = 64
@@ -403,7 +419,7 @@ class Keras_Cifar_AllConv(nn.Module):
         # self.cpdfc2 = nn.Conv2d(rank1, rank1, (6, 1), groups=1)
         # self.cpdfc3 = nn.Conv2d(rank1, rank1, (1, 6), groups=1)
         # self.cpdfc4 = nn.Conv2d(rank1, self.filt_fc1, 1)
-
+        
         # conv2fc
         self.conv2fc1 = nn.Conv2d(64, self.filt_fc1, 6)
         self.conv2fc2 = nn.Conv2d(self.filt_fc1, self.num_classes, 1)
@@ -423,7 +439,7 @@ class Keras_Cifar_AllConv(nn.Module):
         x = self.bn_conv3(x)
         x = self.pool(F.relu(self.conv4(x)))
         x = self.bn_conv4(x)
-
+        
         '''
         x = self.cpdfc1(x)
         x = self.bn_2(x)

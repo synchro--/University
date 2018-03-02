@@ -20,14 +20,15 @@ import time
 
 batch_size = 32
 num_classes = 10
-epochs = 15
+epochs = 100
 data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
 
-rank1 = 20
-rank2 = 5
+rank1 = 10
+rank2 = 20
+rank3 = 30
 
 # The data, shuffled and split between train and test sets:
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -92,11 +93,11 @@ model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 '''
-model.add(Conv2D(rank1, kernel_size=(1, 1))) 
+model.add(Conv2D(rank3, kernel_size=(1, 1))) 
 model.add(BatchNormalization())
-model.add(Conv2D(rank1, kernel_size=(5, 1)))
+model.add(Conv2D(rank3, kernel_size=(5, 1)))
 model.add(BatchNormalization())
-model.add(Conv2D(rank1, kernel_size=(1, 5)))
+model.add(Conv2D(rank3, kernel_size=(1, 5)))
 model.add(BatchNormalization())
 model.add(Conv2D(512, kernel_size=(1, 1)))
 

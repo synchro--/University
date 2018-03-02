@@ -5,15 +5,28 @@ import torch
 import torch.nn as nn
 from VBMF import VBMF
 
-from pytorch_utils import xavier_init
+from pytorch_utils import *
 
+
+def estimate_ranks(layer):
+    """ Unfold the 2 modes of the Tensor the decomposition will 
+    be performed on, and estimates the ranks of the matrices using VBMF 
+    """
+
+    weights = layer.weight.data.numpy()
+    unfold_0 = tl.base.unfold(weights, 0)
+    unfold_1 = tl.base.unfold(weights, 1)
+    _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
+    _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
+    ranks = [diag_0.shape[0], diag_1.shape[1]]
+    return ranks
 
 
 def cp_decomposition_conv_layer(layer, rank):
-    """ Gets a conv layer and a target rank, 
+    """ Gets a conv layer and a target rank, di
         returns a nn.Sequential object with the decomposition """
 
-    # Perform CP decomposition on the layer weight tensor. 
+    # Perform CP decomposition on the layer weight tensor.
     print(layer, rank)
     X = layer.weight.data.numpy()
     size = max(X.shape)
@@ -69,6 +82,16 @@ def cp_decomposition_conv_layer(layer, rank):
     pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(\
         last, axis = -1), axis = -1)
 
+    set_layer_weights(depthwise_horizontal_layer,
+                     depthwise_horizontal_layer_weights)
+    set_layer_weights(depthwise_vertical_layer,
+                      depthwise_vertical_layer_weights)
+    set_layer_weights(pointwise_s_to_r_layer,
+                      pointwise_s_to_r_layer_weights)
+    set_layer_weights(pointwise_r_to_t_layer,
+                      pointwise_r_to_t_layer_weights)
+
+    '''
     # Fill in the weights of the new layers
     depthwise_horizontal_layer.weight.data = \
         torch.from_numpy(np.float32(depthwise_horizontal_layer_weights))
@@ -78,6 +101,7 @@ def cp_decomposition_conv_layer(layer, rank):
         torch.from_numpy(np.float32(pointwise_s_to_r_layer_weights))
     pointwise_r_to_t_layer.weight.data = \
         torch.from_numpy(np.float32(pointwise_r_to_t_layer_weights))
+    '''
 
     new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer, \
                     depthwise_horizontal_layer, pointwise_r_to_t_layer]
@@ -88,7 +112,7 @@ def cp_decomposition_conv_layer_BN(layer, rank):
     """ Gets a conv layer and a target rank, 
         returns a nn.Sequential object with the decomposition """
 
-    # Perform CP decomposition on the layer weight tensor. 
+    # Perform CP decomposition on the layer weight tensor.
     print(layer, rank)
     X = layer.weight.data.numpy()
     size = max(X.shape)
@@ -124,9 +148,9 @@ def cp_decomposition_conv_layer_BN(layer, rank):
             dilation = layer.dilation,
             groups = horizontal.shape[1],
             bias = False)
-    
+
     add_bias = True and layer.bias is not None or False and not layer.bias
-    
+
     pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels = last.shape[1], \
             out_channels = last.shape[0],
             kernel_size = 1, \
@@ -159,27 +183,15 @@ def cp_decomposition_conv_layer_BN(layer, rank):
 
     # create BatchNorm layers wrt to decomposed layers weights
     bn_first = nn.BatchNorm2d(first.shape[1])
-    bn_vertical = nn.BatchNorm2d(vertical.shape[1]) 
+    bn_vertical = nn.BatchNorm2d(vertical.shape[1])
     bn_horizontal = nn.BatchNorm2d(horizontal.shape[1])
-    bn_last = nn.BatchNorm2d(last.shape[0]) 
+    bn_last = nn.BatchNorm2d(last.shape[0])
 
     new_layers = [pointwise_s_to_r_layer, bn_first, depthwise_vertical_layer, bn_vertical, \
                     depthwise_horizontal_layer, bn_horizontal, pointwise_r_to_t_layer, \
                     bn_last]
     return nn.Sequential(*new_layers)
 
-def estimate_ranks(layer):
-    """ Unfold the 2 modes of the Tensor the decomposition will 
-    be performed on, and estimates the ranks of the matrices using VBMF 
-    """
-
-    weights = layer.weight.data.numpy()
-    unfold_0 = tl.base.unfold(weights, 0) 
-    unfold_1 = tl.base.unfold(weights, 1)
-    _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
-    _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
-    ranks = [diag_0.shape[0], diag_1.shape[1]]
-    return ranks
 
 
 def tucker_decomposition_conv_layer(layer):
@@ -205,7 +217,7 @@ def tucker_decomposition_conv_layer(layer):
             dilation = layer.dilation,
             bias = False)
 
-    # A regular 2D convolution layer with R3 input channels 
+    # A regular 2D convolution layer with R3 input channels
     # and R3 output channels
     core_layer = torch.nn.Conv2d(in_channels = core.shape[1], \
             out_channels = core.shape[0],
@@ -225,7 +237,7 @@ def tucker_decomposition_conv_layer(layer):
             bias = True)
 
     last_layer.bias.data = layer.bias.data
-    
+
     # Transpose add dimensions to fit into the PyTorch tensors
     first = first.transpose((1, 0))
     first_layer.weight.data = torch.from_numpy(np.float32(\
@@ -260,7 +272,7 @@ def tucker_decomposition_conv_layer_BN(layer):
             dilation = layer.dilation,
             bias = False)
 
-    # A regular 2D convolution layer with R3 input channels 
+    # A regular 2D convolution layer with R3 input channels
     # and R3 output channels
     core_layer = torch.nn.Conv2d(in_channels = core.shape[1], \
             out_channels = core.shape[0],
@@ -280,12 +292,12 @@ def tucker_decomposition_conv_layer_BN(layer):
             bias = True)
 
     last_layer.bias.data = layer.bias.data
-    
-    # Add BatchNorm between decomposed layers 
+
+    # Add BatchNorm between decomposed layers
     bn_first = nn.BatchNorm2d(first.shape[1])
-    bn_core = nn.BatchNorm2d(core.shape[0]) 
-    bn_last = nn.BatchNorm2d(last.shape[0]) 
-    
+    bn_core = nn.BatchNorm2d(core.shape[0])
+    bn_last = nn.BatchNorm2d(last.shape[0])
+
     # Transpose add dimensions to fit into the PyTorch tensors
     first = first.transpose((1, 0))
     first_layer.weight.data = torch.from_numpy(np.float32(\
@@ -364,8 +376,8 @@ def cp_xavier_conv_layer(layer, rank):
 
     new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer,
                   depthwise_horizontal_layer, pointwise_r_to_t_layer]
-    
-    # Xavier init: 
+
+    # Xavier init:
     for l in new_layers:
         xavier_init(l)
 

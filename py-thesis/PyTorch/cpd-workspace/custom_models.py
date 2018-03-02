@@ -38,8 +38,8 @@ class LenetZhang(nn.Module):
         super(LenetZhang, self).__init__()
 
         self.conv1 = nn.Conv2d(3, 192, 5)
-        self.conv2 = nn.Conv2d(3, 128, 5)
-        self.conv3 = nn.Conv2d(3, 256, 5)
+        self.conv2 = nn.Conv2d(192, 128, 5)
+        self.conv3 = nn.Conv2d(128, 256, 5)
         self.fc1 = nn.Linear(2304, 512)
         self.fc2 = nn.Linear(512, 10)
     
