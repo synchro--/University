@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+from collections import OrderedDict
 
 # Example 2-Layer custom network 
 class TwoLayerNet(nn.Module):
@@ -32,23 +33,44 @@ class TwoLayerNet(nn.Module):
         return y_pred
 
 
-
 class LenetZhang(nn.Module):
     def __init__(self):
         super(LenetZhang, self).__init__()
 
-        self.conv1 = nn.Conv2d(3, 192, 5)
-        self.conv2 = nn.Conv2d(192, 128, 5)
-        self.conv3 = nn.Conv2d(128, 256, 5)
-        self.fc1 = nn.Linear(2304, 512)
-        self.fc2 = nn.Linear(512, 10)
+        self.conv1 = nn.Conv2d(3, 96, (5,5), padding=(2,2))  
+        self.conv2 = nn.Conv2d(96, 128, (5,5), padding=(2,2))
+        self.conv3 = nn.Conv2d(128, 256, (5,5), padding=(2,2))
+        self.conv4 = nn.Conv2d(256, 64, (1,1), padding=(0,0))
+
+        self.fc1 = nn.Linear(1024, 256)
+        self.fc2 = nn.Linear(256, 10)
+
+        self.relu = nn.ReLU(inplace=True)
+        self.pool = nn.MaxPool2d(2,2)
+        self.dropout_1 = nn.Dropout(0.5)
+        self.dropout_2 = nn.Dropout(0.5)
+        self.thres = nn.Threshold(0, 1e-6)
     
     def forward(self, x): 
         x = self.conv1(x)
+        x = self.relu(x)
+        x = self.pool(x)
         x = self.conv2(x)
+        x = self.relu(x)
+        x = self.pool(x)
         x = self.conv3(x)
-        x.view(-1, 3*3*256)
+        x = self.relu(x)
+        x = self.pool(x)
+
+        x = self.conv4(x)
+        x = self.relu(x)
+        #print(x.shape)
+        x = x.view(-1, torch.numel(x[0]))
+        #print(x.shape) 
+        x = self.dropout_1(x)
         x = self.fc1(x)
+        x = self.thres(x)
+        x = self.dropout_2(x)
         x = self.fc2(x)
         return x
 
@@ -264,6 +286,46 @@ class Keras_Cifar2(nn.Module):
         x = x.view(-1, self.num_classes)  # Flatten! <---
         x = self.classifier(x)
         return x
+
+
+class NIN(nn.Module): 
+    def __init__(self):
+        super(NIN, self).__init__()
+
+        self.sequential = nn.Sequential(OrderedDict([
+                ('conv1', nn.Conv2d(3, 192, 5, 1, padding=2)),
+                ('relu1', nn.ReLU()),
+                ('conv2', nn.Conv2d(192, 160,1,1, padding=0)),
+                ('relu2', nn.ReLU()),
+                ('conv3', nn.Conv2d(160, 96, 1, 1, padding=0)),
+                ('relu3', nn.ReLU()),
+                ('pool1', nn.MaxPool2d(2,2)),
+                ('dropout1', nn.Dropout2d(0.5)),
+                ('conv4', nn.Conv2d(96, 192, 5, 1, padding=2)),
+                ('relu4', nn.ReLU()),
+                ('conv5', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu5', nn.ReLU()),
+                ('conv6', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu6', nn.ReLU()),
+                ('pool2', nn.AvgPool2d(2, 2)),
+                ('dropout2', nn.Dropout2d(0.5)),
+                ('conv7', nn.Conv2d(192, 192, 3, 1, padding=1)),
+                ('relu7', nn.ReLU()),
+                ('conv8', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu8', nn.ReLU()),
+                ('conv9', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu9', nn.ReLU()),
+                ('classifier', nn.Conv2d(192, 10, 1, 1, padding=0)),
+                ('pool3', nn.AvgPool2d(8,1)),
+            ]))
+
+        def forward(self, x): 
+            x = self.sequential(x)
+            x = x.view(-1, 10)
+            return x
+
+
+
 
 
 # Network defined as in Keras, with BN and groups 

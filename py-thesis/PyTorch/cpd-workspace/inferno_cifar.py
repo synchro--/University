@@ -18,7 +18,7 @@ DOWNLOAD_CIFAR = True
 USE_CUDA = True
 
 # Build torch model
-model = nn.Sequential(
+'''model = nn.Sequential(
     ConvELU2D(in_channels=3, out_channels=256, kernel_size=3),
     nn.MaxPool2d(kernel_size=2, stride=2),
     ConvELU2D(in_channels=256, out_channels=256, kernel_size=3),
@@ -29,6 +29,7 @@ model = nn.Sequential(
     nn.Linear(in_features=(256 * 4 * 4), out_features=10),
     nn.Softmax()
 )
+''' 
 
 model = custom_models.LenetZhang()
 

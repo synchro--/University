@@ -173,8 +173,8 @@ if __name__ == '__main__':
     # Save the architecture in "full_decomposed.pth"
     elif args.full_decompose: 
         layers = args.layers
-        model = Keras_Cifar_AllConv()
-        model.load_state_dict(torch.load(args.model))
+        model = Keras_Cifar_Separable(20,5)
+        # model.load_state_dict(torch.load(args.model))
         for i, layer in enumerate(layers):
             dec = decompose_model(model, layer, 'decomposed_model.pth')
             for param in dec.parameters():

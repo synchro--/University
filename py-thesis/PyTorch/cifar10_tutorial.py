@@ -312,10 +312,11 @@ model_weights = 's_finetuned.pth'
 retrain = False
 
 from custom_models import *
-net = Keras_Cifar_Separable(20, 5)
-net = Net()
+
+# net = Keras_Cifar_Separable(20, 5)
+# net = Net()
 # net = torch.load(model_file)
-# net = LenetZhang() 
+net = LenetZhang() 
 
 if retrain:
     # load previous model
@@ -341,6 +342,7 @@ print('Number of trainable params:',
 import torch.optim as optim
 
 criterion = nn.CrossEntropyLoss()
+
 # optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 
@@ -431,8 +433,12 @@ print('Finished Training')
 
 
 # Decay LR by a factor of 0.1 every 10 epochs
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
-net = train_model(trainloader, net, criterion, optimizer, exp_lr_scheduler, epochs=10)
+loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=False,
+                                            random_seed=7)
+dataloaders = {'train': loaders[0], 'val': loaders[1]}
+
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+net = train_model(trainloader, net, criterion, optimizer, exp_lr_scheduler, epochs=50)
 dump_model_weights(net)
 
 net.train(False)

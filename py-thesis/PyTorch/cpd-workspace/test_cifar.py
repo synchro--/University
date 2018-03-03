@@ -27,6 +27,7 @@ def cifar10_testloader(root='./data', batch_size=32, num_workers=4):
 
 #model = Keras_Cifar2(20, 5)
 model = Keras_Cifar_AllConv()
+model = LenetZhang() 
 
 if len(sys.argv) == 3:
     print("Loading model from " + str(sys.argv[2])) 
