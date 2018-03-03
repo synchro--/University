@@ -137,7 +137,7 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
 
 
 # Train without a validation folder
-def train_model(trainloader, model, criterion, optimizer, scheduler, epochs=25):
+def train_model(trainloader, model, criterion, optimizer, scheduler, loss_threshold=0.3, epochs=25):
     use_gpu = torch.cuda.is_available()
     if use_gpu: 
         model.cuda() 
@@ -227,7 +227,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, epochs=25):
                     torch.save(model, "dump_model.pth")
                 
                 ## EARLY STOPPING ## 
-                if best_loss <= 0.199 and epoch >= 9:
+                if best_loss <= loss_threshold and epoch >= 9:
                     print('EARLY STOPPING!')
                     time_elapsed = time.time() - since
                     print('Training complete in {:.0f}m {:.0f}s'.format(
@@ -271,7 +271,8 @@ def test_model_cifar10(testloader, model):
         if i % 10 == 9 or i == 0:  
             print('Prediction time for batch %d: %.6f ' % (i+1, t1-t0))
         
-        total_time = total_time + (t1 - t0)
+        if i != 0:
+            total_time = total_time + (t1 - t0)
         _, predicted = torch.max(outputs.data, 1)
         correct += (predicted == labels.cpu()).sum()      
         total += labels.size(0)

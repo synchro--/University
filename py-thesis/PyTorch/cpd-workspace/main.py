@@ -141,13 +141,18 @@ def decompose_model(model, layer_name, model_file):
     print(model)
     model.cpu()
     for i, (name, conv_layer) in enumerate(model.named_modules()):
-        if name == layer_name:
+        ## for sequential nets, 'in' is sufficient
+        ## as long as there are not 2 homonimous layers
+        if layer_name in name: 
+            print(name)
             if args.cp:
-                rank = max(conv_layer.weight.data.shape) // 3
+                # rank = max(conv_layer.weight.data.shape) // 3
+                rank = cp_ranks(conv_layer)
+                print('rank: ', rank)
                 if 'conv2fc' in layer_name:
                     rank = 40
-                #decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank)
-                decomposed = cp_xavier_conv_layer(conv_layer, rank)
+                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank)
+                # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
 
@@ -173,8 +178,8 @@ if __name__ == '__main__':
     # Save the architecture in "full_decomposed.pth"
     elif args.full_decompose: 
         layers = args.layers
-        model = Keras_Cifar_Separable(20,5)
-        # model.load_state_dict(torch.load(args.model))
+        model = LenetZhang()
+        model.load_state_dict(torch.load(args.model))
         for i, layer in enumerate(layers):
             dec = decompose_model(model, layer, 'decomposed_model.pth')
             for param in dec.parameters():
@@ -187,13 +192,12 @@ if __name__ == '__main__':
     
     elif args.fine_tune:
         # 1st time decomposition
-        # model = Keras_Cifar_AllConv()
-        # model = Keras_Cifar_classic()
+        model = LenetZhang()
         # model = torch.load('decomposed_model.pth')
         # model = torch.load('full_decomposed.pth')
-        # model.load_state_dict(torch.load(args.model))
+        model.load_state_dict(torch.load(args.model))
         # model = torch.load('LAST-tucker.pth')
-        model = torch.load('finetuned.pth') 
+        # model = torch.load('finetuned.pth') 
         print(torch_summarize(model))
         
         layers = args.layers
@@ -220,13 +224,14 @@ if __name__ == '__main__':
             optimizer = optim.Adam(dec.parameters(), lr=lr)
             # Decay LR by a factor of 0.1 every X epochs
             exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
-            loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=False,
-            random_seed=7)
-            dataloaders = {'train': loaders[0], 'val': loaders[1]}
+            
+            # loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=False, random_seed=7)
+            #dataloaders = {'train': loaders[0], 'val': loaders[1]}
+            
             criterion = torch.nn.CrossEntropyLoss()
             
             dec = train_model(dataset.cifar10_trainloader(), dec, criterion,
-                            optimizer, exp_lr_scheduler, 50)
+                            optimizer, exp_lr_scheduler, 0.276, 50)
             
             
            # train_model_val(dataloaders, dec, criterion, 

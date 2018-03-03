@@ -7,19 +7,104 @@ from VBMF import VBMF
 
 from pytorch_utils import *
 
+# Returns tuned ranks according to the desired compression factor
+def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
+    '''
+    Compute tuned ranks according to the desired compression 
+    factor. Sometimes VBMF returns too large ranks; hence the 
+    decomposition makes the layer bigger instead of shrinking it. 
+    This function prevents it. 
+    N.B. by default, if the compression is higher than 2
+    the ranks will be untouched.
+
+    Args:
+        layer: the layer to be compressed
+        ranks : estimated ranks 
+        compression_factor: how much the layer will compressed
+        flag: string, choose compression over different decompositions. 
+              default is Tucker. 
+    Returns: 
+        the newly estimated rank according to desired compression
+    '''
+    # format is [OUT, IN, k1, k2]
+    weights= layer.weight.data.numpy()
+    T = weights.shape[0]
+    S = weights.shape[1]
+    d = weights.shape[2]
+
+    if flag == 'Tucker2':
+        compression = (d**2*S*T) / (S*ranks[0] + ranks[0]*ranks[1] * d**2 + T*ranks[1])
+        # compression must be 2 or more, otherwise arbitrary ranks will be chosen!
+        if compression <= 2: 
+            cumulative_rank = (d**2 *S*T) / (compression_factor*(S/2 + d**2 + T))
+            split_ratio = 0.5 # should be < 0.5
+            ranks[0] = cumulative_rank * split_ratio
+            ranks[1] = cumulative_rank * (1-split_ratio)
+            print('compression factor for layer {} : {}'.format(
+                weights.shape, compression_factor))
+            # Log compression factors and number of weights
+            log_compression(weights, compression_factor)
+        else: 
+            # Log the standard compression
+            log_compression(weights, compression)
+
+    
+    elif flag == 'cpd':
+        rank = ranks[0] # it is a single value
+        compression = (d**2*T*S) / rank*(S+2*d+T)
+        if compression <= 2:
+            rank = (d**2 * S * T) / (compression_factor * (S +2*d+ T))
+            ranks[0] = rank 
+            print('compression factor for layer {} : {}'.format(
+                weights.shape, compression_factor))
+            # Log compression factors and number of weights
+            log_compression(weights, compression_factor)
+        else:
+            # Log the standard compression
+            log_compression(weights, compression)
+
+    else:
+        #other cases not yet supported
+        print('Different decomposition not yet supported!')
+        raise(NotImplementedError)
+
+    return ranks
+
 
 def estimate_ranks(layer):
-    """ Unfold the 2 modes of the Tensor the decomposition will 
-    be performed on, and estimates the ranks of the matrices using VBMF 
     """
-
+    Unfold the 2 modes of the Tensor the decomposition will
+    be performed on, and estimates the ranks of the matrices using VBMF
+    """
     weights = layer.weight.data.numpy()
     unfold_0 = tl.base.unfold(weights, 0)
     unfold_1 = tl.base.unfold(weights, 1)
     _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
     _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
     ranks = [diag_0.shape[0], diag_1.shape[1]]
+
+    # Check if the VBMF ranks are small enough
+    ranks = choose_compression(
+        layer, ranks, compression_factor=5, flag='Tucker2')
     return ranks
+
+
+def cp_ranks(layer):
+    weights = layer.weight.data.numpy()
+    unfold_0 = tl.base.unfold(weights, 0)
+    unfold_1 = tl.base.unfold(weights, 1)
+    #unfold_2 = tl.base.unfold(weights, 3)
+    _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
+    _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
+    #_, diag_2, _, _ = VBMF.EVBMF(unfold_2)
+    print(diag_0.shape[0])
+    print(diag_1.shape[1]
+    rank=min(diag_0.shape[0], diag_1.shape[1])
+    ranks=[rank, rank]
+    rank, _=choose_compression(
+        layer, ranks, compression_factor=10, flag='cpd')
+    return rank
+
 
 
 def cp_decomposition_conv_layer(layer, rank):
@@ -33,57 +118,60 @@ def cp_decomposition_conv_layer(layer, rank):
     # Using the SVD init gives better results, but stalls for large matrices.
     if size >= 256:
         print("Init random")
-        last, first, vertical, horizontal = parafac(X, rank=rank, init = 'random')
+        last, first, vertical, horizontal = parafac(
+            X, rank=rank, init='random')
     else:
-        last, first, vertical, horizontal = parafac(X, rank=rank, init = 'svd')
+        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
 
-    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels = first.shape[0], \
-            out_channels = first.shape[1],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = False)
+    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
+                                             out_channels=first.shape[1],
+                                             kernel_size=1,
+                                             stride=layer.stride,
+                                             padding=0,
+                                             dilation=layer.dilation,
+                                             bias=False)
 
-    depthwise_vertical_layer = torch.nn.Conv2d(in_channels = vertical.shape[1], \
-            out_channels = vertical.shape[1],
-            kernel_size = (vertical.shape[0], 1),
-            stride = layer.stride,
-            padding = (layer.padding[0], 0),
-            dilation = layer.dilation,
-            groups = vertical.shape[1],
-            bias = False)
+    depthwise_vertical_layer = torch.nn.Conv2d(in_channels=vertical.shape[1],
+                                               out_channels=vertical.shape[1],
+                                               kernel_size=(
+                                                   vertical.shape[0], 1),
+                                               stride=layer.stride,
+                                               padding=(layer.padding[0], 0),
+                                               dilation=layer.dilation,
+                                               groups=vertical.shape[1],
+                                               bias=False)
 
-    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels = horizontal.shape[1], \
-            out_channels = horizontal.shape[1],
-            kernel_size = (1, horizontal.shape[0]),
-            stride = layer.stride,
-            padding = (0, layer.padding[0]),
-            dilation = layer.dilation,
-            groups = horizontal.shape[1],
-            bias = False)
+    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels=horizontal.shape[1],
+                                                 out_channels=horizontal.shape[1],
+                                                 kernel_size=(
+                                                     1, horizontal.shape[0]),
+                                                 stride=layer.stride,
+                                                 padding=(0, layer.padding[0]),
+                                                 dilation=layer.dilation,
+                                                 groups=horizontal.shape[1],
+                                                 bias=False)
 
-    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels = last.shape[1], \
-            out_channels = last.shape[0],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = True)
+    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels=last.shape[1],
+                                             out_channels=last.shape[0],
+                                             kernel_size=1,
+                                             stride=layer.stride,
+                                             padding=0,
+                                             dilation=layer.dilation,
+                                             bias=True)
     pointwise_r_to_t_layer.bias.data = layer.bias.data
 
     # Transpose dimensions back to what PyTorch expects
-    depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(\
-        vertical.transpose(1, 0), axis = 1), axis = -1)
-    depthwise_horizontal_layer_weights = np.expand_dims(np.expand_dims(\
-        horizontal.transpose(1, 0), axis = 1), axis = 1)
-    pointwise_s_to_r_layer_weights = np.expand_dims(\
-        np.expand_dims(first.transpose(1, 0), axis = -1), axis = -1)
-    pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(\
-        last, axis = -1), axis = -1)
+    depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(
+        vertical.transpose(1, 0), axis=1), axis=-1)
+    depthwise_horizontal_layer_weights = np.expand_dims(np.expand_dims(
+        horizontal.transpose(1, 0), axis=1), axis=1)
+    pointwise_s_to_r_layer_weights = np.expand_dims(
+        np.expand_dims(first.transpose(1, 0), axis=-1), axis=-1)
+    pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(
+        last, axis=-1), axis=-1)
 
     set_layer_weights(depthwise_horizontal_layer,
-                     depthwise_horizontal_layer_weights)
+                      depthwise_horizontal_layer_weights)
     set_layer_weights(depthwise_vertical_layer,
                       depthwise_vertical_layer_weights)
     set_layer_weights(pointwise_s_to_r_layer,
@@ -103,8 +191,8 @@ def cp_decomposition_conv_layer(layer, rank):
         torch.from_numpy(np.float32(pointwise_r_to_t_layer_weights))
     '''
 
-    new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer, \
-                    depthwise_horizontal_layer, pointwise_r_to_t_layer]
+    new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer,
+                  depthwise_horizontal_layer, pointwise_r_to_t_layer]
     return nn.Sequential(*new_layers)
 
 
@@ -119,57 +207,60 @@ def cp_decomposition_conv_layer_BN(layer, rank):
     # Using the SVD init gives better results, but stalls for large matrices.
     if size >= 256:
         print("Init random")
-        last, first, vertical, horizontal = parafac(X, rank=rank, init = 'random')
+        last, first, vertical, horizontal = parafac(
+            X, rank=rank, init='random')
     else:
-        last, first, vertical, horizontal = parafac(X, rank=rank, init = 'svd')
+        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
 
-    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels = first.shape[0], \
-            out_channels = first.shape[1],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = False)
+    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
+                                             out_channels=first.shape[1],
+                                             kernel_size=1,
+                                             stride=layer.stride,
+                                             padding=0,
+                                             dilation=layer.dilation,
+                                             bias=False)
 
-    depthwise_vertical_layer = torch.nn.Conv2d(in_channels = vertical.shape[1], \
-            out_channels = vertical.shape[1],
-            kernel_size = (vertical.shape[0], 1),
-            stride = layer.stride,
-            padding = (layer.padding[0], 0),
-            dilation = layer.dilation,
-            groups = vertical.shape[1],
-            bias = False)
+    depthwise_vertical_layer = torch.nn.Conv2d(in_channels=vertical.shape[1],
+                                               out_channels=vertical.shape[1],
+                                               kernel_size=(
+                                                   vertical.shape[0], 1),
+                                               stride=layer.stride,
+                                               padding=(layer.padding[0], 0),
+                                               dilation=layer.dilation,
+                                               groups=vertical.shape[1],
+                                               bias=False)
 
-    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels = horizontal.shape[1], \
-            out_channels = horizontal.shape[1],
-            kernel_size = (1, horizontal.shape[0]),
-            stride = layer.stride,
-            padding = (0, layer.padding[0]),
-            dilation = layer.dilation,
-            groups = horizontal.shape[1],
-            bias = False)
+    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels=horizontal.shape[1],
+                                                 out_channels=horizontal.shape[1],
+                                                 kernel_size=(
+                                                     1, horizontal.shape[0]),
+                                                 stride=layer.stride,
+                                                 padding=(0, layer.padding[0]),
+                                                 dilation=layer.dilation,
+                                                 groups=horizontal.shape[1],
+                                                 bias=False)
 
     add_bias = True and layer.bias is not None or False and not layer.bias
 
-    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels = last.shape[1], \
-            out_channels = last.shape[0],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = add_bias)
+    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels=last.shape[1],
+                                             out_channels=last.shape[0],
+                                             kernel_size=1,
+                                             stride=layer.stride,
+                                             padding=0,
+                                             dilation=layer.dilation,
+                                             bias=add_bias)
     if add_bias:
         pointwise_r_to_t_layer.bias.data = layer.bias.data
 
     # Transpose dimensions back to what PyTorch expects
-    depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(\
-        vertical.transpose(1, 0), axis = 1), axis = -1)
-    depthwise_horizontal_layer_weights = np.expand_dims(np.expand_dims(\
-        horizontal.transpose(1, 0), axis = 1), axis = 1)
-    pointwise_s_to_r_layer_weights = np.expand_dims(\
-        np.expand_dims(first.transpose(1, 0), axis = -1), axis = -1)
-    pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(\
-        last, axis = -1), axis = -1)
+    depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(
+        vertical.transpose(1, 0), axis=1), axis=-1)
+    depthwise_horizontal_layer_weights = np.expand_dims(np.expand_dims(
+        horizontal.transpose(1, 0), axis=1), axis=1)
+    pointwise_s_to_r_layer_weights = np.expand_dims(
+        np.expand_dims(first.transpose(1, 0), axis=-1), axis=-1)
+    pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(
+        last, axis=-1), axis=-1)
 
     # Fill in the weights of the new layers
     depthwise_horizontal_layer.weight.data = \
@@ -187,11 +278,10 @@ def cp_decomposition_conv_layer_BN(layer, rank):
     bn_horizontal = nn.BatchNorm2d(horizontal.shape[1])
     bn_last = nn.BatchNorm2d(last.shape[0])
 
-    new_layers = [pointwise_s_to_r_layer, bn_first, depthwise_vertical_layer, bn_vertical, \
-                    depthwise_horizontal_layer, bn_horizontal, pointwise_r_to_t_layer, \
-                    bn_last]
+    new_layers = [pointwise_s_to_r_layer, bn_first, depthwise_vertical_layer, bn_vertical,
+                  depthwise_horizontal_layer, bn_horizontal, pointwise_r_to_t_layer,
+                  bn_last]
     return nn.Sequential(*new_layers)
-
 
 
 def tucker_decomposition_conv_layer(layer):
@@ -201,54 +291,54 @@ def tucker_decomposition_conv_layer(layer):
         https://github.com/CasvandenBogaard/VBMF
     """
 
-    #ranks = estimate_ranks(layer)
-    ranks = [25,40]
+    ranks = estimate_ranks(layer)
+    # ranks = [25,40]
     print(layer, "VBMF Estimated ranks", ranks)
     core, [last, first] = \
-        partial_tucker(layer.weight.data.numpy(), \
-            modes=[0, 1], ranks=ranks, init='svd')
+        partial_tucker(layer.weight.data.numpy(),
+                       modes=[0, 1], ranks=ranks, init='svd')
 
     # A pointwise convolution that reduces the channels from S to R3
-    first_layer = torch.nn.Conv2d(in_channels = first.shape[0], \
-            out_channels = first.shape[1],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = False)
+    first_layer = torch.nn.Conv2d(in_channels=first.shape[0],
+                                  out_channels=first.shape[1],
+                                  kernel_size=1,
+                                  stride=layer.stride,
+                                  padding=0,
+                                  dilation=layer.dilation,
+                                  bias=False)
 
     # A regular 2D convolution layer with R3 input channels
     # and R3 output channels
-    core_layer = torch.nn.Conv2d(in_channels = core.shape[1], \
-            out_channels = core.shape[0],
-            kernel_size = layer.kernel_size,
-            stride = layer.stride,
-            padding = layer.padding,
-            dilation = layer.dilation,
-            bias = False)
+    core_layer = torch.nn.Conv2d(in_channels=core.shape[1],
+                                 out_channels=core.shape[0],
+                                 kernel_size=layer.kernel_size,
+                                 stride=layer.stride,
+                                 padding=layer.padding,
+                                 dilation=layer.dilation,
+                                 bias=False)
 
     # A pointwise convolution that increases the channels from R4 to T
-    last_layer = torch.nn.Conv2d(in_channels = last.shape[1], \
-            out_channels = last.shape[0],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = True)
+    last_layer = torch.nn.Conv2d(in_channels=last.shape[1],
+                                 out_channels=last.shape[0],
+                                 kernel_size=1,
+                                 stride=layer.stride,
+                                 padding=0,
+                                 dilation=layer.dilation,
+                                 bias=True)
 
     last_layer.bias.data = layer.bias.data
 
     # Transpose add dimensions to fit into the PyTorch tensors
     first = first.transpose((1, 0))
-    first_layer.weight.data = torch.from_numpy(np.float32(\
+    first_layer.weight.data = torch.from_numpy(np.float32(
         np.expand_dims(np.expand_dims(first.copy(), axis=-1), axis=-1)))
-    last_layer.weight.data = torch.from_numpy(np.float32(\
+    last_layer.weight.data = torch.from_numpy(np.float32(
         np.expand_dims(np.expand_dims(last.copy(), axis=-1), axis=-1)))
     core_layer.weight.data = torch.from_numpy(np.float32(core.copy()))
 
-
     new_layers = [first_layer, core_layer, last_layer]
     return nn.Sequential(*new_layers)
+
 
 def tucker_decomposition_conv_layer_BN(layer):
     """ Gets a conv layer, 
@@ -260,36 +350,36 @@ def tucker_decomposition_conv_layer_BN(layer):
     ranks = estimate_ranks(layer)
     print(layer, "VBMF Estimated ranks", ranks)
     core, [last, first] = \
-        partial_tucker(layer.weight.data.numpy(), \
-            modes=[0, 1], ranks=ranks, init='svd')
+        partial_tucker(layer.weight.data.numpy(),
+                       modes=[0, 1], ranks=ranks, init='svd')
 
     # A pointwise convolution that reduces the channels from S to R3
-    first_layer = torch.nn.Conv2d(in_channels = first.shape[0], \
-            out_channels = first.shape[1],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = False)
+    first_layer = torch.nn.Conv2d(in_channels=first.shape[0],
+                                  out_channels=first.shape[1],
+                                  kernel_size=1,
+                                  stride=layer.stride,
+                                  padding=0,
+                                  dilation=layer.dilation,
+                                  bias=False)
 
     # A regular 2D convolution layer with R3 input channels
     # and R3 output channels
-    core_layer = torch.nn.Conv2d(in_channels = core.shape[1], \
-            out_channels = core.shape[0],
-            kernel_size = layer.kernel_size,
-            stride = layer.stride,
-            padding = layer.padding,
-            dilation = layer.dilation,
-            bias = False)
+    core_layer = torch.nn.Conv2d(in_channels=core.shape[1],
+                                 out_channels=core.shape[0],
+                                 kernel_size=layer.kernel_size,
+                                 stride=layer.stride,
+                                 padding=layer.padding,
+                                 dilation=layer.dilation,
+                                 bias=False)
 
     # A pointwise convolution that increases the channels from R4 to T
-    last_layer = torch.nn.Conv2d(in_channels = last.shape[1], \
-            out_channels = last.shape[0],
-            kernel_size = 1, \
-            stride = layer.stride,
-            padding = 0,
-            dilation = layer.dilation,
-            bias = True)
+    last_layer = torch.nn.Conv2d(in_channels=last.shape[1],
+                                 out_channels=last.shape[0],
+                                 kernel_size=1,
+                                 stride=layer.stride,
+                                 padding=0,
+                                 dilation=layer.dilation,
+                                 bias=True)
 
     last_layer.bias.data = layer.bias.data
 
@@ -300,14 +390,14 @@ def tucker_decomposition_conv_layer_BN(layer):
 
     # Transpose add dimensions to fit into the PyTorch tensors
     first = first.transpose((1, 0))
-    first_layer.weight.data = torch.from_numpy(np.float32(\
+    first_layer.weight.data = torch.from_numpy(np.float32(
         np.expand_dims(np.expand_dims(first.copy(), axis=-1), axis=-1)))
-    last_layer.weight.data = torch.from_numpy(np.float32(\
+    last_layer.weight.data = torch.from_numpy(np.float32(
         np.expand_dims(np.expand_dims(last.copy(), axis=-1), axis=-1)))
     core_layer.weight.data = torch.from_numpy(np.float32(core.copy()))
 
-
-    new_layers = [first_layer, bn_first, core_layer, bn_core, last_layer, bn_last]
+    new_layers = [first_layer, bn_first,
+                  core_layer, bn_core, last_layer, bn_last]
     return nn.Sequential(*new_layers)
 
 

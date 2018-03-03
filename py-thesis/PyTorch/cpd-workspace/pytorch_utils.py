@@ -15,17 +15,19 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 import torchvision.transforms as transforms
 
-# Utils 
+# Utils
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from logger import Logger
 import scipy.io as sio
-import os 
-import time 
+import os
+import time
 import math
 
-def to_np(x): 
+
+def to_np(x):
     return x.data.cpu().numpy()
+
 
 def to_var(x):
     if torch.cuda.is_available():
@@ -38,19 +40,29 @@ def log_csv(step, acc, loss, file='cifar10.csv'):
         out.write("%d,%.3f,%.3f\n" % (step, acc, loss))
         out.close()
 
+
+def log_compression(layer_weights, compression_factor, file='compression.txt'):
+    with open(file, 'a') as out:
+        out.write("Weights before: %d - Weights after:%d - Compression ratio: %.4f" %
+                  (layer_weights.size, (layer_weights.size / compression_factor), compression_factor))
+        out.close()
+
+
 def get_layer_weights(layer, numpy=True):
     '''
         Return weights of the given layer. 
     Args:
         numpy: bool. Defalt true. If false return weights as torch array. 
     '''
-    print('Retrieving weights of size: ' + str(layer.weight.data.numpy().shape))
-    if numpy: 
+    print('Retrieving weights of size: ' +
+          str(layer.weight.data.numpy().shape))
+    if numpy:
         return to_np(layer.weight.data)
-    else: 
+    else:
         return layer.weight.data
 
-def set_layer_weights(layer, tensor): 
+
+def set_layer_weights(layer, tensor):
     '''
     Set specified tensor as the layer weights. If sizes don't match raise exception. 
     Args: 
@@ -61,8 +73,10 @@ def set_layer_weights(layer, tensor):
         raise Exception('Size mismatch! Cannot asssign weights')
 
     layer.weight.data = torch.from_numpy(np.float32(tensor))
-        
+
 # Summary of a model, as in Keras .summary() method
+
+
 def torch_summarize(model, show_weights=True, show_parameters=True):
     """Summarizes torch model by showing trainable parameters and weights."""
 
@@ -94,13 +108,14 @@ def torch_summarize(model, show_weights=True, show_parameters=True):
 
  # ============ TensorBoard logging ============#
 
+
 def tensorboard_log(steps, model, info, dir='./logs'):
     logger = Logger(dir)
 
     for tag, value in info.items():
         logger.scalar_summary(tag, value, steps)
 
-    # (2) Log values and gradients of the parameters (histogram)    
+    # (2) Log values and gradients of the parameters (histogram)
     for tag, value in model.named_parameters():
         # print(str(tag)+"  "+str(value))
         tag = tag.replace('.', '/')
@@ -108,10 +123,9 @@ def tensorboard_log(steps, model, info, dir='./logs'):
         if 'bn' not in tag and value.grad is not None:
             logger.histo_summary(
                 tag + '/grad', to_np(value.grad), steps)
-   
 
 
-# Helper function to save weights in MAT format 
+# Helper function to save weights in MAT format
 def save_weigths_to_mat(allweights, save_dir):
     for idx, weights in enumerate(allweights):
         name = os.path.join(save_dir, "conv" + str(
@@ -129,16 +143,16 @@ def dump_model_weights(model, save_dir='./dumps'):
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
 
-    allweights = []   
+    allweights = []
     for layer in model.modules():
         if isinstance(layer, torch.nn.modules.conv.Conv2d):
             print('Saving layer: ' + str(layer) + ' to ' + save_dir)
-            tmp = []      
+            tmp = []
             tmp.append(layer.weight)
             tmp.append(layer.bias)
-            allweights.append(tmp) 
-    
-    save_weigths_to_mat(allweights, save_dir)                             
+            allweights.append(tmp)
+
+    save_weigths_to_mat(allweights, save_dir)
 
 
 # def save_best_model(best_avg, current_avg, )
@@ -153,11 +167,12 @@ def xavier_init_net(self):
             m.weight.data.fill_(1)
             m.bias.data.zero_()
 
-def xavier_init(layer): 
+
+def xavier_init(layer):
     if isinstance(layer, nn.BatchNorm2d):
-       layer.weight.data.fill_(1)
-       layer.bias.data_zero_() 
-    else: 
+        layer.weight.data.fill_(1)
+        layer.bias.data_zero_()
+    else:
         n = layer.kernel_size[0] * layer.kernel_size[1] * layer.out_channels
         layer.weight.data.normal_(0, math.sqrt(2. / n))
 

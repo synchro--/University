@@ -1,0 +1,54 @@
+### NEW REPORTS #####
+--------------------------------------
+LENET ZHANG 
+Starting test accuracy: 74% 
+Starting training loss: 0.276
+Starting training accuracy: 0.913
+Avg preiction time: 0.166
+Params: 1415498
+
+TUCKER2 - VBMF     Compression    Ratio       Time for Speedup
+conv1     7296   >  4380         1.66             0.074100
+conv2     307328 >  32168        9.5            0.078551 
+conv3     819456 >  36776        22             0.201896
+conv4     16448  > 
+fc1       262400 > 
+
+Accuracies: 
+75
+75
+77
+
+Overall: 
+Training complete in 118m 20s
+Avg preditcion time: 0.105540
+Accuracy 77%
+
+Compression: 354742 4x    Speedup 
+
+#######################################
+CP - Rank // 3
+conv1     7296   > 
+conv2     307328 > 
+conv3     819456 > 
+conv4     16448  > 
+fc1       262400 > 
+
+
+--------------------------------------
+
+NIN without BN
+Starting test accuracy: 74% 
+Starting training loss: 0.554 
+Avg prediction time 0.298
+Params: 1004042
+
+--------------------------------------
+NIN wt. BN 
+Training complete in 523m 32s
+Best val Acc: 0.923156
+
+Starting test accuracy: 86% 
+Starting training loss: 0.215
+Avg prediction time 0.400459 
+Params: 1007242
