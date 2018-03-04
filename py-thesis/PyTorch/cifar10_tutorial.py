@@ -228,82 +228,6 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-
-# Network defined as in Keras
-class Keras_Cifar_AllConv(nn.Module):
-    def __init__(self):
-        super(Keras_Cifar_AllConv, self).__init__()
-        # hyperparams
-        rank1 = 20
-        rank2 = 5
-
-        self.kern = 3  # for all layers
-        self.filt_size1 = 32
-        self.filt_size2 = 64
-        self.filt_fc1 = 512
-        self.num_classes = 10
-
-        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
-        self.conv2 = nn.Conv2d(32, 32, 3)
-        self.conv3 = nn.Conv2d(32, 64, 3, padding=1)
-        self.conv4 = nn.Conv2d(64, 64, 3)
-
-        self.pool = nn.MaxPool2d(2, 2)
-        # self.dropout_1 = nn.Dropout2d(0.25)
-        # self.dropout_2 = nn.Dropout2d(0.5)
-
-        self.bn_1 = nn.BatchNorm2d(1)
-        self.bn_conv1 = nn.BatchNorm2d(32)
-        self.bn_conv2 = nn.BatchNorm2d(32)
-        self.bn_conv3 = nn.BatchNorm2d(64)
-        self.bn_conv4 = nn.BatchNorm2d(64)
-        self.bn_4 = nn.BatchNorm2d(self.filt_fc1)
-        self.bn_5 = nn.BatchNorm2d(self.num_classes)
-        self.bn_6 = nn.BatchNorm2d(32)
-        self.bn_7 = nn.BatchNorm2d(64)
-
-        # 4-way decomposition
-        # self.cpdfc1 = nn.Conv2d(64, rank1, 1)
-        # self.cpdfc2 = nn.Conv2d(rank1, rank1, (6, 1), groups=1)
-        # self.cpdfc3 = nn.Conv2d(rank1, rank1, (1, 6), groups=1)
-        # self.cpdfc4 = nn.Conv2d(rank1, self.filt_fc1, 1)
-
-        # conv2fc
-        self.conv2fc1 = nn.Conv2d(64, self.filt_fc1, 6)
-        self.conv2fc2 = nn.Conv2d(self.filt_fc1, self.num_classes, 1)
-
-        # fully connected
-        # self.fc1 = nn.Linear(64 * 6 * 6, 512)
-        # self.fc2 = nn.Linear(512, 10)
-        # self.classifier = nn.Linear(10,10)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        x = self.bn_conv1(x)
-        x = self.pool(F.relu(self.conv2(x)))
-        x = self.bn_conv2(x)
-
-        x = F.relu(self.conv3(x))
-        x = self.bn_conv3(x)
-        x = self.pool(F.relu(self.conv4(x)))
-        x = self.bn_conv4(x)
-        '''
-        x = self.cpdfc1(x)
-        x = self.bn_2(x)
-        x = self.cpdfc2(x)
-        x = self.bn_2(x)
-        x = self.cpdfc3(x)
-        x = self.bn_2(x)
-        x = F.relu(self.cpdfc4(x))
-        '''
-        x = F.relu(self.conv2fc1(x))
-        x = self.bn_4(x)
-        x = self.conv2fc2(x)
-        x = self.bn_5(x)
-
-        x = x.view(-1, self.num_classes)  # Flatten! <---
-        return x
-
 # Set the logger
 logger = Logger('./logs')
 log_file = 'cifar10_keras.csv'
@@ -316,7 +240,7 @@ from custom_models import *
 # net = Keras_Cifar_Separable(20, 5)
 # net = Net()
 # net = torch.load(model_file)
-net = LenetZhang() 
+net = NIN_BN() 
 
 if retrain:
     # load previous model
@@ -353,86 +277,9 @@ optimizer = optim.Adam(net.parameters(), lr=0.001)
 # This is when things start to get interesting.
 # We simply have to loop over our data iterator, and feed the inputs to the
 # network and optimize
-'''
-total_step = 0.0
-best_loss = 10.0
-best_model = False
-epochs = 75
-
-
-for epoch in range(epochs):  # loop over the dataset multiple times
-
-    running_loss = 0.0
-    for i, data in enumerate(trainloader, 0):
-        # get the inputs
-        inputs, labels = data
-
-        # wrap them in Variable
-        inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
-
-        # zero the parameter gradients
-        optimizer.zero_grad()
-
-        # forward + backward + optimize
-        outputs = net(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        # Compute accuracy
-        # _, argmax = torch.max(outputs, 1)
-        # accuracy = (labels == argmax.squeeze()).float().mean()
-
-        # print statistics
-        running_loss += loss.data[0]
-        if i % 1000 == 999:  # print every 1000 mini-batches
-            avg_loss = running_loss / 1000
-            print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1,
-                                            avg_loss))
-            
-            total_step += 1000
-
-            #============ TensorBoard logging ============#
-            # (1) Log the scalar values
-            info = {
-               # 'loss': loss.data[0],
-               'loss' : avg_loss,
-               # 'accuracy': accuracy.data[0]
-            }
-
-            #my logs
-            log_csv(total_step, 5, info['loss'])
-
-            for tag, value in info.items():
-                logger.scalar_summary(tag, value, total_step)
-
-            # (2) Log values and gradients of the parameters (histogram)
-            for tag, value in net.named_parameters():
-                #print(str(tag)+"  "+str(value))
-                tag = tag.replace('.', '/')
-                logger.histo_summary(tag, to_np(value), total_step)
-                logger.histo_summary(
-                    tag + '/grad', to_np(value.grad), total_step)
-
-            # for each epoch, save best model 
-            if best_loss > avg_loss:
-                print('loss improved from %.3f to %.3f' 
-                % (best_loss, avg_loss))
-                print('Saving model to ' + model_file + "...\n")
-                best_loss = avg_loss
-                torch.save(net.state_dict(), model_file)
-                torch.save(net, 'model.pth')
-            
-            # Reset running loss for next iteration
-            running_loss = 0.0
-
-
-
-print('Finished Training')
-'''
-
-
 # Decay LR by a factor of 0.1 every 10 epochs
+
+
 loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=False,
                                             random_seed=7)
 dataloaders = {'train': loaders[0], 'val': loaders[1]}
@@ -444,6 +291,9 @@ dump_model_weights(net)
 net.train(False)
 torch.save(net, "keras_OUTOUT.pth")
 
+test_model_cifar10(testloader, net)
+
+'''
 ########################################################################
 # 5. Test the network on the test data
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -497,13 +347,7 @@ for data in testloader:
 print('Accuracy of the network on the 10000 test images: %d %%' %
       (100 * correct / total))
 
-########################################################################
-# That looks waaay better than chance, which is 10% accuracy (randomly picking
-# a class out of 10 classes).
-# Seems like the network learnt something.
-#
-# Hmmm, what are the classes that performed well, and the classes that did
-# not perform well:
+
 
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
@@ -520,64 +364,4 @@ for data in testloader:
 for i in range(10):
     print('Accuracy of %5s : %2d %%' %
           (classes[i], 100 * class_correct[i] / class_total[i]))
-
-########################################################################
-# Okay, so what next?
-#
-# How do we run these neural networks on the GPU?
-#
-# Training on GPU
-# ----------------
-# Just like how you transfer a Tensor on to the GPU, you transfer the neural
-# net onto the GPU.
-# This will recursively go over all modules and convert their parameters and
-# buffers to CUDA tensors:
-#
-# .. code:: python
-#
-#     net.cuda()
-#
-#
-# Remember that you will have to send the inputs and targets at every step
-# to the GPU too:
-#
-# ::
-#
-#         inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
-#
-# Why dont I notice MASSIVE speedup compared to CPU? Because your network
-# is realllly small.
-#
-# **Exercise:** Try increasing the width of your network (argument 2 of
-# the first ``nn.Conv2d``, and argument 1 of the second ``nn.Conv2d`` –
-# they need to be the same number), see what kind of speedup you get.
-#
-# **Goals achieved**:
-#
-# - Understanding PyTorch's Tensor library and neural networks at a high level.
-# - Train a small neural network to classify images
-#
-# Training on multiple GPUs
-# -------------------------
-# If you want to see even more MASSIVE speedup using all of your GPUs,
-# please check out :doc:`data_parallel_tutorial`.
-#
-# Where do I go next?
-# -------------------
-#
-# -  :doc:`Train neural nets to play video games </intermediate/reinforcement_q_learning>`
-# -  `Train a state-of-the-art ResNet network on imagenet`_
-# -  `Train a face generator using Generative Adversarial Networks`_
-# -  `Train a word-level language model using Recurrent LSTM networks`_
-# -  `More examples`_
-# -  `More tutorials`_
-# -  `Discuss PyTorch on the Forums`_
-# -  `Chat with other users on Slack`_
-#
-# .. _Train a state-of-the-art ResNet network on imagenet: https://github.com/pytorch/examples/tree/master/imagenet
-# .. _Train a face generator using Generative Adversarial Networks: https://github.com/pytorch/examples/tree/master/dcgan
-# .. _Train a word-level language model using Recurrent LSTM networks: https://github.com/pytorch/examples/tree/master/word_language_model
-# .. _More examples: https://github.com/pytorch/examples
-# .. _More tutorials: https://github.com/pytorch/tutorials
-# .. _Discuss PyTorch on the Forums: https://discuss.pytorch.org/
-# .. _Chat with other users on Slack: http://pytorch.slack.com/messages/beginner/
+''' 

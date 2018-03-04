@@ -146,8 +146,9 @@ def decompose_model(model, layer_name, model_file):
         if layer_name in name: 
             print(name)
             if args.cp:
-                # rank = max(conv_layer.weight.data.shape) // 3
-                rank = cp_ranks(conv_layer)
+                rank = max(conv_layer.weight.data.shape) // 3
+                rank, _ = choose_compression(conv_layer, ranks=[rank, rank], flag='cpd')
+                # rank = cp_ranks(conv_layer)
                 print('rank: ', rank)
                 if 'conv2fc' in layer_name:
                     rank = 40
@@ -196,8 +197,10 @@ if __name__ == '__main__':
         # model = torch.load('decomposed_model.pth')
         # model = torch.load('full_decomposed.pth')
         model.load_state_dict(torch.load(args.model))
+        
         # model = torch.load('LAST-tucker.pth')
         # model = torch.load('finetuned.pth') 
+        
         print(torch_summarize(model))
         
         layers = args.layers

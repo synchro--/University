@@ -43,7 +43,7 @@ def log_csv(step, acc, loss, file='cifar10.csv'):
 
 def log_compression(layer_weights, compression_factor, file='compression.txt'):
     with open(file, 'a') as out:
-        out.write("Weights before: %d - Weights after:%d - Compression ratio: %.4f" %
+        out.write("Weights before: %d - Weights after:%d - Compression ratio: %.4f\n" %
                   (layer_weights.size, (layer_weights.size / compression_factor), compression_factor))
         out.close()
 

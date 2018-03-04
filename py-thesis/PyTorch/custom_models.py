@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+from collections import OrderedDict
 
 # Example 2-Layer custom network 
 class TwoLayerNet(nn.Module):
@@ -30,7 +31,6 @@ class TwoLayerNet(nn.Module):
         h_relu = self.linear1(x).clamp(min=0)
         y_pred = self.linear2(h_relu)
         return y_pred
-
 
 
 class LenetZhang(nn.Module):
@@ -286,6 +286,92 @@ class Keras_Cifar2(nn.Module):
         x = x.view(-1, self.num_classes)  # Flatten! <---
         x = self.classifier(x)
         return x
+
+
+class NIN(nn.Module): 
+    def __init__(self):
+        super(NIN, self).__init__()
+
+        self.sequential = nn.Sequential(OrderedDict([
+                ('conv1', nn.Conv2d(3, 192, 5, 1, padding=2)),
+                ('relu1', nn.ReLU()),
+                ('conv2', nn.Conv2d(192, 160,1,1, padding=0)),
+                ('relu2', nn.ReLU()),
+                ('conv3', nn.Conv2d(160, 96, 1, 1, padding=0)),
+                ('relu3', nn.ReLU()),
+                ('pool1', nn.MaxPool2d(2,2)),
+                ('dropout1', nn.Dropout2d(0.5)),
+                ('conv4', nn.Conv2d(96, 192, 5, 1, padding=2)),
+                ('relu4', nn.ReLU()),
+                ('conv5', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu5', nn.ReLU()),
+                ('conv6', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu6', nn.ReLU()),
+                ('pool2', nn.AvgPool2d(2, 2)),
+                ('dropout2', nn.Dropout2d(0.5)),
+                ('conv7', nn.Conv2d(192, 192, 3, 1, padding=1)),
+                ('relu7', nn.ReLU()),
+                ('conv8', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu8', nn.ReLU()),
+                ('conv9', nn.Conv2d(192, 192, 1, 1, padding=0)),
+                ('relu9', nn.ReLU()),
+                ('classifier', nn.Conv2d(192, 10, 1, 1, padding=0)),
+                ('pool3', nn.AvgPool2d(8,1)),
+            ]))
+
+    def forward(self, x): 
+        x = self.sequential(x)
+        x = x.view(-1, 10)
+        return x
+
+
+class NIN_BN(nn.Module):
+    def __init__(self):
+        super(NIN_BN, self).__init__()
+
+        self.sequential = nn.Sequential(OrderedDict([
+            ('conv1', nn.Conv2d(3, 192, 5, 1, padding=2)),
+            ('relu1', nn.ReLU()),
+            ('bn1', nn.BatchNorm2d(192)),
+            ('conv2', nn.Conv2d(192, 160, 1, 1, padding=0)),
+            ('relu2', nn.ReLU()),
+            ('bn2', nn.BatchNorm2d(160)),
+            ('conv3', nn.Conv2d(160, 96, 1, 1, padding=0)),
+            ('relu3', nn.ReLU()),
+            ('bn3', nn.BatchNorm2d(96)),
+            ('pool1', nn.MaxPool2d(2, 2)),
+            ('dropout1', nn.Dropout2d(0.5)),
+            ('conv4', nn.Conv2d(96, 192, 5, 1, padding=2)),
+            ('relu4', nn.ReLU()),
+            ('bn4', nn.BatchNorm2d(192)),            
+            ('conv5', nn.Conv2d(192, 192, 1, 1, padding=0)),
+            ('relu5', nn.ReLU()),
+            ('bn5', nn.BatchNorm2d(192)),
+            ('conv6', nn.Conv2d(192, 192, 1, 1, padding=0)),
+            ('relu6', nn.ReLU()),
+            ('pool2', nn.AvgPool2d(2, 2)),
+            ('bn6', nn.BatchNorm2d(192)),
+            ('dropout2', nn.Dropout2d(0.5)),
+            ('conv7', nn.Conv2d(192, 192, 3, 1, padding=1)),
+            ('relu7', nn.ReLU()),
+            ('bn7', nn.BatchNorm2d(192)),
+            ('conv8', nn.Conv2d(192, 192, 1, 1, padding=0)),
+            ('relu8', nn.ReLU()),
+            ('bn8', nn.BatchNorm2d(192)),
+            ('conv9', nn.Conv2d(192, 192, 1, 1, padding=0)),
+            ('relu9', nn.ReLU()),
+            ('bn9', nn.BatchNorm2d(192)),
+            ('classifier', nn.Conv2d(192, 10, 1, 1, padding=0)),
+            ('pool3', nn.AvgPool2d(8, 1)),
+        ]))
+
+    def forward(self, x):
+        x = self.sequential(x)
+        x = x.view(-1, 10)
+        return x
+
+
+
 
 
 # Network defined as in Keras, with BN and groups 

@@ -33,29 +33,35 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
     d = weights.shape[2]
 
     if flag == 'Tucker2':
-        compression = (d**2*S*T) / (S*ranks[0] + ranks[0]*ranks[1] * d**2 + T*ranks[1])
+        compression = ((d**2)*S*T) / ((S*ranks[0] + ranks[0]*ranks[1] * (d**2) + T*ranks[1]) )
+        print(compression)
+
         # compression must be 2 or more, otherwise arbitrary ranks will be chosen!
         if compression <= 2: 
-            cumulative_rank = (d**2 *S*T) / (compression_factor*(S/2 + d**2 + T))
-            split_ratio = 0.5 # should be < 0.5
-            ranks[0] = cumulative_rank * split_ratio
-            ranks[1] = cumulative_rank * (1-split_ratio)
-            print('compression factor for layer {} : {}'.format(
-                weights.shape, compression_factor))
-            # Log compression factors and number of weights
-            log_compression(weights, compression_factor)
-        else: 
-            # Log the standard compression
-            log_compression(weights, compression)
+            while compression <= compression_factor:         
+                '''
+                cumulative_rank = ((d**2) *S*T) / (compression_factor*(S/2 + (d**2) + T))
+                split_ratio = 0.7 # should be < 0.5
+                ranks[0] = np.floor(cumulative_rank * split_ratio).astype(int)
+                ranks[1] = np.floor(cumulative_rank - ranks[0]).astype(int)
+                '''
+                ranks[0] = ranks[0] // 2
+                ranks[1] = ranks[1] // 2
+                compression = ((d**2) * S * T) / ((S * ranks[0] + ranks[0] * ranks[1] * (d**2) + T * ranks[1]))
+
+        print('compression factor for layer {} : {.4f}'.format(
+            weights.shape, compression))
+        # Log compression factors and number of weights
+        log_compression(weights, compression_factor)
 
     
     elif flag == 'cpd':
         rank = ranks[0] # it is a single value
-        compression = (d**2*T*S) / rank*(S+2*d+T)
+        compression = ((d**2)*T*S) / (rank*(S+2*d+T))
         if compression <= 2:
-            rank = (d**2 * S * T) / (compression_factor * (S +2*d+ T))
-            ranks[0] = rank 
-            print('compression factor for layer {} : {}'.format(
+            rank = ((d**2) * S * T) / (compression_factor * (S +2*d+ T))
+            ranks[0] = np.floor(rank).astype(int) 
+            print('compression factor for layer {} : {.4f}'.format(
                 weights.shape, compression_factor))
             # Log compression factors and number of weights
             log_compression(weights, compression_factor)
@@ -98,8 +104,8 @@ def cp_ranks(layer):
     _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
     #_, diag_2, _, _ = VBMF.EVBMF(unfold_2)
     print(diag_0.shape[0])
-    print(diag_1.shape[1]
-    rank=min(diag_0.shape[0], diag_1.shape[1])
+    print(diag_1.shape[1])
+    rank=max(diag_0.shape[0], diag_1.shape[1])
     ranks=[rank, rank]
     rank, _=choose_compression(
         layer, ranks, compression_factor=10, flag='cpd')
@@ -208,9 +214,9 @@ def cp_decomposition_conv_layer_BN(layer, rank):
     if size >= 256:
         print("Init random")
         last, first, vertical, horizontal = parafac(
-            X, rank=rank, init='random')
+            X, rank=rank, init='random', random_state=np.random.RandomState())
     else:
-        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
+        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd', random_state=10)
 
     pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
                                              out_channels=first.shape[1],
