@@ -226,10 +226,28 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
         A\otimes B = \begin{bmatrix} a_{11} B & \cdots & a_{1n}B \\ \vdots & \ddots & \vdots \\ a_{m1} B & \cdots & a_{mn} B \end{bmatrix}
         \end{equation}
         
-        and more explicitly: %% KRONCKER MATRICIONE!!! %% 
-        $$
-        MATRICIONE
-        $$
+        and more explicitly: 
+        \begin{align*}
+\centering
+   \mathbf{A}\otimes\mathbf{B} = \begin{bmatrix}
+   a_{11} b_{11} & a_{11} b_{12} & \cdots & a_{11} b_{1q} &
+                   \cdots & \cdots & a_{1n} b_{11} & a_{1n} b_{12} & \cdots & a_{1n} b_{1q} \\
+   a_{11} b_{21} & a_{11} b_{22} & \cdots & a_{11} b_{2q} &
+                   \cdots & \cdots & a_{1n} b_{21} & a_{1n} b_{22} & \cdots & a_{1n} b_{2q} \\
+   \vdots & \vdots & \ddots & \vdots & & & \vdots & \vdots & \ddots & \vdots \\
+   a_{11} b_{p1} & a_{11} b_{p2} & \cdots & a_{11} b_{pq} &
+                   \cdots & \cdots & a_{1n} b_{p1} & a_{1n} b_{p2} & \cdots & a_{1n} b_{pq} \\
+   \vdots & \vdots & & \vdots & \ddots & & \vdots & \vdots & & \vdots \\
+   \vdots & \vdots & & \vdots & & \ddots & \vdots & \vdots & & \vdots \\
+   a_{m1} b_{11} & a_{m1} b_{12} & \cdots & a_{m1} b_{1q} &
+                   \cdots & \cdots & a_{mn} b_{11} & a_{mn} b_{12} & \cdots & a_{mn} b_{1q} \\
+   a_{m1} b_{21} & a_{m1} b_{22} & \cdots & a_{m1} b_{2q} &
+                   \cdots & \cdots & a_{mn} b_{21} & a_{mn} b_{22} & \cdots & a_{mn} b_{2q} \\
+   \vdots & \vdots & \ddots & \vdots & & & \vdots & \vdots & \ddots & \vdots \\
+   a_{m1} b_{p1} & a_{m1} b_{p2} & \cdots & a_{m1} b_{pq} &
+                   \cdots & \cdots & a_{mn} b_{p1} & a_{mn} b_{p2} & \cdots & a_{mn} b_{pq}
+\end{bmatrix} 
+\end{align*}
         
     
     \item \textbf{Outer product}: If we take the \emph{Kronecker product for matrices} definition and apply it to vectors, we obtain the outer product: \\
@@ -288,6 +306,25 @@ This approach may be regarded as one generalization of the matrix SVD, because:
 \end{itemize}
 	
 The tensor $\mathbf{G}$ is said to be \emph{"ordered"} and \emph{"all-ortoghonal"}. For further explanation see \parencite{multilinear}. 
+
+\subsubsection{Higher order orthogonal iteration}
+As for SVD, it is important to notice that HOSVD can be used to compress $X$ by truncating the matrices $A(k)$. The problem with respect to matrices though, is that a truncated HOSVD is known not to give the best fit. However, as a logical consequence of two concepts that have been introduced earlier, an iterative algorithm to find the best solution can be proposed.
+\newline
+In fact, putting together the Eckart-Young theorem for the \emph{Frobenius} norm and the HOSVD depicted above will result in an iterative optimization known as Higher-Order Orthogonal Iteration or \emph{HOOI}. 
+\newline
+
+HOOI finds the optimal approximation $\hat{X}$ with respect to the Frobenius norom loss by, essentially, iterating the alternating truncation and SVD. Thus, enforcing $A(k)$ to have $r_k$ columns, the HOOI solution is defined by the following algorithm: 
+\begin{eqnarray}
+&\,&\mathrm{initialize\,via\,HOSVD} \nonumber\\
+&\,&\mathrm{while\,not\,converged\,do} \nonumber\\
+&\,&\quad \mathrm{for}\, k = 1, 2, ..., N \nonumber\\
+&\,&\quad\quad Y \leftarrow X \times\subscript{1} (A^{(1)})^T \times\subscript{2} \cdots \times\subscript{k-1} (A^{(k-1)})^T \times\subscript{k+1} (A^{(k+1)})^T \times\subscript{k+2} \cdots \times\subscript{N} (A^{(N)})^T  \nonumber\\
+&\,&\quad\quad A^{(k)} \leftarrow r\subscript{k}\,\mathrm{leading\,left\,singular\,vectors\,of}\,Y\subscript{(k)} \nonumber\\
+&\,&\quad \mathrm{end\,for} \nonumber\\
+&\,&\mathrm{end\,while} \nonumber\\
+&\,&G \leftarrow X \times\subscript{1} (A^{(1)})^T \times\subscript{2} (A^{(2)})^T \times\subscript{3} \cdots \times\subscript{N} (A^{(N)})^T  \nonumber\\
+\end{eqnarray}
+
 
 
 
@@ -348,6 +385,28 @@ $$ \sum_{r=1}^R K^x_r(i)K^y_r(j)K^s_r(s)K^t_r(t) $$.
 \end{align*}
 \end{center}
 
+\begin{equation}
+\label{eq:cpd1}
+    U^s(i,j,r) =\sum^{S}_{s=1}=K^s(s,r)U(i,j,s)    
+\end{equation}
+
+\begin{equation}
+    U^{sy}(i,y,r) = \sum_{j=y-\delta}^{y+\delta} K^y (j-x + \delta,r)U^{sy}(i,j,r)
+\end{equation}
+
+\begin{equation}
+    U^{syx}(x,y,r) = \sum_{i=x-\delta}^{x+\delta} K^x (i-x + \delta,r)U^{sy}(i,y,r)
+\end{equation}
+
+\begin{equation}
+\label{eq:cpd2}
+    V(x,y,t) = \sum_{r=1}^R K^t (t,r) U^{syx}(x,y,r),
+\end{equation}
+
+where $U^s$, $U^{sy}$ $U{syx}$ are intermediate tensors i.e., map stacks. 
+
+\subsubsection{CPD-3}
+
 
 \subsection{Tucker}
 %% forward pass con Tucker 
@@ -379,27 +438,105 @@ V(x, y, t) = \sum_i \sum_j \sum_s\sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}\mathbf{G}(
 V(x, y, t) = \sum_i \sum_j \sum_{r_4=1}^{R_4}\sum_{r_3=1}^{R_3}K^t_{r4}(t)\mathbf{G}(x-i)(y-j) r_3 r_4} \sum_s\ K^s_{r3}(s)X(i, j, s) 
 \end{equation}
 
-%%inserire codice per dataset MNIST %% 
-%--------------------------------------------------------------------
-%	SECTION 4
-%--------------------------------------------------------------------
-\section{MNIST: addestramento}
+
+\subsection{Complexity analysis}
+\subsubsection{CP complexity}
+Standard convolution operation is defined by $STd^2$ parameters i.e, the number of parameters in the tensors. The computational cost is obtained by taking into account the height $H$ and the width $W$ of the input maps: $(STd^2)(HW)$. 
+\newline
+With their approaches, both in Jaderberg et al.\parencite{jaderberg} and Zhang et al. \parencite{tai2015} drop this complexity down to $Rd(S+T)$. Assuming the required rank is comparable or several times smaller than S and T, that is taking a rank $R\approx \frac{ST}{S+T}$, then the complexity would be reduced by a factor of $d$ times. 
+\newline 
+Following the decomposition proposed by Lebedev et al. \parencite{lebedev}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. \newline
+Hence, if we call $\mathcal{K}_{std}$ and $\mathcal{K}_{dec}$ the standard and decomposed convolution operation respectively,  the \emph{compression ratio} can be defined as
+\begin{equation}
+    \mathbf{\mathcal{C}}_r = \frac{O(\mathcal{K}_{std})}{O(\mathcal{K}_{dec})}
+\end{equation}
+
+which in the case of CP-decomposition equals to: 
+\begin{equation}
+    \mathcal{C}_r = \frac{STd^2}{R(S+2d+T)}    
+\end{equation}
+
+Similarly, we can define the speed-up ratio $\marhcal{S}_r$ by considering the \emph{multiplication-addition} operation on the input of height $H$ and width $W$: 
+\begin{equation}
+    \mathcal{S}_r = \frac{STd^2HW}{RSHW + dRH'W + RdH'W'+ RTH'W')}    
+\end{equation}
+
+
+Clearly both $\mathcal{C_r}$ and $\marhcal{S}_r$ depend on the rank $R$, which is the most important \emph{hyper-parameter} of this approach. As described in the coming sections, the choice of the rank is non trivial; it is rather an ill-posed problem that boasts its very own research field \parencite{rank-hard1}. 
+
+However, after several experiments and careful parameter tuning, few patterns will come out and a \emph{rule-of-thumb} can be spotted, at least on the same kind of architecture. After that, a trial-and-error strategy can be applied to enforce a more aggressive compression; more details will be described in section \ref{subsec:framework}
+
+\subsubsection{CP-3 complexity}
+
+
+\subsubsection{Tucker complexity} 
+
+\paragraph{Complexity recap}\\
+Taking into account also the approach of Zheng et al. \parencite{zhang2015SVD}, in table \ref{table:complexity} is depicted a comparison of complexity reduction with the different methods explored. 
+
+%% TABLE COMPLEXITY %% 
 
 
 %--------------------------------------------------------------------
-%	SECTION 5
+%	SECTION 3
 %--------------------------------------------------------------------
-\section{CIFAR: preprocessing}
+\section{In-depth discussion}
+
+\subsection{Rank estimation}
+Ranks play key role in decomposition. If the rank is too high, the compression may not be significant at all and if it is too low, the accuracy would drop too much to be recovered by fine-tuning. Therefore a trade-off between compression and accuracy must always be kept in mind. 
+\newline 
+However, there is no straight solution to rank estimation. As mentioned earlier, determining the rank is \emph{NP-Hard} \parencite{rank-hard1}\parencite{rank-hard2}\parencite{rank-hard3}. \\
+ 
+\subsubsection{iterative methods}
+A simple solution that has been applied by different authors is an iterative careful manual tuning \parencite{astrid2017} \parencite{lebedev2014} i.e., choosing an arbitrary rank, calculating the accuracy and manually updating the rank according to an elementary rule: the higher is the drop in accuracy, the higher is the rank needed by the layer.
+\newline 
+In they define a metric to measure the \emph{sensitivity} of the decomposition 
+
+\subsubsection{Global Analytics VBMF}
+
+\subsubsection{Variational autoencoders}
+%% cenni 
 
 
+\subsection{Decomposition algorithms overview}
+While the decomposition scenario for convolutional neural networks has been defined, it has not been clarified yet \emph{how} to actually compute a decomposition. To this aim, this section provides a quick overview of the available algorithms in literature with few examples computed with the aim of powerful tensor toolbox for $MATLAB$, called Tensorlab \parencite{WTensorlab}. \newline
+A depth discussion of these algorithms is out of the scope of this work. For more details please check this rich reference page of the Tensorlab documentation \parencite{WTensorlab-ref}.
 
+\subsubsection{CP}
+The CP-decomposition can be computed in a variety of different ways: 
+    \begin{itemize}
+        \item \emph{alternating least squares} (ALS)
+        \item \emph{nonlinear least squares} (NLS)
+        \item \emph{nonlinear unconstrained optimization}
+        \item \emph{randomized block sampling for large-scale tensors}
+        \item \emph{generalized eigenvalue decomposition}
+        \item \emph{simultaneous diagonalization}
+        \item \emph{simultaneous generalized Schur decomposition}
+\end{itemize}
+It seems that the most often used algorithms for CNN compression are ALS and NLS. \\
+Beside the principal algorithm itself, the convergence of the computation for large tensors is influenced - like many other optimization problems - by a good initialization. Thus, most algorithms works by starting with an initial guess; also the computational time is reduced by a significant factor when a pre-computed solution is used. 
+\newline
 
-%--------------------------------------------------------------------
-%	SECTION 6
-%--------------------------------------------------------------------
-\section{CIFAR: addestramento}
+Basically, the computation of a good CPD is a multi-step approach that relies on a main algorithm (ALS, NLS, unconstrained opt) and a bunch of other methods that help the optimization. 
+A simple test to compute a difference has been implemented, the results are showed in figure \ref{fig:tensorlab-cp-comparison}.
+\newline 
 
+ALS is often faster while being less accurate than NLS. As it will be presented in the experiments chapter, they can both successfully be applied to Convnets without a meaningful difference. 
+An exhaustive comparison can be found here \parencite{WCPD-talk}. 
 
+\subsubsection{Tucker}
+Like CP, the Tucker decomposition can also by computed in several different ways: 
+\begin{itemize}
+    \item 
+    
+    \item 
+    
+    \item 
+\end{itemize}
+
+The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a logical consequence of the combination Eckart-Young theorem for SVD and the higher-order SVD. 
+\subsection{A framework for decomposition}
+\label{subsec:framework}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -500,7 +637,7 @@ and illustrate each scalar value on the right is computed. Red tube, green cube 
  \includegraphics[width=1.0\textwidth]{\path/CPD.jpg} 
  \caption{Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d × d window over all input maps. 
 Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate mpa stack has R  maps, being R the rank of the decomposition. Each of the two-components 
-computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf{only on one} input map.}
+computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf{only on one} input map. Each box is mathematically described in equation (\ref{eq:cpd1}-\ref{eq:cpd2})}
  \label{fig:cpd-pass}
 \end{figure}
 

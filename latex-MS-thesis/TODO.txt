@@ -8,6 +8,7 @@ CPD sum of outer product of rank-1 tensor, blabla
 
 - scrivere che una volta trovato il rank dobbiamo minimizzare un problema con frobenious norm e poi via ALS o NLS 
 - così poi si confronta NLS con ALS come nell'altro paper. 
+- usare tensorboard per vedere la PDF dei layer e trarre conclusioni simili a quello di Barcellonas 
 
 #########################################################################
 RISULTATI PAPERS PER IL CONFRONTO: 
