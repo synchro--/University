@@ -34,8 +34,16 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
 
     if flag == 'Tucker2':
         compression = ((d**2)*S*T) / ((S*ranks[0] + ranks[0]*ranks[1] * (d**2) + T*ranks[1]) )
+        ranks[0] = ranks[0] * 3
         print(compression)
 
+
+        '''
+        if compression == 2.812156719150494:
+            ranks[1] = 13 
+            ranks[0] = 49 
+            return ranks 
+        '''
         # compression must be 2 or more, otherwise arbitrary ranks will be chosen!
         if compression <= 2: 
             while compression <= compression_factor:         
@@ -49,10 +57,10 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
                 ranks[1] = ranks[1] // 2
                 compression = ((d**2) * S * T) / ((S * ranks[0] + ranks[0] * ranks[1] * (d**2) + T * ranks[1]))
 
-        print('compression factor for layer {} : {.4f}'.format(
+        print('compression factor for layer {} : {}'.format(
             weights.shape, compression))
         # Log compression factors and number of weights
-        log_compression(weights, compression_factor)
+        log_compression(weights, compression)
 
     
     elif flag == 'cpd':
@@ -91,7 +99,7 @@ def estimate_ranks(layer):
 
     # Check if the VBMF ranks are small enough
     ranks = choose_compression(
-        layer, ranks, compression_factor=5, flag='Tucker2')
+        layer, ranks, compression_factor=2, flag='Tucker2')
     return ranks
 
 
@@ -111,7 +119,43 @@ def cp_ranks(layer):
         layer, ranks, compression_factor=10, flag='cpd')
     return rank
 
+def SVD_weights(weights, t):
+    """Compress the weight matrix W of an inner product (fully connected) layer
+    using truncated SVD.
+    Parameters:
+        W: N x M weights matrix
+        t: number of singular values to retain
+    Returns:
+        Ul, L: matrices such that W \approx Ul*L
+    """
 
+    # numpy doesn't seem to have a fast truncated SVD algorithm...
+    # this could be faster
+    U, s, V = np.linalg.svd(weights, full_matrices=False)
+
+    U = U[:, :t]
+    Sigma = s[:t]
+    Vt = V[:t, :]
+
+    L = np.dot(np.diag(Sigma), Vt)
+    return U, L 
+
+def FC_SVD_compression(layer):
+    """
+    Compress a FC layer applying SVD 
+    """
+    trunc = layer.weight.data.numpy().shape[0]
+
+    weights1, weights2 = SVD_weights(layer.weight, trunc)
+
+    # create SVD FC-layers:
+    fc1 = torch.nn.Linear(weights1.shape[0], weights1.shape[1])
+    fc2 = torch.nn.Linear(weights2.shape[0], weights2.shape[1])
+
+    fc1.weight.data = torch.from_numpy(np.float32(weights1))
+    fc2.weight.data = torch.from_numpy(np.float32(weights2))
+    new_layers = [fc1, fc2]
+    return nn.Sequantial(*new_layers)
 
 def cp_decomposition_conv_layer(layer, rank):
     """ Gets a conv layer and a target rank, di

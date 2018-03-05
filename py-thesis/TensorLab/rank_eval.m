@@ -1,18 +1,15 @@
 %% Rankest performance evaluation 
 %{
-Running rankest(T)
-on a dense, sparse or incomplete tensor T plots an L-curve which represents the balance
+Running rankest(T) on a dense, sparse or incomplete tensor T plots an L-curve which represents the balance
 between the relative error of the CPD and the number of rank-one terms R. 
 
-The lower bound is based on the truncation error of the tensor’s
-multilinear singular values [5]. For incomplete and sparse tensors, this lower bound is not
-available and the first value to be tried for ? is 1. The number of rank-one terms is
-increased until the relative error of the approximation is less than options.MinRelErr. In a
-sense, the corner of the resulting L-curve makes an optimal trade-off between accuracy and
+The lower bound is based on the truncation error of the tensors multilinear singular values 
+For incomplete and sparse tensors, this lower bound is not available and the first value to be tried for R is 1. 
+The number of rank-one terms is increased until the relative error of the approximation is less than options.MinRelErr. 
+In a sense, the corner of the resulting L-curve makes an optimal trade-off between accuracy and
 compression. The rankest tool computes the number of rank-one terms R corresponding to
 the L-curve corner and marks it on the plot with a square. This optimal number of rank-one
-terms is also rankest’s first output.
-
+terms is also rankests first output.
 %}
 
 A = {}
@@ -32,7 +29,8 @@ end
 disp('estimated rankest times:') 
 disp(times)
  
-mul_dims = n_inputs .* n_outputs; 
+%mul_dims = n_inputs .* n_outputs;
+mul_dims = n_inputs + n_outputs;  
 
 h3 = figure(3);
 h3 = plot(mul_dims(1:end-1), times);

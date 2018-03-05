@@ -1,32 +1,40 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Reti Neurali Convoluzionali}{25}{chapter.291}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Convolutional Neural Networks}{25}{chapter.291}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{Capitolo3}{{3}{25}{Reti Neurali Convoluzionali}{chapter.291}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Breve introduzione}{25}{section.292}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Architettura}{25}{section.293}}
+\newlabel{Chapter3}{{3}{25}{Convolutional Neural Networks}{chapter.291}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Introduction}{25}{section.292}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Architecture overview}{25}{section.293}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Architettura di una CNN che classifica segnali stradali: si evidenzia la divisione tra gli strati che fungono da feature extractor ed il classificatore finale\relax }}{26}{figure.caption.294}}
 \newlabel{fig:cnn1}{{3.1}{26}{Architettura di una CNN che classifica segnali stradali: si evidenzia la divisione tra gli strati che fungono da feature extractor ed il classificatore finale\relax }{figure.caption.294}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces I diversi strati tipici di una CNN\relax }}{26}{figure.caption.295}}
 \newlabel{fig:cnn2}{{3.2}{26}{I diversi strati tipici di una CNN\relax }{figure.caption.295}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Strato di Convoluzione}{26}{subsection.296}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Convolutional layer}{26}{subsection.296}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Convoluzione con un kernel: primi due step\relax }}{27}{figure.caption.297}}
 \newlabel{fig:convolution}{{3.3}{27}{Convoluzione con un kernel: primi due step\relax }{figure.caption.297}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Ogni neurone \IeC {\`e} connesso a solo 1 regione locale dell'input ma a tutta la profondit\IeC {\`a} (i.e. canali colori). La depth dell'output \IeC {\`e} data dal numero K di filtri, in questo caso 5\relax }}{28}{figure.caption.302}}
 \newlabel{fig:depth}{{3.4}{28}{Ogni neurone è connesso a solo 1 regione locale dell'input ma a tutta la profondità (i.e. canali colori). La depth dell'output è data dal numero K di filtri, in questo caso 5\relax }{figure.caption.302}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Strato di ReLU}{28}{subsection.303}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Strato di Pooling}{29}{subsection.306}}
-\newlabel{subsec:pooling}{{3.2.3}{29}{Strato di Pooling}{subsection.306}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Max pooling: in uscita l'immagine avr\IeC {\`a} 1/4 dei pixel di partenza.\relax }}{29}{figure.caption.307}}
-\newlabel{fig:maxpool}{{3.5}{29}{Max pooling: in uscita l'immagine avrà 1/4 dei pixel di partenza.\relax }{figure.caption.307}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}Strato completamente connesso (FC)}{30}{subsection.308}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Architettura di una CNN\relax }}{30}{figure.caption.309}}
-\newlabel{fig:cnn4}{{3.6}{30}{Architettura di una CNN\relax }{figure.caption.309}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Tipica CNN in un task di classificazione; la classe vincente \IeC {\`e} quella con la probabilit\IeC {\`a} pi\IeC {\`u} alta, indicata alla fine\relax }}{30}{figure.caption.310}}
-\newlabel{fig:cnn3}{{3.7}{30}{Tipica CNN in un task di classificazione; la classe vincente è quella con la probabilità più alta, indicata alla fine\relax }{figure.caption.310}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Applicazioni e risultati}{31}{section.311}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Confronto con l'uomo}{31}{subsection.312}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}One by one convolution}{28}{subsection.303}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Depthwise convolution}{28}{subsection.304}}
+\@writefile{toc}{\contentsline {subsubsection}{MobileNets}{28}{section*.305}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}ReLU}{29}{subsection.306}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.5}Pooling layer}{29}{subsection.309}}
+\newlabel{subsec:pooling}{{3.2.5}{29}{Pooling layer}{subsection.309}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.6}Fully connected layer (FC)}{29}{subsection.311}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Max pooling: in uscita l'immagine avr\IeC {\`a} 1/4 dei pixel di partenza.\relax }}{30}{figure.caption.310}}
+\newlabel{fig:maxpool}{{3.5}{30}{Max pooling: in uscita l'immagine avrà 1/4 dei pixel di partenza.\relax }{figure.caption.310}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Architettura di una CNN\relax }}{30}{figure.caption.312}}
+\newlabel{fig:cnn4}{{3.6}{30}{Architettura di una CNN\relax }{figure.caption.312}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Tipica CNN in un task di classificazione; la classe vincente \IeC {\`e} quella con la probabilit\IeC {\`a} pi\IeC {\`u} alta, indicata alla fine\relax }}{31}{figure.caption.313}}
+\newlabel{fig:cnn3}{{3.7}{31}{Tipica CNN in un task di classificazione; la classe vincente è quella con la probabilità più alta, indicata alla fine\relax }{figure.caption.313}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.7}Normalization}{31}{subsection.314}}
+\@writefile{toc}{\contentsline {subsubsection}{Xavier initialization}{31}{section*.315}}
+\@writefile{toc}{\contentsline {subsubsection}{Batch normalization}{31}{section*.316}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Transfer learning}{31}{section.317}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Fine-tuning}{31}{subsection.318}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Applications}{31}{section.319}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Comparison with humans}{32}{subsection.320}}
 \@setckpt{Chapters/Chapter3}{
 \setcounter{page}{33}
 \setcounter{equation}{0}
@@ -38,7 +46,7 @@
 \setcounter{mpfootnote}{0}
 \setcounter{part}{0}
 \setcounter{chapter}{3}
-\setcounter{section}{3}
+\setcounter{section}{4}
 \setcounter{subsection}{1}
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
@@ -62,7 +70,7 @@
 \setcounter{citetotal}{0}
 \setcounter{multicitecount}{0}
 \setcounter{multicitetotal}{0}
-\setcounter{instcount}{30}
+\setcounter{instcount}{27}
 \setcounter{maxnames}{3}
 \setcounter{minnames}{3}
 \setcounter{maxitems}{3}
@@ -161,10 +169,10 @@
 \setcounter{bbx:relatedcount}{0}
 \setcounter{bbx:relatedtotal}{0}
 \setcounter{cbx@tempcnta}{0}
-\setcounter{cbx@tempcntb}{29}
+\setcounter{cbx@tempcntb}{26}
 \setcounter{Item}{10}
 \setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{29}
+\setcounter{bookmark@seq@number}{37}
 \setcounter{lstlisting}{0}
 \setcounter{section@level}{2}
 }

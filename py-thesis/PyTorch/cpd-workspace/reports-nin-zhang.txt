@@ -7,8 +7,8 @@ Starting training accuracy: 0.913
 Avg preiction time: 0.166
 Params: 1415498
 
-TUCKER2 - VBMF     Compression    Ratio       Time for Speedup
-conv1     7296   >  4380         1.66             0.074100
+TUCKER2 - VBMF     Compression   Ratio       Time for Speedup
+conv1     7296   >  4380         1.66           0.074100
 conv2     307328 >  32168        9.5            0.078551 
 conv3     819456 >  36776        22             0.201896
 conv4     16448  > 
@@ -21,10 +21,17 @@ Accuracies:
 
 Overall: 
 Training complete in 118m 20s
-Avg preditcion time: 0.105540
+Avg preditcion time: 0.105540 
 Accuracy 77%
 
-Compression: 354742 4x    Speedup 
+Compression: 354742 4x    Speedup 1.6x
+Size in MB:  
+
+######################################
+Tucker wt. custom ranks 
+avg speed 0.052749 --> speedup 3.14 x
+75-73-75 ---> layer 2 è critico 
+
 
 #######################################
 CP - Rank // 3

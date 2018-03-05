@@ -14,7 +14,7 @@ Following, we will see how to apply these operators to decompose a convolutional
 %% intro 
 [A better introduction to tensors is needed. !!]\\
 A tensor is a geometric object that generalizes all the structures usually defined in linear algebra to the \emph{n}-dimensional space. As such, they can be defined as \emph{n}-dimensional arrays. \\
-Given a reference basis of vectors - i.e. a set of linearly independent vectors with which we can represent every other vector in the correspondent vector space - (cite needed) a tensor can be represented as a multidimensional array of numeric values. We define \emph{rank} (or order) of a tensor the dimensionality of the array needed to represent it with respect to this basis, or the number of indices needed to label a component of that array. Thus, an \emph{k-th} order tensor in an \emph{n}-dimensional space is a mathematical object that has \emph{n} indices and $n^k$ components; each index ranges over the number of dimensions of the space. 
+Given a reference basis of vectors - i.e. a set of linearly independent vectors with which we can represent every other vector in the correspondent vector space - (cite needed) a tensor can be represented as a multidimensional array of numeric values. We define \emph{rank} (or order) of a tensor the dimensionality of the array needed to represent it with respect to this basis, or the number of indices needed to label a component of that array. Thus, an \emph{k-th} order tensor in an \emph{n}-dimensional space is a mathematical object that has \emph{n} indices and $n^k$ components; each index ranges over the number of dimensions of the space.
 
 A third-order tensor is showed in \ref{fig:tensor}. 
 
@@ -120,12 +120,13 @@ The Eckart-Young theorem \parencite{Weckart} states that the best solution to th
 
 \subsubsection{SVD on Convnets}
 Given its application to speed up convolution filters, it is not surprising that SVD has been one of the methods used in recent developments on deep CNN compression, as portrayed in chapter \ref{Chapter2}.
-In particular, the work of Cheng et al. \parencite{tai2015SVD} applies an original decomposition scheme which is based on top of SVD. 
+In particular, the work of Cheng et al. \parencite{zhang2015SVD} applies an original decomposition scheme which is based on top of SVD. 
 
 Given a conv layer with weights $\mathcal{W} = [T \times S \times d \times d]$, it consists in constructing a bigger matrix $\mathcal{B}$ built with the stack of feature maps, namely spreading the input channels kernels on rows and kernel composing the filter bank on column. Then, it computes the SVD of the so obtained matrix and ... 
  
 
 \subsubsection{SVD on fully-connected layers}
+\label{subsec:svd-fc}
 Beside convolution, there is another way to leverage on SVD in convnets and that is the fully-connected layers. In practice, fully-connected layers are just plain matrix multiplication plus a bias:
 \begin{equation}
 \label{eq:fc}
@@ -141,11 +142,11 @@ From this observation, a recipe to speed up fully-connected layers can be spotte
 	\item the second will have a shape of $[ r \tiems n]$ and a bias equal to its original bias $B$.   
 \end{enumerate}
 
-The SVD decomposition of the layer is formalized as follows: 
+The SVD decomposition of the layer is formalized as follow: 
 \begin{equation}
-
-\end{equation}
 (U_{m \times r} \Sigma_{r \times r} V^T_{n \times t}) X+ B = U_{m \times r} ( \Sigma_{r \times r}V^T_{n \times r} X) + B 
+\end{equation}
+
 
 This way, the total number of weights dropped from $n \times m$ to $r(n+m)$, which is dependent on the choice of the rank of the approximation $r$ and can be significant when $r$ is a much smaller than $min(n, m)$.\\
 The first reference of this approach could be find in the \emph{Fast R-CNN} paper \parencit{fast-rcnn}, an efficient implementation of RCNN \parencite{rcnn}, a very famous CNN built for region proposal and object detection. The implementation for Caffe is also available on the author github page, at \parencite{Wgithub-rcnn}.
@@ -277,14 +278,58 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
 
 
 \subsection{Tucker Decomposition}
+The Tucker decomposition is a way to write a tensor of size $I_1 \times I_2 \times \ldots \times I_N$ as the multi-linear tensor-matrix product of a \emph{core} tensor $\mathbf{G}$ of size $R_1 \times R_2 \times \cdots \times R_N$ with $N$ factors $A^{(n)}$ of size $I_n \times R_n$:
 
+\begin{equation}
+\label{eq:tucker-general}
+    \mathrm{X} = \mathbf{G} \times_{1} A^{(1)} \times_{2} A^{(2)} \times_{3} \ldots \times_{N} A^{(N)}
+\end{equation}
+where $\times_k$ is the k-mode product introduced before. 
+\newline 
+ 
+To make this definition a little bit more intuitive, let X be a third-order tensor $\in \mathbf{R}*{I \times J \times K)$, then the Tucker decomposition is defined as :
+
+\begin{equation}
+\label{eq:tucker-3}
+	X = \mathbf{G} \times_1 A \times_2 B \times_3 C  = \sum_r \sum_s \sum_t \mathit{g}_{r,s,t} u_r \circ v_s \circ w_t 
+\end{equation}
+ 
+ where $A$ is a $I \times R$ matrix, $B$ is a $J \times S$ matrix, $C$ is a $K \times T$ matrix and $\mathbf{G}$ is a $R \times S \times T$-tensor with $R < I$, $S < J$ and $T < K$. 
+
+An example of third-order tensor Tucker decomposition is depicted in figure \ref{fig:tucker-decomposition}. 
+
+FIGURA TENSORE QUI 
+
+A matrix representation of the Tucker tensor is given by the following equations: 
+\begin{equation}
+  X_{(1)} = A\mathbf{G}_{(1)} (C \otimes B)^T
+\end{equation}
+
+\begin{equation}
+  X_{(2)} = B\mathbf{G}_{(2)} (C \otimes A)^T
+\end{equation}
+
+\begin{equation}
+  X_{(3)} = A\mathbf{G}_{(3)} (B \otimes A)^T
+\end{equation}
+
+and it is also possible to unfold it into a vector: 
+\begin{equation}
+ vec(X) = (C \otimes B \otimes A) vec(\mathbf{G})
+\end{equation}
+
+It is worth noting that we can see a Tucker decomposition as an SVD in each dimension, being $\mathcal{G}$ the singular value tensor and $A, B, C$ the matrices with the singular vectors of each dimension.
+
+ We have already seen how SVD can be useful in reducing complexity in fully-connected layers \ref{subsec:svd-fc}; therefore it's legitimate to presume that the Tucker decomposition can have a meaningful impact on the filter maps in convolutional layers. \\
+ Moreover, from chapter 3 we can recall that convolutional filters expose a \emph{parameter sharing} design. Hence it is intuibile that those filters will have some related parameters and thus feasible to a good factorization.  
 
 \subsubsection{HO-SVD}
+\label{subsec:hosvd}
 As the \emph{Higher-order singular value decomposition} was studied in many scientific fields, it is historically referred in different ways:  multilinear singular value decomposition, m-mode SVD, or cube SVD, and it is often incorrectly identified with a Tucker decomposition. 
 
 HOSVD is actually a specific orthogonal version of the Tucker decomposition. To put it in other words, it is a specialized algorithm to compute the Tucker decomposition. HOSVD involves solving each \emph{k}-mode matricized form of the specific tensor \parencite{WTucker}, relying on the following equivalence: \\
 
-	\begin{eqnarray}
+\begin{eqnarray}
 	\centering
 	Y &=& X \times_{1} A^{(1)} \times_{2} A^{(2)} \times_{3} \ldots \times_{N} A^{(N)} \nonumber\\
 	\Leftrightarrow \quad Y_{(k)} &=& A^{(k)} X_{(k)} \left(A^{(N)} \otimes \cdots \otimes A^{(k+1)}   \otimes A^{(k-1)} \otimes \cdots A^{(1)} \right)^T. \nonumber
@@ -325,15 +370,6 @@ HOOI finds the optimal approximation $\hat{X}$ with respect to the Frobenius nor
 &\,&G \leftarrow X \times\subscript{1} (A^{(1)})^T \times\subscript{2} (A^{(2)})^T \times\subscript{3} \cdots \times\subscript{N} (A^{(N)})^T  \nonumber\\
 \end{eqnarray}
 
-
-
-
-
-
-
-\begin{equation}
-    \mathrm{X} = \mathbf{G} \times_{1} A^{(1)} \times_{2} A^{(2)} \times_{3} \ldots \times_{N} A^{(N)}
-\end{equation}
 
 \subsection{Canonical Polyadic Decomposition}
 \begin{comment}
@@ -409,9 +445,8 @@ where $U^s$, $U^{sy}$ $U{syx}$ are intermediate tensors i.e., map stacks.
 
 
 \subsection{Tucker}
-%% forward pass con Tucker 
-The Tucker Decomposition, also known as the Higher Order SVD  \emph{HOSVD} is a generalization of SVD for tensors: 
 
+%% forward pass con Tucker 
 $$ K(i, j, s, t) = \sum_{r_1=1}^{R_1}\sum_{r_2=1}^{R_2}\sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}G_{r_1, r_2, r_3, r_4} * K^x_{r1}(i)K^y_{r2}(j)K^s_{r3}(s)K^t_{r4}(t) $$
 
 The Tucker Decomposition has a property that's useful for our purposes: it doesn't have to be applied along all modes (axis) of the tensors. We have seen how CPD decomposes the kernel also spatial-wise; this acts
@@ -443,7 +478,7 @@ V(x, y, t) = \sum_i \sum_j \sum_{r_4=1}^{R_4}\sum_{r_3=1}^{R_3}K^t_{r4}(t)\mathb
 \subsubsection{CP complexity}
 Standard convolution operation is defined by $STd^2$ parameters i.e, the number of parameters in the tensors. The computational cost is obtained by taking into account the height $H$ and the width $W$ of the input maps: $(STd^2)(HW)$. 
 \newline
-With their approaches, both in Jaderberg et al.\parencite{jaderberg} and Zhang et al. \parencite{tai2015} drop this complexity down to $Rd(S+T)$. Assuming the required rank is comparable or several times smaller than S and T, that is taking a rank $R\approx \frac{ST}{S+T}$, then the complexity would be reduced by a factor of $d$ times. 
+With their approaches, both in Jaderberg et al.\parencite{jaderberg2014} and Zhang et al. \parencite{zhang2015SVD} drop this complexity down to $Rd(S+T)$. Assuming the required rank is comparable or several times smaller than S and T, that is taking a rank $R\approx \frac{ST}{S+T}$, then the complexity would be reduced by a factor of $d$ times. 
 \newline 
 Following the decomposition proposed by Lebedev et al. \parencite{lebedev}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. \newline
 Hence, if we call $\mathcal{K}_{std}$ and $\mathcal{K}_{dec}$ the standard and decomposed convolution operation respectively,  the \emph{compression ratio} can be defined as
@@ -488,14 +523,117 @@ Ranks play key role in decomposition. If the rank is too high, the compression m
 However, there is no straight solution to rank estimation. As mentioned earlier, determining the rank is \emph{NP-Hard} \parencite{rank-hard1}\parencite{rank-hard2}\parencite{rank-hard3}. \\
  
 \subsubsection{iterative methods}
-A simple solution that has been applied by different authors is an iterative careful manual tuning \parencite{astrid2017} \parencite{lebedev2014} i.e., choosing an arbitrary rank, calculating the accuracy and manually updating the rank according to an elementary rule: the higher is the drop in accuracy, the higher is the rank needed by the layer.
+One simple but costly way to predict a good rank is a trial-and-error approach, based on a threshold \emph{th}:
+	\begin{enumerate}
+		\item start with a \emph{lower-bound} rank based on a truncation error of the HOSVD explained in section \ref{subsec:hosvd}
+		\item compute the relative error using the Frobenius norm: $$ Err = \frac{\left \| \mathbf{K'} - \mathbf{K}  \right \|_{F}}{\left \| \mathbf{K} \right \|_{F}}$$
+		\item if the error is less than the threshold i.e., $Err \leq th$, the rank is chosen as the best rank; otherwise increment the rank and restart from 1. 
+	\end{enumerate}
+
+In Tensorlab this is done by a utility function called \texttt{'rankest'}. A function to estimate how scalable is this method for large tensors is showed below: 
+
+
+\begin{lstlisting}[language={Matlab}]
+%% Rankest performance evaluation 
+%{
+Running rankest(T) on a dense, sparse or incomplete tensor T plots an L-curve which represents the balance
+between the relative error of the CPD and the number of rank-one terms R. 
+
+The lower bound is based on the truncation error of the tensors multilinear singular values 
+For incomplete and sparse tensors, this lower bound is not available and the first value to be tried for R is 1. 
+The number of rank-one terms is increased until the relative error of the approximation is less than options.MinRelErr. 
+In a sense, the corner of the resulting L-curve makes an optimal trade-off between accuracy and
+compression. The rankest tool computes the number of rank-one terms R corresponding to
+the L-curve corner and marks it on the plot with a square. This optimal number of rank-one
+terms is also rankests first output.
+%}
+
+A = {}
+times = []
+ranks = []
+n_inputs = [3, 9, 12, 32, 64]
+n_outputs = [12, 32, 64, 128, 256]
+dim = 3; 
+
+for i=1:5
+    A{i} = abs(randn(n_inputs(i), dim, dim, n_outputs(i)))
+    tic
+    ranks(i) = rankest(A{i})
+    times(i) = toc
+end 
+
+disp('estimated rankest times:') 
+disp(times)
+ 
+mul_dims = n_inputs .* n_outputs; 
+
+h3 = figure(3);
+h3 = plot(mul_dims(1:end-1), times);
+set(h1, 'LineWidth',3);
+grid on
+
+title('Rankest computation time') 
+xlabel('(N. of Inputs) x (N. of Outputs)') 
+ylabel('Rank estimation in SECONDS') 
+
+
+%% plots 
+h1 = figure(1); 
+h1 = plot(n_inputs, times);
+set(h1, 'LineWidth',3);
+grid on
+
+title('Rankest computation time') 
+xlabel('Number of INPUTS') 
+ylabel('Rank estimation in SECONDS') 
+
+h2 = figure(2); 
+h2 = plot(n_outputs, times); 
+set(h2, 'LineWidth',3);
+grid on
+
+title('Rankest computation time') 
+xlabel('Number of OUTPUTS') 
+ylabel('Rank estimation in SECONDS') 
+
+h3 = figure(3);
+h3 = plot(mul_dims, times);
+set(h1, 'LineWidth',3);
+grid on
+
+title('Rankest computation time') 
+xlabel('(N. of INPUTS) x (N. of OUTPUTS)') 
+ylabel('Rank estimation in SECONDS') 
+
+\end{lstlisting}
+
+In figure \ref{fig:rankest} we can see how this approach does not scale so well with increasing input and output maps dimensions, which are also all not so large i.e., less than 256.
+
+FIGURA RANKEST 
+
+
 \newline 
-In they define a metric to measure the \emph{sensitivity} of the decomposition 
+\paragraph{iterative compression and fine-tuning}
+A simple solution that has been applied by different authors is an iterative careful manual tuning \parencite{astrid2017} \parencite{lebedev2014} i.e., choosing an arbitrary rank, calculating the accuracy and manually updating the rank according to an elementary rule: the higher is the drop in accuracy caused by its decomposition, the higher is the rank needed by the layer.
+\newline 
+In Astrid and Lee \parencite{astrid2017} they define a metric to measure the \emph{sensitivity} of a layer $l$ as:
+\begin{equation}
+	S_{l} = \frac{Loss_l}{Total \quad Loss}
+\end{equation}
+that is how much the error of the approximation of one layer's tensor affects the whole network accuracy. The sensitivity is intended to be computed \emph{after} the fine-tuning has been performed. 
+\newline 
+
+In Lebedev et al. \parencite{lebedev2014} the authors compute the relative error $$ Err = \frac{\left \| \mathbf{K'} - \mathbf{K}  \right \|_{F}}{\left \| \mathbf{K} \right \|_{F}}$$ (as shown in step 2 above) of the tensor approximation and how much it does impact accuracy before and after fine-tuning.  
+Once a good rank for a specific layer is found, we can move to the next one. Following this slow but careful process, we will arguably end up with a fair enough compressed version of the original model. 
 
 \subsubsection{Global Analytics VBMF}
+%% cenni 
+
+VBMF can also be used to tackle a subtle issue with the iterative approach of \parencite{astrid2017}: in fact when fine-tuning is performed on the whole network, the sensitivity on a layer is computed after previous layers have already been compressed and thus the previous rank change is ignored. Employing VBMF enable us to compute a rank estimation independently on each layer \emph{before} actually doing the compressing-and-fine-tuning step. 
+
 
 \subsubsection{Variational autoencoders}
-%% cenni 
+%% cenni alla fine 
 
 
 \subsection{Decomposition algorithms overview}
@@ -549,36 +687,6 @@ The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a 
 
 
 
-
-\begin{lstlisting}[language={[5.2]Lua}]
------ preprocess/normalize train/test sets -----
-print '<trainer> preprocessing data (color space + normalization)'
-
--- preprocess trainSet
-normalization = nn.SpatialContrastiveNormalization(1, image.gaussian1D(7))
-for i = 1,trainData:size() do
-   --rgb -> yuv
-   local rgb = trainData.data[i]
-   local yuv = image.rgb2yuv(rgb)
-   
-   -- normalize Y locally:
-   yuv[1] = normalization(yuv[{{1}}])
-   trainData.data[i] = yuv
-end
--- normalize U globally:
-mean_u = trainData.data[{ {},2,{},{} }]:mean()
-std_u = trainData.data[{ {},2,{},{} }]:std()
-trainData.data[{ {},2,{},{} }]:add(-mean_u)
-trainData.data[{ {},2,{},{} }]:div(-std_u)
-
--- normalize V globally:
-mean_v = trainData.data[{ {},3,{},{} }]:mean()
-std_v = trainData.data[{ {},3,{},{} }]:std()
-trainData.data[{ {},3,{},{} }]:add(-mean_v)
-trainData.data[{ {},3,{},{} }]:div(-std_v)
-
---same applies to test set...
-\end{lstlisting}
 
 
 

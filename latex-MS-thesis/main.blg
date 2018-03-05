@@ -1,0 +1,24 @@
+[0] Config.pm:354> INFO - This is Biber 2.7 (beta)
+[0] Config.pm:357> INFO - Logfile is 'main.blg'
+[55] biber:303> INFO - === lun mar  5, 2018, 03:03:48
+[76] Biber.pm:360> INFO - Reading 'main.bcf'
+[183] Biber.pm:836> INFO - Found 56 citekeys in bib section 0
+[205] Biber.pm:3671> INFO - Processing section 0
+[230] Biber.pm:3841> INFO - Looking for bibtex format file 'bibliografia.bib' for section 0
+[236] bibtex.pm:1424> INFO - Decoding LaTeX character macros into UTF-8
+[249] bibtex.pm:1281> INFO - Found BibTeX data source 'bibliografia.bib'
+[330] Utils.pm:164> WARN - month field '11--13 Apr' in entry 'Relu' is not an integer - this will probably not sort properly.
+[360] Utils.pm:164> WARN - month field '#jan#' in entry 'AlphaGo' is not an integer - this will probably not sort properly.
+[431] Utils.pm:164> WARN - I didn't find a database entry for 'WConnessionismo' (section 0)
+[432] Utils.pm:164> WARN - I didn't find a database entry for 'WHeaviside' (section 0)
+[432] Utils.pm:164> WARN - I didn't find a database entry for 'WGradisca' (section 0)
+[432] Utils.pm:164> WARN - I didn't find a database entry for 'WProfit' (section 0)
+[432] Utils.pm:164> WARN - I didn't find a database entry for 'WRRG' (section 0)
+[432] Utils.pm:164> WARN - I didn't find a database entry for 'lebedev' (section 0)
+[502] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[503] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[503] Biber.pm:3500> INFO - Sorting list 'none/global/' of type 'entry' with scheme 'none' and locale 'en-US'
+[503] Biber.pm:3506> INFO - No sort tailoring available for locale 'en-US'
+[563] bbl.pm:608> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[576] bbl.pm:712> INFO - Output to main.bbl
+[577] Biber.pm:110> INFO - WARNINGS: 8

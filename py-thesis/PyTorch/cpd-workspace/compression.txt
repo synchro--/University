@@ -1,7 +1,15 @@
-Weights before: 307200 - Weights after:9828 - Compression ratio: 31.2576
 Weights before: 819200 - Weights after:163840 - Compression ratio: 5.0000
 Weights before: 819200 - Weights after:163840 - Compression ratio: 5.0000
+Weights before: 307200 - Weights after:61440 - Compression ratio: 5.0000
+Weights before: 7200 - Weights after:1440 - Compression ratio: 5.0000
 Weights before: 819200 - Weights after:163840 - Compression ratio: 5.0000
 Weights before: 819200 - Weights after:163840 - Compression ratio: 5.0000
-Weights before: 819200 - Weights after:163840 - Compression ratio: 5.0000
-Weights before: 819200 - Weights after:163840 - Compression ratio: 5.0000
+Weights before: 307200 - Weights after:61440 - Compression ratio: 5.0000
+Weights before: 307200 - Weights after:30720 - Compression ratio: 10.0000
+Weights before: 307200 - Weights after:30720 - Compression ratio: 10.0000
+Weights before: 307200 - Weights after:30720 - Compression ratio: 10.0000
+Weights before: 307200 - Weights after:30720 - Compression ratio: 10.0000
+Weights before: 7200 - Weights after:2400 - Compression ratio: 3.0000
+
+Weights before: 7200 - Weights after:3600 - Compression ratio: 2.0000
+Weights before: 7200 - Weights after:987 - Compression ratio: 7.2948

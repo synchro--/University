@@ -1,0 +1,91 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {english}
+\contentsline {chapter}{Abstract}{iii}{section*.1}
+\contentsline {chapter}{Acknowledgements}{v}{section*.2}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.9}
+\contentsline {section}{\numberline {1.1}}{1}{section.10}
+\contentsline {section}{\numberline {1.2}Multi-layer Perceptron}{2}{section.15}
+\contentsline {subsection}{\numberline {1.2.1}Strati Nascosti}{2}{subsection.16}
+\contentsline {section}{\numberline {1.3}Caso di studio: prevedere il profitto di un ristorante}{3}{section.17}
+\contentsline {chapter}{\numberline {2}Convolutional Neural Networks}{5}{chapter.21}
+\contentsline {section}{\numberline {2.1}}{5}{section.22}
+\contentsline {section}{\numberline {2.2}Forward Propagation}{7}{section.50}
+\contentsline {section}{\numberline {2.3}Backpropagation}{8}{section.72}
+\contentsline {section}{\numberline {2.4}Verifica numerica del gradiente}{12}{section.109}
+\contentsline {section}{\numberline {2.5}Addestramento}{14}{section.157}
+\contentsline {subsection}{\numberline {2.5.1}Apprendimento supervisionato}{14}{subsection.158}
+\contentsline {subsection}{\numberline {2.5.2}Discesa del gradiente}{15}{subsection.162}
+\contentsline {section}{\numberline {2.6}Ottimizzazione: diverse tecniche}{15}{section.164}
+\contentsline {section}{\numberline {2.7}Overfitting}{19}{section.200}
+\contentsline {subsection}{\numberline {2.7.1}Rilevare l'overfitting}{19}{subsection.202}
+\contentsline {subsection}{\numberline {2.7.2}Contromisure}{21}{subsection.247}
+\contentsline {section}{\numberline {2.8}Risultati}{24}{section.290}
+\contentsline {chapter}{\numberline {3}Convolutional Neural Networks}{25}{chapter.291}
+\contentsline {section}{\numberline {3.1}Introduction}{25}{section.292}
+\contentsline {section}{\numberline {3.2}Architecture overview}{25}{section.293}
+\contentsline {subsection}{\numberline {3.2.1}Convolutional layer}{26}{subsection.296}
+\contentsline {subsection}{\numberline {3.2.2}One by one convolution}{28}{subsection.303}
+\contentsline {subsection}{\numberline {3.2.3}Depthwise convolution}{28}{subsection.304}
+\contentsline {subsubsection}{MobileNets}{28}{section*.305}
+\contentsline {subsection}{\numberline {3.2.4}ReLU}{29}{subsection.306}
+\contentsline {subsection}{\numberline {3.2.5}Pooling layer}{29}{subsection.309}
+\contentsline {subsection}{\numberline {3.2.6}Fully connected layer (FC)}{29}{subsection.311}
+\contentsline {subsection}{\numberline {3.2.7}Normalization}{31}{subsection.314}
+\contentsline {subsubsection}{Xavier initialization}{31}{section*.315}
+\contentsline {subsubsection}{Batch normalization}{31}{section*.316}
+\contentsline {section}{\numberline {3.3}Transfer learning}{31}{section.317}
+\contentsline {subsection}{\numberline {3.3.1}Fine-tuning}{31}{subsection.318}
+\contentsline {section}{\numberline {3.4}Applications}{31}{section.319}
+\contentsline {subsection}{\numberline {3.4.1}Comparison with humans}{32}{subsection.320}
+\contentsline {chapter}{\numberline {4}4 Tensor Decomposition}{33}{chapter.321}
+\contentsline {section}{\numberline {4.1}Background}{33}{section.322}
+\contentsline {subsection}{\numberline {4.1.1}Tensor rank}{33}{subsection.323}
+\contentsline {subsection}{\numberline {4.1.2}Singular value decomposition}{34}{subsection.326}
+\contentsline {subsection}{\numberline {4.1.3}SVD Applications}{35}{subsection.328}
+\contentsline {subsubsection}{SVD on Convnets}{36}{section*.332}
+\contentsline {subsubsection}{SVD on fully-connected layers}{36}{section*.333}
+\contentsline {section}{\numberline {4.2}Tensor mathematical tools}{36}{section.340}
+\contentsline {subsection}{\numberline {4.2.1}Basic operations}{36}{subsection.341}
+\contentsline {subsection}{\numberline {4.2.2}Tucker Decomposition}{39}{subsection.352}
+\contentsline {subsubsection}{HO-SVD}{40}{section*.359}
+\contentsline {subsubsection}{Higher order orthogonal iteration}{40}{section*.362}
+\contentsline {subsection}{\numberline {4.2.3}Canonical Polyadic Decomposition}{41}{subsection.364}
+\contentsline {section}{\numberline {4.3}Application of tensor decompositon on CNN}{41}{section.366}
+\contentsline {subsection}{\numberline {4.3.1}Convolutional layer as 4-mode tensors}{41}{subsection.367}
+\contentsline {subsection}{\numberline {4.3.2}CPD}{41}{subsection.368}
+\contentsline {subsubsection}{CPD-3}{42}{section*.376}
+\contentsline {subsection}{\numberline {4.3.3}Tucker}{42}{subsection.377}
+\contentsline {subsection}{\numberline {4.3.4}Complexity analysis}{43}{subsection.382}
+\contentsline {subsubsection}{CP complexity}{43}{section*.383}
+\contentsline {subsubsection}{CP-3 complexity}{44}{section*.387}
+\contentsline {subsubsection}{Tucker complexity}{44}{section*.388}
+\contentsline {paragraph}{Complexity recap}{44}{section*.389}
+\contentsline {section}{\numberline {4.4}In-depth discussion}{44}{section.390}
+\contentsline {subsection}{\numberline {4.4.1}Rank estimation}{44}{subsection.391}
+\contentsline {subsubsection}{iterative methods}{44}{section*.392}
+\contentsline {paragraph}{iterative learning}{46}{section*.468}
+\contentsline {chapter}{\numberline {5}Addestrare un modello allo stato dell'arte}{47}{chapter.470}
+\contentsline {section}{\numberline {5.1}Deep Residual Network}{47}{section.471}
+\contentsline {section}{\numberline {5.2}Implementazione di ResNet di Facebook}{49}{section.477}
+\contentsline {section}{\numberline {5.3}Addestramento su CIFAR}{50}{section.520}
+\contentsline {section}{\numberline {5.4}LeNet vs ResNet: confronto}{51}{section.523}
+\contentsline {chapter}{\numberline {6}Caso d'uso: fine-tuning su dataset arbitrario}{53}{chapter.524}
+\contentsline {section}{\numberline {6.1}Il problema}{53}{section.525}
+\contentsline {section}{\numberline {6.2}Transfer Learning}{53}{section.529}
+\contentsline {subsection}{\numberline {6.2.1}Fine-tuning}{54}{subsection.530}
+\contentsline {section}{\numberline {6.3}Dataset}{55}{section.535}
+\contentsline {section}{\numberline {6.4}Fine-tuning su Resnet}{56}{section.572}
+\contentsline {subsection}{\numberline {6.4.1}Training}{56}{subsection.573}
+\contentsline {subsection}{\numberline {6.4.2}Testing}{59}{subsection.634}
+\contentsline {chapter}{\numberline {7}Conclusioni}{63}{chapter.669}
+\contentsline {chapter}{\numberline {A}MLP: Codice addizionale}{65}{appendix.670}
+\contentsline {section}{\numberline {A.1}Classi in Lua}{65}{section.671}
+\contentsline {section}{\numberline {A.2}La classe Neural\_Network}{66}{section.718}
+\contentsline {section}{\numberline {A.3}Metodi getter e setter}{67}{section.770}
+\contentsline {chapter}{\numberline {B}Il framework Torch}{69}{appendix.793}
+\contentsline {section}{\numberline {B.1}Introduzione}{69}{section.794}
+\contentsline {section}{\numberline {B.2}Utilizzo base per reti neurali}{70}{section.796}
+\contentsline {subsection}{\numberline {B.2.1}Supporto CUDA}{71}{subsection.828}
+\contentsline {section}{\numberline {B.3}ResNet}{71}{section.843}
+\contentsline {chapter}{Bibliography}{79}{appendix*.1256}

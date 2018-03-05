@@ -115,11 +115,11 @@ class Trainer:
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type = str, default = "cifar")
+    parser.add_argument("--model", type=str, default="")
+    parser.add_argument("--state", type=str, default="")
     parser.add_argument("--train", dest="train", action="store_true")
     parser.add_argument("--decompose", dest="decompose", action="store_true")
     parser.add_argument("--full-decompose", dest="full_decompose", action="store_true")
-    parser.add_argument("--layer",type=str, default="conv1")
     parser.add_argument("--fine-tune", dest="fine_tune", action="store_true")
     parser.add_argument("--train_path", type = str, default = "train")
     parser.add_argument("--test_path", type = str, default = "test")
@@ -127,7 +127,7 @@ def get_args():
         help="Use cp decomposition. uses tucker by default")
     parser.add_argument('--layers', nargs='+', dest="layers",
                             default=['conv4', 'conv3', 'conv2', 'conv1'], 
-                            help="Specify the names of the layers to decompose")
+                            help="Specify the list of layer names to decompose")
     parser.set_defaults(train=False)
     parser.set_defaults(decompose=False)
     parser.set_defaults(fine_tune=False)
@@ -178,9 +178,16 @@ if __name__ == '__main__':
     # Decompose all the specified layers without fine-tuning 
     # Save the architecture in "full_decomposed.pth"
     elif args.full_decompose: 
+        if args.model:
+            model = torch.load(args.model)
+        else:
+            model = LenetZhang()
+
+        if args.state:
+            model.load_state_dict(torch.load(args.state))
+
         layers = args.layers
-        model = LenetZhang()
-        model.load_state_dict(torch.load(args.model))
+
         for i, layer in enumerate(layers):
             dec = decompose_model(model, layer, 'decomposed_model.pth')
             for param in dec.parameters():
@@ -193,14 +200,15 @@ if __name__ == '__main__':
     
     elif args.fine_tune:
         # 1st time decomposition
-        model = LenetZhang()
-        # model = torch.load('decomposed_model.pth')
-        # model = torch.load('full_decomposed.pth')
-        model.load_state_dict(torch.load(args.model))
-        
-        # model = torch.load('LAST-tucker.pth')
-        # model = torch.load('finetuned.pth') 
-        
+        if args.model:
+            model = torch.load(args.model)
+        else:
+            model = LenetZhang()
+
+        if args.state:
+            model.load_state_dict(torch.load(args.state))
+
+        # Print summary of the model
         print(torch_summarize(model))
         
         layers = args.layers
@@ -222,7 +230,7 @@ if __name__ == '__main__':
                 step_size = 30
             else:
                 lr = 0.001
-                step_size = 35
+                step_size = 20
 
             optimizer = optim.Adam(dec.parameters(), lr=lr)
             # Decay LR by a factor of 0.1 every X epochs
