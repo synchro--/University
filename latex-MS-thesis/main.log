@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.2.20)  5 MAR 2018 03:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.2.20)  5 MAR 2018 09:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2080,12 +2080,7 @@ File: english.lbx 2016/12/05 v3.7 biblatex localization (PK/JW/AB)
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
  (./main.aux
-(./Chapters/Chapter1.aux) (./Chapters/Chapter2.aux) (./Chapters/Chapter3.aux)
-(./Chapters/Chapter4.aux) (./Chapters/Chapter5.aux) (./Chapters/Chapter6.aux
-
-LaTeX Warning: Label `fig:res-train' multiply defined.
-
-) (./Chapters/Chapter7.aux) (./Appendices/AppendixA.aux)
+(./Chapters/Chapter4.aux) (./Appendices/AppendixA.aux)
 (./Appendices/AppendixB.aux))
 \openout1 = `main.aux'.
 
@@ -2210,81 +2205,10 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
 (./main.bbl
-! Illegal parameter number in definition of \NewValue.
-<to be read again> 
-                   j
-l.892       \field{month}{#jan#}
-                                
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-! Illegal parameter number in definition of \NewValue.
-<to be read again> 
-                   }
-l.892       \field{month}{#jan#}
-                                
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-! Illegal parameter number in definition of \abx@field@month.
-<to be read again> 
-                   j
-l.906     \endentry
-                   
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-! Illegal parameter number in definition of \abx@field@month.
-<to be read again> 
-                   }
-l.906     \endentry
-                   
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
 
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
 (biblatex)                lebedev
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                WGradisca
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                WRRG
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                WProfit
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                WHeaviside
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                WConnessionismo
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
 
@@ -2418,29 +2342,43 @@ or  <return>  to continue without it.
 1: section
 [5] [6
 
-] (./main.toc
-1: section
-[7] [8])
+] (./main.toc)
 \tf@toc=\write7
 \openout7 = `main.toc'.
 
- [9] [10
+
+1: section
+[7] [8
 
 ] (./main.lof
-1: section
-[11])
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 5.
+ (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+Overfull \hbox (0.62329pt too wide) in paragraph at lines 5--5
+ [][] [][]\T1/lmr/m/n/10.95 Tensor De-com-po-si-tions for speed-ing up a gen-er
+-al-ized con-vo-lu-tion. Each 
+ []
+
+)
 \tf@lof=\write8
 \openout8 = `main.lof'.
 
- [12] (./main.lot)
+
+1: section
+[9] [10
+
+] (./main.lot)
 \tf@lot=\write9
 \openout9 = `main.lot'.
 
- Excluding 'comment' comment.
-1: section
-[13
 
-] [14
+1: section
+[11] [12
+
+]
+1: section
+[13] [14
 
 ]
 1: section
@@ -2455,637 +2393,10 @@ or  <return>  to continue without it.
 
 ]
 1: section
-\openout2 = `Chapters/Chapter1.aux'.
-
-(./Chapters/Chapter1.tex
-Chapter 1.
-<Figures/teoria/NeuronePitts.png, id=615, 551.81157pt x 205.5178pt>
-File: Figures/teoria/NeuronePitts.png Graphic file (type png)
-<use Figures/teoria/NeuronePitts.png>
-Package pdftex.def Info: Figures/teoria/NeuronePitts.png  used on input line 27
-. on input line 27.
-Package pdftex.def Info: Requested size: 404.02908pt x 150.48459pt on input lin
-e 27.
-1: section
-[1
-
-
- <./Figures/teoria/NeuronePitts.png>]
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 64.
-
-(/usr/share/texmf/tex/latex/lm/ts1lmr.fd
-File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [2]
-Underfull \hbox (badness 10000) in paragraph at lines 111--113
-
- []
-
-
-LaTeX Warning: Reference `Capitolo2' on page 3 undefined on input line 114.
-
-<Figures/teoria/multilayer.png, id=640, 501.875pt x 406.51875pt>
-File: Figures/teoria/multilayer.png Graphic file (type png)
-<use Figures/teoria/multilayer.png>
-Package pdftex.def Info: Figures/teoria/multilayer.png  used on input line 118.
- on input line 118.
-Package pdftex.def Info: Requested size: 404.02908pt x 327.28102pt on input lin
-e 118.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-) [3] [4 <./Figures/teoria/multilayer.png>]
-\openout2 = `Chapters/Chapter2.aux'.
-
- (./Chapters/Chapter2.tex
-Chapter 2.
-
-LaTeX Warning: Reference `Capitolo1' on page 5 undefined on input line 7.
-
-
-Overfull \hbox (4.07045pt too wide) in paragraph at lines 7--8
-\T1/lmr/m/n/10.95 Per il caso di stu-dio in-trodotto nel Capi-tolo [] si � im-p
-le-men-tato da zero un percettrone
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13--14
-
- []
-
-1: section
-[5
-
-
-
-]
-
-LaTeX Warning: File `Figures/C2/MLP-Profitto.png' not found on input line 32.
-
-
-! Package pdftex.def Error: File `Figures/C2/MLP-Profitto.png' not found: using
- draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.32 ...dth=1.0\textwidth]{\path/MLP-Profitto.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 32.
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
-File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
-File: lstlang2.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
-File: lstlang2.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
-File: lstlang2.sty 2015/06/04 1.6 listings language file
-) [6]
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 70.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--111
-[]|\T1/lmr/m/n/10.95 (hiddenLayerSize,
- []
-
-[7] [8]
-! Extra }, or forgotten $.
-l.160 ...\sum_{j=1}^{n} \frac{1}{2} (y-\hat{y})^2}
-                                                   \tag{5}
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-<Figures/teoria/gradientbased.png, id=726, 525.46312pt x 168.63pt>
-File: Figures/teoria/gradientbased.png Graphic file (type png)
-<use Figures/teoria/gradientbased.png>
-Package pdftex.def Info: Figures/teoria/gradientbased.png  used on input line 1
-81. on input line 181.
-Package pdftex.def Info: Requested size: 404.02908pt x 129.66537pt on input lin
-e 181.
-[9 <./Figures/teoria/gradientbased.png>]
-
-LaTeX Warning: File `Figures/C2/sigmoidPrime.png' not found on input line 221.
-
-
-! Package pdftex.def Error: File `Figures/C2/sigmoidPrime.png' not found: using
- draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.221 ...th=0.5\textwidth]{\path/sigmoidPrime.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! Package amsmath Error: \tag not allowed here.
-
-See the amsmath package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.234 z^{(3)} = a^{(2)}W^{(2)} \tag
-                                   {3}\\
-\tag cannot be used at this point. If you don't understand why
-you should consult the documentation.
-But don't worry: just continue, and I'll forget what happened. 
-
-[10]
-
-! Package amsmath Error: \tag not allowed here.
-
-See the amsmath package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.247 (a^{(2)})^T\delta^{(3)}\tag
-                                 {6}
-\tag cannot be used at this point. If you don't understand why
-you should consult the documentation.
-But don't worry: just continue, and I'll forget what happened. 
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 248--251
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 270--274
-
- []
-
-[11]
-
-! Package amsmath Error: \tag not allowed here.
-
-See the amsmath package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.300 X^{T}\delta^{(2)} \tag
-                            {7}
-\tag cannot be used at this point. If you don't understand why
-you should consult the documentation.
-But don't worry: just continue, and I'll forget what happened. 
-
-! Extra }, or forgotten $.
-l.343 ...quad \frac{\partial J}{\partial W^{(2)}}}
-                                                  $.\\
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-[12] [13]
-<Figures/teoria/supervised-2.jpg, id=841, 575.90157pt x 408.02437pt>
-File: Figures/teoria/supervised-2.jpg Graphic file (type jpg)
-<use Figures/teoria/supervised-2.jpg>
-Package pdftex.def Info: Figures/teoria/supervised-2.jpg  used on input line 42
-3. on input line 423.
-Package pdftex.def Info: Requested size: 323.22449pt x 229.00883pt on input lin
-e 423.
- [14 <./Figures/teoria/supervised-2.jpg>] [15]
-<Figures/teoria/nesterov.jpg, id=858, 803.0pt x 254.9525pt>
-File: Figures/teoria/nesterov.jpg Graphic file (type jpg)
-<use Figures/teoria/nesterov.jpg>
-Package pdftex.def Info: Figures/teoria/nesterov.jpg  used on input line 471. o
-n input line 471.
-Package pdftex.def Info: Requested size: 323.22449pt x 102.62497pt on input lin
-e 471.
-
-Overfull \hbox (29.51257pt too wide) in paragraph at lines 477--478
-[]\T1/lmr/m/sc/10.95 Adam\T1/lmr/m/n/10.95 : l'\T1/lmr/m/it/10.95 Adaptive Mo-m
-ent Es-ti-ma-tion \T1/lmr/m/n/10.95 cerca di ovviare ai prob-lemi dell'aggiorna
-mento
- []
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.480 P
-       er riuscire effettivamente ad addestrare la rete, si è utilizzato un...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-[16 <./Figures/teoria/nesterov.jpg>]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.517 P
-       rocedendo iterativamente con le diverse tecniche di ottimizzazione si...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-LaTeX Warning: File `Figures/C2/comparison.png' not found on input line 522.
-
-
-! Package pdftex.def Error: File `Figures/C2/comparison.png' not found: using d
-raft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.522 ...idth=1.0\textwidth]{\path/comparison.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.527 D
-       al grafico si evidenzia come le premesse teoriche dei vari metodi sia...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.532 L
-       a rete è ora addestrata: dando in ingresso la matrice $X$ di input s...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-LaTeX Warning: File `Figures/C2/previsioni.jpg' not found on input line 535.
-
-
-! Package pdftex.def Error: File `Figures/C2/previsioni.jpg' not found: using d
-raft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.535 ...idth=0.5\textwidth]{\path/previsioni.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 536.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 536.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[17]
-
-LaTeX Warning: Text page 18 contains only floats.
-
-[18]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.552 I
-       n figura \ref{fig:regularization} è mostrato un esempio di 2 modelli...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-LaTeX Warning: File `Figures/C2/reg-grafico.jpg' not found on input line 555.
-
-
-! Package pdftex.def Error: File `Figures/C2/reg-grafico.jpg' not found: using 
-draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.555 ...dth=0.6\textwidth]{\path/reg-grafico.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[19] [20]
-
-LaTeX Warning: File `Figures/C2/overfitting.png' not found on input line 617.
-
-
-! Package pdftex.def Error: File `Figures/C2/overfitting.png' not found: using 
-draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.617 ...dth=0.8\textwidth]{\path/overfitting.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-! Undefined control sequence.
-l.627 ...ine Learning per PhD di M. Lippi\prencite
-                                                  {WLippi}). Anche questa pr...
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-[21]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.632 U
-       n comune metodo di regolarizzazione è la \emph{L2 Regularization}: s...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.676 E
-       seguendo ora l'addestramento si ottengono risultati in figura \ref{fi...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-LaTeX Warning: File `Figures/C2/regularization.png' not found on input line 679
-.
-
-
-! Package pdftex.def Error: File `Figures/C2/regularization.png' not found: usi
-ng draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.679 ...0.65\textwidth]{\path/regularization.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[22] [23]) [24]
-\openout2 = `Chapters/Chapter3.aux'.
-
- (./Chapters/Chapter3.tex
-Chapter 3.
-<Figures/C3/CNN-expl.png, id=1033, 337.26pt x 152.36925pt>
-File: Figures/C3/CNN-expl.png Graphic file (type png)
-<use Figures/C3/CNN-expl.png>
-Package pdftex.def Info: Figures/C3/CNN-expl.png  used on input line 22. on inp
-ut line 22.
-Package pdftex.def Info: Requested size: 404.02908pt x 182.5376pt on input line
- 22.
-<Figures/C3/CNN-features.png, id=1035, 826.58812pt x 140.77594pt>
-File: Figures/C3/CNN-features.png Graphic file (type png)
-<use Figures/C3/CNN-features.png>
-Package pdftex.def Info: Figures/C3/CNN-features.png  used on input line 29. on
- input line 29.
-Package pdftex.def Info: Requested size: 404.02908pt x 68.8111pt on input line 
-29.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-1: section
-[25
-
-
-
-] [26 <./Figures/C3/CNN-expl.png> <./Figures/C3/CNN-features.png>]
-<Figures/C3/convolution.png, id=1056, 642.4pt x 319.1925pt>
-File: Figures/C3/convolution.png Graphic file (type png)
-<use Figures/C3/convolution.png>
-Package pdftex.def Info: Figures/C3/convolution.png  used on input line 53. on 
-input line 53.
-Package pdftex.def Info: Requested size: 282.81912pt x 140.52792pt on input lin
-e 53.
-
-
-LaTeX Warning: Reference `Capitolo2' on page 27 undefined on input line 60.
-
-
-Overfull \hbox (15.26427pt too wide) in paragraph at lines 49--64
-\T1/lmr/m/n/10.95 Nei con-vo-lu-tional lay-ers viene quindi fatta un'operazione
- di con-voluzione tra l'immagine/i
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 65--68
-
- []
-
-[27 <./Figures/C3/convolution.png>]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.79 Q
-      uando si elaborano delle immagini con le CNN si hanno generalmente in ...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-<Figures/C3/depthcol.jpeg, id=1066, 465.74pt x 327.2225pt>
-File: Figures/C3/depthcol.jpeg Graphic file (type jpg)
-<use Figures/C3/depthcol.jpeg>
-Package pdftex.def Info: Figures/C3/depthcol.jpeg  used on input line 89. on in
-put line 89.
-Package pdftex.def Info: Requested size: 161.60916pt x 113.54097pt on input lin
-e 89.
-
-Underfull \hbox (badness 10000) in paragraph at lines 84--95
-
- []
-
-
-LaTeX Warning: Reference `Capitolo2' on page 28 undefined on input line 105.
-
-[28 <./Figures/C3/depthcol.jpeg>]
-Underfull \hbox (badness 10000) in paragraph at lines 119--125
-
- []
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.132 D
-       i questi, quello che si è dimostrato più efficace è il \emph{max p...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-<Figures/C3/maxpool.jpeg, id=1075, 789.95125pt x 369.38pt>
-File: Figures/C3/maxpool.jpeg Graphic file (type jpg)
-<use Figures/C3/maxpool.jpeg>
-Package pdftex.def Info: Figures/C3/maxpool.jpeg  used on input line 135. on in
-put line 135.
-Package pdftex.def Info: Requested size: 323.22449pt x 151.13678pt on input lin
-e 135.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: Reference `Capitolo2' on page 29 undefined on input line 144.
-
-[29]
-<Figures/C3/cnn-architecture.png, id=1087, 602.25pt x 140.525pt>
-File: Figures/C3/cnn-architecture.png Graphic file (type png)
-<use Figures/C3/cnn-architecture.png>
-Package pdftex.def Info: Figures/C3/cnn-architecture.png  used on input line 15
-1. on input line 151.
-Package pdftex.def Info: Requested size: 404.02908pt x 94.27776pt on input line
- 151.
-<Figures/C3/convnet.jpeg, id=1088, 1259.70625pt x 603.25375pt>
-File: Figures/C3/convnet.jpeg Graphic file (type jpg)
-<use Figures/C3/convnet.jpeg>
-Package pdftex.def Info: Figures/C3/convnet.jpeg  used on input line 158. on in
-put line 158.
-Package pdftex.def Info: Requested size: 404.02908pt x 193.47777pt on input lin
-e 158.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[30 <./Figures/C3/maxpool.jpeg> <./Figures/C3/cnn-architecture.png>]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.187 \subsection
-                 {Comparison with humans}
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 188--193
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 188--193
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 188--193
-
- []
-
-[31 <./Figures/C3/convnet.jpeg>]
-! Illegal parameter number in definition of \abx@field@month.
-<to be read again> 
-                   j
-l.197 ...bblicato da DeepMind \parencite{AlphaGo}.
-                                                   \\
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-! Illegal parameter number in definition of \abx@field@month.
-<to be read again> 
-                   }
-l.197 ...bblicato da DeepMind \parencite{AlphaGo}.
-                                                   \\
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-)
-Overfull \hbox (14.64284pt too wide) in paragraph at lines 194--256
-\OT1/lmr/m/n/10.95 10[]$ \T1/lmr/m/n/10.95 pos-si-bili com-bi-nazioni della sca
-c-chiera, un nu-mero pi� alto degli atomi dell'Universo
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 194--256
-
- []
-
-[32]
 \openout2 = `Chapters/Chapter4.aux'.
 
- (./Chapters/Chapter4.tex
-Chapter 4.
+(./Chapters/Chapter4.tex
+Chapter 1.
 ! Too many }'s.
 l.12 \section{Background}}
                           
@@ -3093,7 +2404,7 @@ You've closed more groups than you opened.
 Such booboos are generally harmless, so keep going.
 
 
-LaTeX Warning: Reference `fig:tensor' on page 33 undefined on input line 19.
+LaTeX Warning: Reference `fig:tensor' on page 1 undefined on input line 19.
 
 ! Undefined control sequence.
 l.27 ...rank}-1 or a decomposable tensor \parencit
@@ -3105,14 +2416,13 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-Overfull \hbox (8.50818pt too wide) in paragraph at lines 39--40
-[]\T1/lmr/m/n/10.95 Tensors are ex-ten-sively used in many ap-pli-ca-tions [[]2
-7[]] to mod-elize multi-dimensional
+Overfull \hbox (3.03319pt too wide) in paragraph at lines 39--40
+[]\T1/lmr/m/n/10.95 Tensors are ex-ten-sively used in many ap-pli-ca-tions [[]1
+[]] to mod-elize multi-dimensional
  []
 
 1: section
-[33
-
+[1
 
 
 ]
@@ -3190,7 +2500,11 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-[34] [35]
+[2]
+
+LaTeX Warning: Reference `Chapter2' on page 3 undefined on input line 122.
+
+[3]
 ! Undefined control sequence.
 l.142 ...e second will have a shape of $[ r \tiems
                                                    n]$ and a bias equal to i...
@@ -3221,14 +2535,14 @@ l.162 	\item a Rank-\mathit
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[36]
+[4]
 Underfull \hbox (badness 10000) in paragraph at lines 168--170
 
  []
 
 
-LaTeX Warning: Reference `fig:unfolding' on page 37 undefined on input line 186
-.
+LaTeX Warning: Reference `fig:unfolding' on page 5 undefined on input line 186.
+
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 185--188
@@ -3236,7 +2550,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 185--188
  []
 
 
-LaTeX Warning: Reference `k-mode' on page 37 undefined on input line 199.
+LaTeX Warning: Reference `k-mode' on page 5 undefined on input line 199.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 202--203
@@ -3286,10 +2600,10 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-[37]
+[5]
 
-LaTeX Warning: Reference `fig:tensor-to-vec' on page 38 undefined on input line
- 221.
+LaTeX Warning: Reference `fig:tensor-to-vec' on page 6 undefined on input line 
+221.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 254--255
@@ -3297,10 +2611,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 254--255
  []
 
 
-LaTeX Warning: Reference `fig:outer-product' on page 38 undefined on input line
- 264.
+LaTeX Warning: Reference `fig:outer-product' on page 6 undefined on input line 
+264.
 
-[38]
+[6]
 Underfull \hbox (badness 10000) in paragraph at lines 286--289
 
  []
@@ -3317,10 +2631,10 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-LaTeX Warning: Reference `fig:tucker-decomposition' on page 39 undefined on inp
-ut line 299.
+LaTeX Warning: Reference `fig:tucker-decomposition' on page 7 undefined on inpu
+t line 299.
 
-[39]
+[7]
 Underfull \hbox (badness 10000) in paragraph at lines 330--331
 
  []
@@ -3452,7 +2766,7 @@ Overfull \hbox (45.33179pt too wide) in alignment at lines 362--371
  [][][] []
  []
 
-[40] Excluding 'comment' comment.
+[8] Excluding 'comment' comment.
 
 ! LaTeX Error: \mathit allowed only in math mode.
 
@@ -3523,42 +2837,38 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `fig:cpd' on page 41 undefined on input line 394.
+LaTeX Warning: Reference `fig:cpd' on page 9 undefined on input line 394.
 
+[9]
+Overfull \hbox (20.67818pt too wide) detected at line 429
+[]\OML/lmm/m/it/10.95 V\OT1/lmr/m/n/10.95 (\OML/lmm/m/it/10.95 x; y; t\OT1/lmr/
+m/n/10.95 ) = [] \OML/lmm/m/it/10.95 K[]\OT1/lmr/m/n/10.95 (\OML/lmm/m/it/10.95
+ t; r\OT1/lmr/m/n/10.95 ) []
+ []
+
+<Figures/C4/CPD.jpg, id=408, 1111.15125pt x 534.99875pt>
+File: Figures/C4/CPD.jpg Graphic file (type jpg)
+<use Figures/C4/CPD.jpg>
+Package pdftex.def Info: Figures/C4/CPD.jpg  used on input line 457. on input l
+ine 457.
+Package pdftex.def Info: Requested size: 404.02908pt x 194.53412pt on input lin
+e 457.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[10]
+
+LaTeX Warning: Reference `subsec:nin' on page 11 undefined on input line 467.
+
+
+LaTeX Warning: Reference `subsec:depthwise' on page 11 undefined on input line 
+469.
+
+[11 <./Figures/C4/CPD.jpg>]
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.411 $$ \sum
-             _{r=1}^R K^x_r(i)K^y_r(j)K^s_r(s)K^t_r(t) $$.
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-! You can't use `\eqno' in math mode.
-\endmathdisplay@a ...\df@tag \@empty \else \veqno 
-                                                  \alt@tag \df@tag \fi \ifx ...
-l.412 \end{equation}
-                    
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.412 \end{equation}
-                    
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-[41]
-! Missing $ inserted.
-<inserted text> 
-                $
-l.466 
+l.498 
       
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
@@ -3566,7 +2876,7 @@ you left one out. Proceed, with fingers crossed.
 ! Display math should end with $$.
 <to be read again> 
                    \par 
-l.466 
+l.498 
       
 The `$' that I just saw supposedly matches a previous `$$'.
 So I shall assume that you typed `$$' both times.
@@ -3578,7 +2888,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.467 \end{equation}
+l.499 \end{equation}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -3587,7 +2897,7 @@ or  <return>  to continue without it.
 ! You can't use `\eqno' in vertical mode.
 \endmathdisplay@a ...\df@tag \@empty \else \veqno 
                                                   \alt@tag \df@tag \fi \ifx ...
-l.467 \end{equation}
+l.499 \end{equation}
                     
 Sorry, but I'm not programmed to handle this case;
 I'll just pretend that you didn't ask for it.
@@ -3597,7 +2907,7 @@ return to the right one by typing `I}' or `I$' or `I\par'.
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.467 \end{equation}
+l.499 \end{equation}
                     
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -3608,14 +2918,13 @@ my insertion and my current dilemma will both disappear.
 ! Display math should end with $$.
 <to be read again> 
                    \endgroup 
-l.467 \end{equation}
+l.499 \end{equation}
                     
 The `$' that I just saw supposedly matches a previous `$$'.
 So I shall assume that you typed `$$' both times.
 
-[42]
 ! Extra }, or forgotten $.
-l.470 ...r_4=1}^{R_4}\mathbf{G}(x-i)(y-j) r_3 r_4}
+l.502 ...r_4=1}^{R_4}\mathbf{G}(x-i)(y-j) r_3 r_4}
                                                   K^s_{r3}(s)K^t_{r4}(t)X(i,...
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -3624,7 +2933,7 @@ the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
 ! Extra }, or forgotten $.
-l.474 ...}K^t_{r4}(t)\mathbf{G}(x-i)(y-j) r_3 r_4}
+l.506 ...}K^t_{r4}(t)\mathbf{G}(x-i)(y-j) r_3 r_4}
                                                    \sum_s\ K^s_{r3}(s)X(i, j...
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -3632,10 +2941,11 @@ you forgot something else, as in `\hbox{$x}'. In such cases
 the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
+[12]
 ! Undefined control sequence.
 <recently read> \marhcal 
                          
-l.495 ...e can define the speed-up ratio $\marhcal
+l.528 ...e can define the speed-up ratio $\marhcal
                                                   {S}_r$ by considering the ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -3646,7 +2956,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <recently read> \marhcal 
                          
-l.501 Clearly both $\mathcal{C_r}$ and $\marhcal
+l.534 Clearly both $\mathcal{C_r}$ and $\marhcal
                                                 {S}_r$ depend on the rank $R...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -3655,17 +2965,13 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `subsec:framework' on page 43 undefined on input line 
-503.
-
-
 ! LaTeX Error: There's no line here to end.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.511 T
+l.544 T
        aking into account also the approach of Zheng et al. \parencite{zhang...
 
 Your command was ignored.
@@ -3673,19 +2979,24 @@ Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-LaTeX Warning: Reference `table:complexity' on page 43 undefined on input line 
-511.
+LaTeX Warning: Reference `table:complexity' on page 13 undefined on input line 
+544.
 
-[43]
-Underfull \hbox (badness 10000) in paragraph at lines 522--525
+
+Underfull \hbox (badness 10000) in paragraph at lines 555--558
 
  []
 
+[13]
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 567.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
-) [44]
+) [14]
 
-LaTeX Warning: Reference `fig:rankest' on page 45 undefined on input line 611.
+LaTeX Warning: Reference `fig:rankest' on page 15 undefined on input line 644.
 
 
 ! LaTeX Error: There's no line here to end.
@@ -3694,49 +3005,37 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.616 \newline
+l.649 \newline
               
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-[45])
-Runaway argument?
-{Err_{Approx}{Drop_{Acc}} \end {equation} that is how much the error \ETC.
-! File ended while scanning use of \frac .
-<inserted text> 
-                \par 
-l.257 \include{Chapters/Chapter4}
-                                 
-I suspect you have forgotten a `}', causing me
-to read past where you wanted me to stop.
-I'll try to recover; but if the error is serious,
-you'd better type `E' or `X' now and fix your file.
 
-! Missing $ inserted.
-<inserted text> 
-                $
-l.257 \include{Chapters/Chapter4}
-                                 
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
+Underfull \hbox (badness 10000) in paragraph at lines 656--659
 
-! Display math should end with $$.
-<to be read again> 
-                   \par 
-l.257 \include{Chapters/Chapter4}
-                                 
-The `$' that I just saw supposedly matches a previous `$$'.
-So I shall assume that you typed `$$' both times.
+ []
 
-[46]
-\openout2 = `Chapters/Chapter5.aux'.
+[15]
+Underfull \hbox (badness 10000) in paragraph at lines 688--691
 
- (./Chapters/Chapter5.tex
-Chapter 5.
+ []
 
-LaTeX Warning: Reference `Capitolo3' on page 47 undefined on input line 8.
 
+LaTeX Warning: Reference `fig:tensorlab-cp-comparison' on page 16 undefined on 
+input line 693.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 692--695
+
+ []
+
+[16]
+
+LaTeX Warning: Reference `subsec:tensor-math' on page 17 undefined on input lin
+e 709.
+
+Excluding 'comment' comment.
 
 ! LaTeX Error: There's no line here to end.
 
@@ -3744,97 +3043,300 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.16 \begin
-           {figure}[h!]
+l.743 \newpage
+              
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
+[17]
+<Figures/C4/TP-block.jpg, id=569, 423.5825pt x 652.4375pt>
+File: Figures/C4/TP-block.jpg Graphic file (type jpg)
+<use Figures/C4/TP-block.jpg>
+Package pdftex.def Info: Figures/C4/TP-block.jpg  used on input line 750. on in
+put line 750.
+Package pdftex.def Info: Requested size: 404.02908pt x 622.34077pt on input lin
+e 750.
 
-LaTeX Warning: File `Figures/C5/residual.jpg' not found on input line 18.
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.753 \end{figure}
+                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
 
-
-! Package pdftex.def Error: File `Figures/C5/residual.jpg' not found: using dra
-ft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.18 ...s[width=0.6\textwidth]{\path/residual.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-1: section
-[47
-
-
-
-] [48]
-
-LaTeX Warning: File `Figures/C5/resnet.png' not found on input line 30.
-
-
-! Package pdftex.def Error: File `Figures/C5/resnet.png' not found: using draft
- setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...ics[width=0.7\textwidth]{\path/resnet.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[49]
-
-LaTeX Warning: File `Figures/C5/ResNet-Cifar10-Train.png' not found on input li
-ne 101.
-
-
-! Package pdftex.def Error: File `Figures/C5/ResNet-Cifar10-Train.png' not foun
-d: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.101 ...extwidth]{\path/ResNet-Cifar10-Train.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[50]
-
-LaTeX Warning: File `Figures/C5/ResNet-Cifar10-Val.png' not found on input line
- 108.
-
-
-! Package pdftex.def Error: File `Figures/C5/ResNet-Cifar10-Val.png' not found:
- using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.108 ...\textwidth]{\path/ResNet-Cifar10-Val.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+<Figures/C4/unfold-vbmf.png, id=570, 554.07pt x 438.63875pt>
+File: Figures/C4/unfold-vbmf.png Graphic file (type png)
+<use Figures/C4/unfold-vbmf.png>
+Package pdftex.def Info: Figures/C4/unfold-vbmf.png  used on input line 757. on
+ input line 757.
+Package pdftex.def Info: Requested size: 404.02908pt x 319.85558pt on input lin
+e 757.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 760.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 760.
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.762 \end{figure}
+                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
+<Figures/C4/k-mode.png, id=572, 685.56125pt x 212.795pt>
+File: Figures/C4/k-mode.png Graphic file (type png)
+<use Figures/C4/k-mode.png>
+Package pdftex.def Info: Figures/C4/k-mode.png  used on input line 766. on inpu
+t line 766.
+Package pdftex.def Info: Requested size: 404.02908pt x 125.41158pt on input lin
+e 766.
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.769 \end{figure}
+                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
 
-LaTeX Warning: Reference `Capitolo4' on page 51 undefined on input line 114.
 
-) [51] [52]
-\openout2 = `Chapters/Chapter6.aux'.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
- (./Chapters/Chapter6.tex
-Chapter 6.
+<Figures/C4/tensor-vec.png, id=573, 703.62875pt x 253.94875pt>
+File: Figures/C4/tensor-vec.png Graphic file (type png)
+<use Figures/C4/tensor-vec.png>
+Package pdftex.def Info: Figures/C4/tensor-vec.png  used on input line 773. on 
+input line 773.
+Package pdftex.def Info: Requested size: 404.02908pt x 145.81789pt on input lin
+e 773.
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.776 \end{figure}
+                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<Figures/C4/tensor-unfold.jpg, id=574, 640.3925pt x 287.0725pt>
+File: Figures/C4/tensor-unfold.jpg Graphic file (type jpg)
+<use Figures/C4/tensor-unfold.jpg>
+Package pdftex.def Info: Figures/C4/tensor-unfold.jpg  used on input line 780. 
+on input line 780.
+Package pdftex.def Info: Requested size: 404.02908pt x 181.11945pt on input lin
+e 780.
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.783 \end{figure}
+                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<Figures/C4/tucker-dec.jpg, id=575, 476.78125pt x 161.60374pt>
+File: Figures/C4/tucker-dec.jpg Graphic file (type jpg)
+<use Figures/C4/tucker-dec.jpg>
+Package pdftex.def Info: Figures/C4/tucker-dec.jpg  used on input line 787. on 
+input line 787.
+Package pdftex.def Info: Requested size: 404.02908pt x 136.95203pt on input lin
+e 787.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<Figures/C4/tensor-vec3.jpg, id=576, 428.60126pt x 259.97125pt>
+File: Figures/C4/tensor-vec3.jpg Graphic file (type jpg)
+<use Figures/C4/tensor-vec3.jpg>
+Package pdftex.def Info: Figures/C4/tensor-vec3.jpg  used on input line 794. on
+ input line 794.
+Package pdftex.def Info: Requested size: 404.02908pt x 245.0672pt on input line
+ 794.
+Runaway argument?
+{figure 
+! Paragraph ended before \end was complete.
+<to be read again> 
+                   \par 
+l.798 
+      
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+
+! LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.799 \begin{figure}[h!]
+                        
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Figures/C4/HOSVD.jpg, id=577, 556.0775pt x 291.0875pt>
+File: Figures/C4/HOSVD.jpg Graphic file (type jpg)
+<use Figures/C4/HOSVD.jpg>
+Package pdftex.def Info: Figures/C4/HOSVD.jpg  used on input line 801. on input
+ line 801.
+Package pdftex.def Info: Requested size: 404.02908pt x 211.49718pt on input lin
+e 801.
+
+! LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.807 \begin{figure}[h!]
+                        
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Figures/C4/tensor-mode.jpg, id=578, 640.3925pt x 354.32375pt>
+File: Figures/C4/tensor-mode.jpg Graphic file (type jpg)
+<use Figures/C4/tensor-mode.jpg>
+Package pdftex.def Info: Figures/C4/tensor-mode.jpg  used on input line 809. on
+ input line 809.
+Package pdftex.def Info: Requested size: 404.02908pt x 223.54953pt on input lin
+e 809.
+
+! LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.814 \begin{figure}[h!]
+                        
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<Figures/C4/tucker-pass.jpg, id=579, 891.33pt x 291.0875pt>
+File: Figures/C4/tucker-pass.jpg Graphic file (type jpg)
+<use Figures/C4/tucker-pass.jpg>
+Package pdftex.def Info: Figures/C4/tucker-pass.jpg  used on input line 816. on
+ input line 816.
+Package pdftex.def Info: Requested size: 404.02908pt x 131.94754pt on input lin
+e 816.
+! Missing { inserted.
+<to be read again> 
+                   ^
+l.819 1x1, dxd and 1x1 convolution respectively.}
+                                                 
+A left brace was mandatory here, so I've put one in.
+You might want to delete and/or insert some corrections
+so that I will find a matching right brace soon.
+(If you're confused by all this, try typing `I}' now.)
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.819 1x1, dxd and 1x1 convolution respectively.}
+                                                 
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+LaTeX Warning: Reference `eq:tucker1' on page 18 undefined on input line 819.
+
+
+LaTeX Warning: Reference `eq:tucker3' on page 18 undefined on input line 819.
+
+! Missing { inserted.
+<to be read again> 
+                   ^
+l.819 1x1, dxd and 1x1 convolution respectively.}
+                                                 
+A left brace was mandatory here, so I've put one in.
+You might want to delete and/or insert some corrections
+so that I will find a matching right brace soon.
+(If you're confused by all this, try typing `I}' now.)
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.819 1x1, dxd and 1x1 convolution respectively.}
+                                                 
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+LaTeX Warning: Reference `eq:tucker1' on page 18 undefined on input line 819.
+
+
+LaTeX Warning: Reference `eq:tucker3' on page 18 undefined on input line 819.
+
+Excluding 'comment' comment.)
+\openout2 = `Appendices/AppendixA.aux'.
+
+ (./Appendices/AppendixA.tex
+Appendix A.
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
+File: lstlang2.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
+File: lstlang2.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang2.sty
+File: lstlang2.sty 2015/06/04 1.6 listings language file
+)
+
+LaTeX Warning: Reference `Capitolo2' on page 18 undefined on input line 58.
+
+
+LaTeX Warning: Reference `sec:gradcheck' on page 18 undefined on input line 114
+.
+
+
+LaTeX Warning: Reference `Capitolo2' on page 18 undefined on input line 114.
+
+
+LaTeX Warning: Reference `AppendixB' on page 18 undefined on input line 114.
+
+)
+\openout2 = `Appendices/AppendixB.aux'.
+
+ (./Appendices/AppendixB.tex
+Appendix B.
 
 ! LaTeX Error: There's no line here to end.
 
@@ -3842,45 +3344,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.18 I
-      n pratica, in pochi addestrano interamente una CNN da zero proprio per...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-LaTeX Warning: Reference `Capitolo3' on page 53 undefined on input line 30.
-
-1: section
-[53
-
-
-
-]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.33 S
-      iccome le archittuture moderne richiedono un addestramento di 2-3 sett...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-[54]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.49 \\
+l.11 \\
        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -3893,211 +3357,41 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.50 U
-      n ultimo punto a tenere a mente riguarda il \emph{learning rate}: è c...
-
+l.18 \\
+       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-LaTeX Warning: Reference `Capitolo4' on page 55 undefined on input line 52.
+! LaTeX Error: There's no line here to end.
 
-<Figures/C6/bee-collage.png, id=1449, 2007.5pt x 2007.5pt>
-File: Figures/C6/bee-collage.png Graphic file (type png)
-<use Figures/C6/bee-collage.png>
-Package pdftex.def Info: Figures/C6/bee-collage.png  used on input line 56. on 
-input line 56.
-Package pdftex.def Info: Requested size: 242.4199pt x 242.39056pt on input line
- 56.
-<Figures/C6/ant-collage.png, id=1450, 2007.5pt x 2007.5pt>
-File: Figures/C6/ant-collage.png Graphic file (type png)
-<use Figures/C6/ant-collage.png>
-Package pdftex.def Info: Figures/C6/ant-collage.png  used on input line 62. on 
-input line 62.
-Package pdftex.def Info: Requested size: 242.4199pt x 242.39056pt on input line
- 62.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[55 <./Figures/C6/bee-collage.png>] [56 <./Figures/C6/ant-collage.png>]
-
-LaTeX Warning: File `Figures/C6/ft-arch.png' not found on input line 119.
-
-
-! Package pdftex.def Error: File `Figures/C6/ft-arch.png' not found: using draf
-t setting.
-
-See the pdftex.def package documentation for explanation.
+See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.119 ...s[width=1.0\textwidth]{\path/ft-arch.png}
+l.25 \\
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+LaTeX Warning: Reference `fig:torch' on page 18 undefined on input line 36.
+
+
+! LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
                                                   
-Try typing  <return>  to proceed.
+l.38 \begin{figure}[h!]
+                       
+You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 116--126
-
- []
-
-[57]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.153 \newpage
-              
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-[58]
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.180 A
-        questo punto possiamo lanciare l'addestramento.
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.196 I
-       n output si ottiene qualcosa di simile a:
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.209 I
-        risultati sono in figura \ref{fig:res-train}. Come si nota, l'addest...
-
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-LaTeX Warning: File `Figures/C6/Figure1.png' not found on input line 212.
-
-
-! Package pdftex.def Error: File `Figures/C6/Figure1.png' not found: using draf
-t setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.212 ...s[width=1.0\textwidth]{\path/Figure1.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[59] [60]
-
-LaTeX Warning: File `Figures/C6/test-unseen-data.jpg' not found on input line 2
-59.
-
-
-! Package pdftex.def Error: File `Figures/C6/test-unseen-data.jpg' not found: u
-sing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.259 ....0\textwidth]{\path/test-unseen-data.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 256--264
-
- []
-
-) [61]
-\openout2 = `Chapters/Chapter7.aux'.
-
- (./Chapters/Chapter7.tex [62
-
-
-
-]
-Chapter 7.
-)
-1: section
-[63]
-\openout2 = `Appendices/AppendixA.aux'.
-
- (./Appendices/AppendixA.tex [64
-
-
-
-]
-Appendix A.
-1: section
-[65]
-
-LaTeX Warning: Reference `Capitolo2' on page 66 undefined on input line 58.
-
-
-LaTeX Warning: Reference `Capitolo2' on page 66 undefined on input line 114.
-
-[66]) [67]
-\openout2 = `Appendices/AppendixB.aux'.
-
- (./Appendices/AppendixB.tex [68
-
-
-
-]
-Appendix B.
-
-Underfull \hbox (badness 10000) in paragraph at lines 8--27
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 8--27
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 8--27
-
- []
-
-1: section
-[69]
-Underfull \hbox (badness 10000) in paragraph at lines 36--37
-
- []
-
-<Appendices//torch.png, id=1773, 1514.65875pt x 538.01pt>
+<Appendices//torch.png, id=581, 1514.65875pt x 538.01pt>
 File: Appendices//torch.png Graphic file (type png)
 <use Appendices//torch.png>
 Package pdftex.def Info: Appendices//torch.png  used on input line 40. on input
@@ -4111,99 +3405,17 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.45 T
-      orch è adottato da una fiorente comunità attiva di ricercatori in di...
-
+l.44 \\
+       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-[70 <./Appendices//torch.png>] [71] [72] [73] [74] [75] [76] [77]) [78]
-Overfull \hbox (18.65372pt too wide) in paragraph at lines 280--280
-\T1/pcr/m/n/10.95 / / en . wikipedia . org / w / index . php ? title = Low -[] 
-rank _ approximation &
- []
-
-
-Overfull \hbox (26.7188pt too wide) in paragraph at lines 280--280
-[]\T1/lmr/m/n/10.95 ^^V^^V, (2016). The Sig-moid Func-tion, [On-line]. Avail-ab
-le: []$\T1/pcr/m/n/10.95 https : / / en . wikipedia .
- []
-
-
-Overfull \hbox (15.13068pt too wide) in paragraph at lines 280--280
-[]\T1/lmr/m/n/10.95 ^^V^^V, (2016). Su-per-vised learn-ing, [On-line]. Avail-ab
-le: []$\T1/pcr/m/n/10.95 https : / / en . wikipedia .
- []
-
-
-Overfull \hbox (2.44374pt too wide) in paragraph at lines 280--280
-\T1/pcr/m/n/10.95 questions / 154879 / a -[] list -[] of -[] cost -[] functions
- -[] used -[] in -[] neural -[]
- []
-
-
-Overfull \hbox (23.76819pt too wide) in paragraph at lines 280--280
-[]\T1/lmr/m/n/10.95 ^^V^^V, (2016). Limited-memory bfgs, [On-line]. Avail-able:
- []$\T1/pcr/m/n/10.95 https : / / en . wikipedia .
- []
-
-1: section
-[79
-
-
-]
-Overfull \hbox (1.94374pt too wide) in paragraph at lines 280--280
-\T1/pcr/m/n/10.95 535201 / the -[] face -[] detection -[] algorithm -[] set -[]
- to -[] revolutionize -[]
- []
-
-! Illegal parameter number in definition of \abx@field@month.
-<to be read again> 
-                   j
-l.280 \printbibliography[heading=bibintoc]
-                                          
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-! Illegal parameter number in definition of \abx@field@month.
-<to be read again> 
-                   }
-l.280 \printbibliography[heading=bibintoc]
-                                          
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
-
-! You can't use `macro parameter character #' in horizontal mode.
-<recently read> ##
-                  
-l.280 \printbibliography[heading=bibintoc]
-                                          
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-! You can't use `macro parameter character #' in horizontal mode.
-\abx@field@month ->##jan##
-                          
-l.280 \printbibliography[heading=bibintoc]
-                                          
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-
-Package biblatex Warning: Month out of range or not an integer
-(biblatex)                at entry 'AlphaGo' on input line 280.
-
+)
 ! Misplaced alignment tab character &.
 \blx@tempa ...ipedia.org/w/index.php?title=Tensor&
                                                   oldid=826559352}
-l.280 \printbibliography[heading=bibintoc]
+l.278 \printbibliography[heading=bibintoc]
                                           
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
@@ -4213,107 +3425,92 @@ you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
 
-Overfull \hbox (46.62872pt too wide) in paragraph at lines 280--280
+Overfull \hbox (46.62872pt too wide) in paragraph at lines 278--278
 []\T1/lmr/m/n/10.95 Wikipedia. (2018). https://en.wikipedia.org/w/index.php?tit
 le=Tensoroldid=826559352,
  []
 
 
-Overfull \hbox (24.61073pt too wide) in paragraph at lines 280--280
-\T1/lmr/m/n/10.95 [On-line]. Avail-able: []$\T1/pcr/m/n/10.95 https : / / en . 
-wikipedia . org / wiki / Tensor ? oldformat =
- []
-
-[80]
-Overfull \hbox (15.46378pt too wide) in paragraph at lines 280--280
-[]\T1/lmr/m/n/10.95 Wikipedia. (2016). Uni-ver-sal Ap-prox-i-ma-tion The-o-rem,
- [On-line]. Avail-able: []$\T1/pcr/m/n/10.95 https :
- []
-
-
-Overfull \hbox (18.65372pt too wide) in paragraph at lines 280--280
-\T1/pcr/m/n/10.95 / / en . wikipedia . org / w / index . php ? title = Low -[] 
-rank _ approximation &
- []
-
-
-Overfull \hbox (4.27415pt too wide) in paragraph at lines 280--280
+Underfull \hbox (badness 2772) in paragraph at lines 278--278
 []\T1/lmr/m/n/10.95 (2016). Ten-sor-lab: Ref-er-ences, [On-line]. Avail-able: [
-]$\T1/pcr/m/n/10.95 https : / / www . tensorlab .
+]$\T1/pcr/m/n/10.95 https : / / www .
  []
 
-[81]
 
-! LaTeX Error: \begin{equation} on input line 621 ended by \end{document}.
+! LaTeX Error: \begin{figure} on input line 792 ended by \end{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.284 \end{document}
+l.282 \end{document}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 284.
-[82]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 284.
- (./main.aux (./Chapters/Chapter1.aux) (./Chapters/Chapter2.aux)
-(./Chapters/Chapter3.aux) (./Chapters/Chapter4.aux) (./Chapters/Chapter5.aux)
-(./Chapters/Chapter6.aux) (./Chapters/Chapter7.aux) (./Appendices/AppendixA.aux
-) (./Appendices/AppendixB.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 284.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 284.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 282.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 282.
+(./main.aux (./Chapters/Chapter4.aux) (./Appendices/AppendixA.aux)
+(./Appendices/AppendixB.aux))
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 282.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 282.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 62B2996D47BB05587DB04A1CEAC11231;13171.
+(rerunfilecheck)             Checksum: F80ADF2A52317FBBE113F1BF8BA5D260;5046.
 
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
- )
-(\end occurred inside a group at level 1)
+! You can't use `\end' in internal vertical mode.
+\enddocument ...cumenthook \deadcycles \z@ \@@end 
+                                                  
+l.282 \end{document}
+                    
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
 
-### semi simple group (level 1) entered at line 621 (\begingroup)
-### bottom level 
+
+! LaTeX Error: \begin{figure} on input line 792 ended by \end{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.282 \end{document}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.282 \end{document}
+                    
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+)
+! Emergency stop.
+<*> main.tex
+            
+*** (job aborted, no legal \end found)
+
+ 
 Here is how much of TeX's memory you used:
- 40217 strings out of 494813
- 774338 string characters out of 6178109
- 1457439 words of memory out of 5000000
- 41603 multiletter control sequences out of 15000+600000
- 692425 words of font info for 108 fonts, out of 8000000 for 9000
+ 38660 strings out of 494813
+ 751985 string characters out of 6178109
+ 3590862 words of memory out of 5000000
+ 41293 multiletter control sequences out of 15000+600000
+ 717268 words of font info for 116 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 63i,20n,82p,10377b,3915s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/
-texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-
-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texlive/texmf
--dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.e
-nc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}</usr/share/texmf/fonts/t
-ype1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></
-usr/share/texmf/fonts/type1/public/lm/lmbxi10.pfb></usr/share/texmf/fonts/type1
-/public/lm/lmcsc10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr
-/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/pub
-lic/lm/lmmi6.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/
-texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/l
-mr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fon
-ts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb>
-</usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type
-1/public/lm/lmro10.pfb></usr/share/texmf/fonts/type1/public/lm/lmro12.pfb></usr
-/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/pub
-lic/lm/lmsy6.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on main.pdf (100 pages, 17038763 bytes).
-PDF statistics:
- 2742 PDF objects out of 2984 (max. 8388607)
- 2572 compressed objects within 26 object streams
- 1401 named destinations out of 1440 (max. 500000)
- 764 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 62i,20n,77p,10377b,3935s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!

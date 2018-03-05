@@ -404,22 +404,31 @@ It's interesting to notice that CPD can be regarded as a special case of a Tucke
 \section{Application of tensor decompositon on CNN}
 \label{sec:cpd-application}
 \subsection{Convolutional layer as 4-mode tensors}
-
-\subsection{CPD}
-
+Convolutional layers units are organized as 3D tensors (\emph{map stacks}) with two spatial dimensions and the third dimension corresponding to the different maps, or "channels". The most computational demanding operation within CNNs is the generalized - or standard - convolution that maps an input tensor $U(.,.,.)$ of size $X \times Y \times S$ to an output tensor $V(.,.,.)$ of size $(X -d+1 \times (Y-d+1) \times T$ using the following linear mapping: 
 \begin{equation}
-$$ \sum_{r=1}^R K^x_r(i)K^y_r(j)K^s_r(s)K^t_r(t) $$.	
+\label{eq:convolution}
+V(x, y, t)= \sum_{i=x-\delta}^{x+\delta} \sum_{j=y-\delta}^{y+\delta} \sum_{s=1}^S K(i-x+\delta, j-y +\delta,s,t) U(i,j,s) 
 \end{equation}
 
+Thus it is possible to summarize a convolutional layer with the 4D kernel tensor $K(.,.,.,.)$ of size $d \times d \times S \times T$ where $d$ is the spatial dimension of the 2D convolutional kernel, $S$ and $T$ are the input channels and the output channels dimension respectively. The "half-width" $\frac{d-1}{2}$ is denoted with $\delta$, assuming square shaped kernels and even value of $d$ as it is most often the case. 
 
-%%%% forward pass con CPD %%% 
-\begin{center}
-\begin{align*}
-	V(x, y, t) = \sum_i \sum_j \sum_s K(x-i, y-j, s, t)X(i, j, s) \\
-		= \sum_r \sum_i \sum_j \sum_s K^x_r(x-i)K^y_r(y-i)K^s_r(s)K^t_r(t)X(i, j, s)\\
-			= \sum_r K^t_r(t) \sum_i \sum_j K^x_r(x-i)K^y_r(y-i) \sum_s K^s_r(s) X(i, j, s) \tag{4}
-\end{align*}
-\end{center}
+\subsection{CP}
+Once we have modelized the convolutional kernel, we can actually grasp how the tensor decomposition can be practically applied on a CNN. A rank-$R$ CP-decomposition of a 4D tensor will result in 4 factor matrices $K^n$ with size equals to $I_n \times R$. Therefore, applying this decomposition on $K(.,.,.,.)$ will result in: 
+
+\begin{equation}
+\label{eq:cpd-classic}
+ \sum_{r=1}^R K^x(i-x+ \delta,r)K^y(j-y+ \delta,r)K^s(s,r)K^t(t,r) 
+\end{equation}
+where $K^x, K^y, K^s, K^t$ are the four components of the obtained decomposition of size $d\times R$ $d \times R$ $S \times R$ and $T \times R$ respectively. 
+
+Hence, plugging \ref{eq:cpd-classic} into \ref{eq:convolution} and performing permutations and grouping of summands will result in the following mathematical receipt to compute a decomposed forward pass of a convolution in a CNN: 
+
+\begin{equation}
+\label{eq:cpd-all}
+	V(x, y, t)= \sum_r K^t(t,r) \left (\sum_i \sum_j K^x(i-x+\delta, r) K^y_r(i-y+\delta, r) \left (\sum_s 	K^s(s, r) U(i, j, s) \right ) \right ) 
+\end{equation}  
+
+Equation \ref{eq:cpd-all} can be splitted into four steps that constitutes a sequence of four squeezed convolutions. The former convolutions will replace the single more costly one: 
 
 \begin{equation}
 \label{eq:cpd1}
@@ -427,7 +436,7 @@ $$ \sum_{r=1}^R K^x_r(i)K^y_r(j)K^s_r(s)K^t_r(t) $$.
 \end{equation}
 
 \begin{equation}
-    U^{sy}(i,y,r) = \sum_{j=y-\delta}^{y+\delta} K^y (j-x + \delta,r)U^{sy}(i,j,r)
+    U^{sy}(i,y,r) = \sum_{j=y-\delta}^{y+\delta} K^y (j-x + \delta,r)U^{s}(i,j,r)
 \end{equation}
 
 \begin{equation}
@@ -441,10 +450,71 @@ $$ \sum_{r=1}^R K^x_r(i)K^y_r(j)K^s_r(s)K^t_r(t) $$.
 
 where $U^s$, $U^{sy}$ $U{syx}$ are intermediate tensors i.e., map stacks. 
 
-\subsubsection{CPD-3}
+This decomposition scheme is illustrated in figure \ref{fig:cpd-pass}. 
 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/CPD.jpg} 
+ \caption{Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d × d window over all input maps. 
+Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate mpa stack has R  maps, being R the rank of the decomposition. Each of the two-components 
+computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf{only on one} input map. Each box is mathematically described in equation (\ref{eq:cpd1}-\ref{eq:cpd2})}
+ \label{fig:cpd-pass}
+\end{figure}
+
+Note that the "actual" convolution step is performed in the two middle equations in a \emph{separable} way i.e., the two spatial kernal are 1D with size $d \times 1$ and $1 \times d$ respectively. These are the steps in which \emph{convolution properties (padding, stride, etc.) need to remain the same} as the original convolution in order to preserve the original output size ($H'$ $W'$). These two steps alone could already replace the previous convolution and gain a speedup. 
+\newline
+
+However here we can fully exploit the factorization provided by CP-decomposition by enclosing the convolution into two $[1 \times 1]$ convolutions that reduce the channels by a significant amount. The first one aims at squeezing the channel depth while the last one restore the original size expected from the subsequent layer, thus making the decomposition effectively embeddable in a pre-trained model. 
+\newline 
+
+Furthermore, as already mentioned in chapter 	3 section \ref{subsec:nin}, the $[1 \times 1]$ convolution has the well known benefict of creating a  "Network-in-Network" while being at the same time very cheap to compute. 
+\newline 
+
+Another peculiarity that is not trivial to capture at first is that the connections between the two separable convolutions are actually 1-to-1 (groups = number of input channels). This is very similar to what happens in depthwise convolutions \ref{subsec:depthwise} and have a significant impact on computational cost. If one doesn't want to group layer connections that way, he can always replicate $U^{sy}$ and $U^{syx}$ on each filter, thus having $R$ filters with same weights; More details on complexity will follow in section \ref{subsec:complexity}.
+
+
+\subsubsection{CPD-3}
+There is another way to compute a convolutional layer with CP that has been suggested in\parencite{astrid2017} and consists in a three-way decomposition that preserves the standard spatial decomposition. Some might argue that spatial kernel in most modern architecture are small ($[3 \times 3] \quad [5 \times 5]$) and so the factorization gain is not significant compared to the much bigger channels size \parencite{Tucker-mobile}; or simply the 4-way decomposition ends up being too aggressive and we need to preserve more original weights.
+
+In these scenarios, a simple reshaping of the 4D tensor $K$ of size $(d \times d \times S \times T)$ into a 3D tensor of size $d^2 \times S \times T$ could be helpful. In fact, composing the CP-decomposition with newly shaped tensor will result in three factor matrices of size $d^2 \times R$, $S \times R$ and $T \times R$. The two separable convolution can now be replaced by a single standard $[d \times d]$ convolution, mathematically: 
+
+\begin{equation}
+\label{eq:cpd1}
+    U^s(i,j,r) =\sum^{S}_{s=1}=K^s(s,r)U(i,j,s)    
+\end{equation}
+
+\begin{equation}
+    U^{syx}(i,y,r) = \sum_{i=x-\delta}^{x + \delta} \sum_{j=y-\delta}^{y+\delta} K^{xy} (i-x+\delta, j-x + \delta,r)U^{s}(i,j,r)
+\end{equation}
+
+\begin{equation}
+    V(x,y,t) = \sum_{r=1}^R K^t (t,r) U^{syx}(x,y,r),
+\end{equation}
+
+\paragraph{Summary}\\
+It is convenient to summarize all the properties of CP-decomposition on CNN: 
+\begin{enumerate}[(i)]
+	\item the \emph{first layer} of the decomposition acts as a channel reduction;
+	
+	\item the \emph{last layer} of the decomposition restore channels to the original size; 
+	
+	\item both these enclosing layers perform $[1 \times 1]$ convolution i.e., they perform a linear recombination of input pixels and acts a "Network-in-Network";
+	
+	\item the \emph{middle layer(s)} perform the actual convolution and must possess the same convolution properties of the original convolution in order to obtain the output dimensions $H'$ and $W'$
+	
+	\item the middle steps can be either separable or a regular convolution but with smaller channels; 
+	
+	\item if CP is applied on all dimensions, then the convolution will be performed with separable kernels; the connectivity between each of the spatial 1D convolution layers is of 1-by-1, thus saving another $\times R$ multiplications in each convolution; 
+	
+	\item if the decomposition is too aggressive we can replicate the $d$ weights of each separable kernel on all the filter maps and fall back to a standard N-to-N connectivity between input and output channels; 
+	
+	\item CP-decomposition can be performed on only 3 dimensions with a simple tensor reshape; in that case the middle layers will collapse into one single $d \times d$ regular convolution step. This is an even less aggressive way of decomposing layers. 
+ 
+\end{enumerate}
 
 \subsection{Tucker}
+
+
 
 %% forward pass con Tucker 
 $$ K(i, j, s, t) = \sum_{r_1=1}^{R_1}\sum_{r_2=1}^{R_2}\sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}G_{r_1, r_2, r_3, r_4} * K^x_{r1}(i)K^y_{r2}(j)K^s_{r3}(s)K^t_{r4}(t) $$
@@ -475,12 +545,13 @@ V(x, y, t) = \sum_i \sum_j \sum_{r_4=1}^{R_4}\sum_{r_3=1}^{R_3}K^t_{r4}(t)\mathb
 
 
 \subsection{Complexity analysis}
+\label{subsec:complexity}
 \subsubsection{CP complexity}
 Standard convolution operation is defined by $STd^2$ parameters i.e, the number of parameters in the tensors. The computational cost is obtained by taking into account the height $H$ and the width $W$ of the input maps: $(STd^2)(HW)$. 
 \newline
 With their approaches, both in Jaderberg et al.\parencite{jaderberg2014} and Zhang et al. \parencite{zhang2015SVD} drop this complexity down to $Rd(S+T)$. Assuming the required rank is comparable or several times smaller than S and T, that is taking a rank $R\approx \frac{ST}{S+T}$, then the complexity would be reduced by a factor of $d$ times. 
 \newline 
-Following the decomposition proposed by Lebedev et al. \parencite{lebedev}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. \newline
+Following the decomposition proposed by Lebedev et al. \parencite{lebedev2014}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. \newline
 Hence, if we call $\mathcal{K}_{std}$ and $\mathcal{K}_{dec}$ the standard and decomposed convolution operation respectively,  the \emph{compression ratio} can be defined as
 \begin{equation}
     \mathbf{\mathcal{C}}_r = \frac{O(\mathcal{K}_{std})}{O(\mathcal{K}_{dec})}
@@ -636,7 +707,7 @@ VBMF can also be used to tackle a subtle issue with the iterative approach of \p
 %% cenni alla fine 
 
 
-\subsection{Decomposition algorithms overview}
+\subsubsection{Decomposition algorithms overview}
 While the decomposition scenario for convolutional neural networks has been defined, it has not been clarified yet \emph{how} to actually compute a decomposition. To this aim, this section provides a quick overview of the available algorithms in literature with few examples computed with the aim of powerful tensor toolbox for $MATLAB$, called Tensorlab \parencite{WTensorlab}. \newline
 A depth discussion of these algorithms is out of the scope of this work. For more details please check this rich reference page of the Tensorlab documentation \parencite{WTensorlab-ref}.
 
@@ -682,21 +753,7 @@ The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a 
 
 %% Approximation with CPD 
 
-
-
-
-
-
-
-
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/k-mode.png} 
-  \caption{Example of k-mode multiplication on 3-dimensional tensor.}
- \label{fig:k-mode}
-\end{figure}
-
+\begin{comment}
 \bigskip
 
 \begin{figure}
@@ -716,12 +773,73 @@ The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a 
 \caption{Percentuali di accuracy a seconda della funzione d'attivazione. La ReLU produce indubbiamente risultati migliori.}
 \label{fig:relu}
 \end{figure}
+\end{comment}
+
 \\
 %%%%% NEW PAGE FOR THE NEW FIGURES %%%% 
 \newpage
 \pagebreak
 \medskip
 \newpage
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/TP-block.jpg} 
+ \caption{An example of a \emph{k}-mode product i.e., a tensor-matrix multiplication of a 3-dimensional tensor.}}
+ \label{fig:k-mode}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/unfold-vbmf.png} 
+ \caption{VBMF rank estimation of a convolutional tensor: first off the tensor is reshaped into an $S \times d^2 \times T$ three-way tensor; secondly it is unfolded along each of the modes; 
+ thirdly each of the k-unfolding matrices is given as an input to the VBMF algorithm and a rank is estimated; lastly the effective choice of the rank. We can take the highest rank to be more accurate; 
+ the lowest to apply a more aggressive decomposition; an average of all three for a trade-off.}}
+ \label{fig:vbmf}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/k-mode.png} 
+ \caption{An example of a \emph{k}-mode product i.e., a tensor-matrix multiplication of a 3-dimensional tensor.}}
+ \label{fig:k-mode}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/tensor-vec.png} 
+ \caption{An example of a tensor-vector product.}}
+ \label{fig:tensor-vec-product}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/tensor-unfold.jpg} 
+ \caption{Tensor unfolding or matricization along different modes.}}
+ \label{fig:tensor-unfolding}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/tucker-dec.jpg} 
+ \caption{A Tucker decomposition of a three-modes tensor}
+ \label{fig:tucker-dec}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/tensor-vec3.jpg} 
+ \caption{Representation of third-order tensor with an outer product of vectors.}
+ \label{fig:tensor-outer-product}
+\end{figure
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/HOSVD.jpg} 
+ \caption{An Higher Order SVD of a third-order rank-(R1-R2-R3) tensor and the different spaces.}
+ \label{fig:hosvd}
+\end{figure}
+
 
 \begin{figure}[h!]
  \centering
@@ -740,13 +858,18 @@ and illustrate each scalar value on the right is computed. Red tube, green cube 
 \end{figure}
 
 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/CPD.jpg} 
- \caption{Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d × d window over all input maps. 
-Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate mpa stack has R  maps, being R the rank of the decomposition. Each of the two-components 
-computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf{only on one} input map. Each box is mathematically described in equation (\ref{eq:cpd1}-\ref{eq:cpd2})}
- \label{fig:cpd-pass}
-\end{figure}
+
+
+
+%%%% forward pass con CPD %%% 
+\begin{comment}
+\begin{center}
+\begin{align*}
+	V(x, y, t) = \sum_i \sum_j \sum_s K(x-i, y-j, s, t)X(i, j, s) \\
+		= \sum_r \sum_i \sum_j \sum_s K^x_r(x-i)K^y_r(y-i)K^s_r(s)K^t_r(t)X(i, j, s)\\
+			= \sum_r K^t_r(t) \sum_i \sum_j K^x_r(x-i)K^y_r(y-i) \sum_s K^s_r(s) X(i, j, s) \tag{4}
+\end{align*}
+\end{center}
+\end{comment}
 
 

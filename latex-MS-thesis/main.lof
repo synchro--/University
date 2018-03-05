@@ -2,40 +2,4 @@
 \defcounter {refsection}{0}\relax 
 \select@language {english}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Modello di calcolo di un neurone (a sinistra) e schema del neurone artificiale (a destra)\relax }}{1}{figure.caption.11}
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Struttura di un percettrone multistrato con un solo strato nascosto\relax }}{4}{figure.caption.20}
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Architettura del MLP per la previsione dei profitti\relax }}{6}{figure.caption.23}
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Cercare il minimo di una fz. seguendo la discesa del gradiente\relax }}{9}{figure.caption.82}
-\contentsline {figure}{\numberline {2.3}{\ignorespaces La funzione sigmoide e la sua derivata\relax }}{10}{figure.caption.88}
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Apprendimento supervisionato: schema generale\relax }}{14}{figure.caption.159}
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Confronto tra il momentum classico e NAG\relax }}{16}{figure.caption.165}
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Confronto dei metodi di ottimizzazione durante il training\relax }}{18}{figure.caption.198}
-\contentsline {figure}{\numberline {2.7}{\ignorespaces L'output della rete $\mathaccentV {hat}05E{y}$ \IeC {\`e} vicino all'output desiderato $y$\relax }}{18}{figure.caption.199}
-\contentsline {figure}{\numberline {2.8}{\ignorespaces La funzione polinomiale ha un errore nullo sul dataset laddove la funzione lineare invece lo ha del 100\%. Tuttavia, la curva \IeC {\`e} eccessivamente complessa ed affetta da rumore;avr\IeC {\`a} quindi cattive capacit\IeC {\`a} di generalizzazione. La retta, al contrario, approssima molto meglio i punti della distribuzione sottostante. Se definiamo questi punti come il test set, allora la retta avr\IeC {\`a} un'accuratezza maggiore.\relax }}{19}{figure.caption.201}
-\contentsline {figure}{\numberline {2.9}{\ignorespaces La rete mostra overfitting. Dopo l'iterazione 100 le performance sul test set iniziano ad essere sbagliate. Attorno alla 250 il modello diventa troppo complesso e le predizioni sono pessime\relax }}{21}{figure.caption.246}
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Dopo aver applicato la L2 regularization, la rete non \IeC {\`e} pi\IeC {\`u} affetta da overfitting.\relax }}{23}{figure.caption.289}
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Architettura di una CNN che classifica segnali stradali: si evidenzia la divisione tra gli strati che fungono da feature extractor ed il classificatore finale\relax }}{26}{figure.caption.294}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces I diversi strati tipici di una CNN\relax }}{26}{figure.caption.295}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Convoluzione con un kernel: primi due step\relax }}{27}{figure.caption.297}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Ogni neurone \IeC {\`e} connesso a solo 1 regione locale dell'input ma a tutta la profondit\IeC {\`a} (i.e. canali colori). La depth dell'output \IeC {\`e} data dal numero K di filtri, in questo caso 5\relax }}{28}{figure.caption.302}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Max pooling: in uscita l'immagine avr\IeC {\`a} 1/4 dei pixel di partenza.\relax }}{30}{figure.caption.310}
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Architettura di una CNN\relax }}{30}{figure.caption.312}
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Tipica CNN in un task di classificazione; la classe vincente \IeC {\`e} quella con la probabilit\IeC {\`a} pi\IeC {\`u} alta, indicata alla fine\relax }}{31}{figure.caption.313}
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Un "Residual Block", all'input viene aggiunto F(x) che \IeC {\`e} il residual\relax }}{47}{figure.caption.475}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Confronto architetture: VGG-Net la pi\IeC {\`u} innovativa della competizione ILSVRC 2014, rete classica a 34 strati (centro), Residual Network a 34 strati (sinistra)\relax }}{49}{figure.caption.476}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Top-1 e Top-5 training accuracy di ResNet sul dataset CIFAR10\relax }}{51}{figure.caption.521}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Top-1 e Top-5 validation accuracy di ResNet sul dataset CIFAR10\relax }}{52}{figure.caption.522}
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Alcuni esempi delle immagini delle api del dataset\relax }}{55}{figure.caption.536}
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Alcuni esempi delle immagini delle formiche del dataset\relax }}{56}{figure.caption.537}
-\contentsline {figure}{\numberline {6.3}{\ignorespaces Architettura della rete: il transfer learning avviene utilizzando i CNN codes provenienti da ResNet per addestrare il classificatore SoftMax\relax }}{57}{figure.caption.574}
-\contentsline {figure}{\numberline {6.4}{\ignorespaces Curve di apprendimento sul nuovo dataset: il modello generalizza in maniera ottimale e non vi sono segni di overfitting\relax }}{60}{figure.caption.633}
-\contentsline {figure}{\numberline {6.5}{\ignorespaces Testing su 153 esempi ancora non visti. Accuracy = 95.4\%\relax }}{61}{figure.caption.668}
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {B.1}{\ignorespaces Architettura del framework Torch\relax }}{70}{figure.caption.795}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d \IeC {\texttimes } d window over all input maps. Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate mpa stack has R maps, being R the rank of the decomposition. Each of the two-components computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf {only on one} input map. Each box is mathematically described in equation (\ref {eq:cpd1}-\ref {eq:cpd2})\relax }}{11}{figure.caption.66}
