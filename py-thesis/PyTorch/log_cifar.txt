@@ -100,7 +100,7 @@ Number of trainable params: 1191548
 
 
 
-##################################################################################################################
+########################################################
 Model LeNet 4-Conv: 2nd layer decomposed with CPD (wt. tensorly) 
 
 GroundTruth:    cat  ship  ship plane
@@ -116,4 +116,116 @@ Accuracy of  frog : 81 %
 Accuracy of horse : 77 %
 Accuracy of  ship : 88 %
 Accuracy of truck : 86 %
+
+
+######################################################
+Model CPD-All-Conv-BN Architecture 
+-----------------------------------------------------
+Accuracy of the network on the 10000 test images: 80 %
+Average prediction time 0.049887 313
+Accuracy of plane : 87 %
+Accuracy of   car : 88 %
+Accuracy of  bird : 68 %
+Accuracy of   cat : 65 %
+Accuracy of  deer : 75 %
+Accuracy of   dog : 71 %
+Accuracy of  frog : 90 %
+Accuracy of horse : 82 %
+Accuracy of  ship : 92 %
+Accuracy of truck : 90 %
+
+Accuracy of the network on the 10000 test images: 81 %
+Average prediction time 0.109803 313
+Accuracy of plane : 77 %
+Accuracy of   car : 96 %
+Accuracy of  bird : 69 %
+Accuracy of   cat : 62 %
+Accuracy of  deer : 81 %
+Accuracy of   dog : 77 %
+Accuracy of  frog : 89 %
+Accuracy of horse : 84 %
+Accuracy of  ship : 86 %
+Accuracy of truck : 92 %
+
+
+CPD_All_Conv (
+  (conv11): Conv2d (3, 15, kernel_size=(1, 1), stride=(1, 1)), weights=((15, 3, 1, 1), (15,)), parameters=60
+  (conv12): Conv2d (15, 15, kernel_size=(3, 1), stride=(1, 1), padding=(1, 0), groups=15), weights=((15, 1, 3, 1), (15,)), parameters=60
+  (conv13): Conv2d (15, 15, kernel_size=(1, 3), stride=(1, 1), padding=(0, 1), groups=15), weights=((15, 1, 1, 3), (15,)), parameters=60
+  (conv14): Conv2d (15, 32, kernel_size=(1, 1), stride=(1, 1)), weights=((32, 15, 1, 1), (32,)), parameters=512
+  (conv21): Conv2d (32, 15, kernel_size=(1, 1), stride=(1, 1)), weights=((15, 32, 1, 1), (15,)), parameters=495
+  (conv22): Conv2d (15, 15, kernel_size=(3, 1), stride=(1, 1), groups=15), weights=((15, 1, 3, 1), (15,)), parameters=60
+  (conv23): Conv2d (15, 15, kernel_size=(1, 3), stride=(1, 1), groups=15), weights=((15, 1, 1, 3), (15,)), parameters=60
+  (conv24): Conv2d (15, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 15, 1, 1), (64,)), parameters=1024
+  (conv31): Conv2d (64, 30, kernel_size=(1, 1), stride=(1, 1)), weights=((30, 64, 1, 1), (30,)), parameters=1950
+  (conv32): Conv2d (30, 30, kernel_size=(3, 1), stride=(1, 1), padding=(1, 0), groups=30), weights=((30, 1, 3, 1), (30,)), parameters=120
+  (conv33): Conv2d (30, 30, kernel_size=(1, 3), stride=(1, 1), padding=(0, 1), groups=30), weights=((30, 1, 1, 3), (30,)), parameters=120
+  (conv34): Conv2d (30, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 30, 1, 1), (64,)), parameters=1984
+  (conv41): Conv2d (64, 30, kernel_size=(1, 1), stride=(1, 1)), weights=((30, 64, 1, 1), (30,)), parameters=1950
+  (conv42): Conv2d (30, 30, kernel_size=(3, 1), stride=(1, 1), groups=30), weights=((30, 1, 3, 1), (30,)), parameters=120
+  (conv43): Conv2d (30, 30, kernel_size=(1, 3), stride=(1, 1), groups=30), weights=((30, 1, 1, 3), (30,)), parameters=120
+  (conv44): Conv2d (30, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 30, 1, 1), (64,)), parameters=1984
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (dropout_1): Dropout2d(p=0.25), weights=(), parameters=0
+  (dropout_2): Dropout2d(p=0.25), weights=(), parameters=0
+  (relu): ReLU(), weights=(), parameters=0
+  (bn_11): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_12): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_13): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_14): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_21): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_22): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_23): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_24): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True), weights=((32,), (32,)), parameters=64
+  (bn_31): BatchNorm2d(30, eps=1e-05, momentum=0.1, affine=True), weights=((30,), (30,)), parameters=60
+  (bn_32): BatchNorm2d(30, eps=1e-05, momentum=0.1, affine=True), weights=((30,), (30,)), parameters=60
+  (bn_33): BatchNorm2d(30, eps=1e-05, momentum=0.1, affine=True), weights=((30,), (30,)), parameters=60
+  (bn_34): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (bn_41): BatchNorm2d(30, eps=1e-05, momentum=0.1, affine=True), weights=((30,), (30,)), parameters=60
+  (bn_42): BatchNorm2d(30, eps=1e-05, momentum=0.1, affine=True), weights=((30,), (30,)), parameters=60
+  (bn_43): BatchNorm2d(30, eps=1e-05, momentum=0.1, affine=True), weights=((30,), (30,)), parameters=60
+  (bn_44): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True), weights=((64,), (64,)), parameters=128
+  (bn_51): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_52): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_53): BatchNorm2d(15, eps=1e-05, momentum=0.1, affine=True), weights=((15,), (15,)), parameters=30
+  (bn_54): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True), weights=((512,), (512,)), parameters=1024
+  (cpdfc1): Conv2d (64, 15, kernel_size=(1, 1), stride=(1, 1)), weights=((15, 64, 1, 1), (15,)), parameters=975
+  (cpdfc2): Conv2d (15, 15, kernel_size=(6, 1), stride=(1, 1), groups=15), weights=((15, 1, 6, 1), (15,)), parameters=105
+  (cpdfc3): Conv2d (15, 15, kernel_size=(1, 6), stride=(1, 1), groups=15), weights=((15, 1, 1, 6), (15,)), parameters=105
+  (cpdfc4): Conv2d (15, 512, kernel_size=(1, 1), stride=(1, 1)), weights=((512, 15, 1, 1), (512,)), parameters=8192
+  (conv2fc2): Conv2d (512, 10, kernel_size=(1, 1), stride=(1, 1)), weights=((10, 512, 1, 1), (10,)), parameters=5130
+)
+Number of trainable params:  27224
+
+
+#########################################################
+Keras Classic Model 
+
+Keras_Cifar_classic (
+  (conv1): Conv2d (3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((32, 3, 3, 3), (32,)), parameters=896
+  (conv2): Conv2d (32, 32, kernel_size=(3, 3), stride=(1, 1)), weights=((32, 32, 3, 3), (32,)), parameters=9248
+  (conv3): Conv2d (32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)), weights=((64, 32, 3, 3), (64,)), parameters=18496
+  (conv4): Conv2d (64, 64, kernel_size=(3, 3), stride=(1, 1)), weights=((64, 64, 3, 3), (64,)), parameters=36928
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (dropout_1): Dropout2d(p=0.25), weights=(), parameters=0
+  (dropout_2): Dropout2d(p=0.25), weights=(), parameters=0
+  (fc1): Linear(in_features=2304, out_features=512), weights=((512, 2304), (512,)), parameters=1180160
+  (fc2): Linear(in_features=512, out_features=10), weights=((10, 512), (10,)), parameters=5130
+)
+Number of trainable params:  1250858
+------------------------------------------------------
+Accuracy of the network on the 10000 test images: 74 %
+Average prediction time 0.039787 313
+Accuracy of plane : 79 %
+Accuracy of   car : 86 %
+Accuracy of  bird : 61 %
+Accuracy of   cat : 56 %
+Accuracy of  deer : 73 %
+Accuracy of   dog : 67 %
+Accuracy of  frog : 85 %
+Accuracy of horse : 77 %
+Accuracy of  ship : 84 %
+Accuracy of truck : 86 %
+
+
 

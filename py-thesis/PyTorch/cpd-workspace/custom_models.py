@@ -78,13 +78,21 @@ class LenetZhang(nn.Module):
 # Network defined as CP-Decomposed architecture
 class CPD_All_Conv(nn.Module):
 
-    def __init__(self, rank1, rank2, filt_size1, filt_size2, filt_fc1, last_kernel_sz, num_classes):
+    def __init__(self):
         super(CPD_All_Conv, self).__init__()
+        
+        rank1 = 15 
+        rank2 = 30
+        filt_size1 = 32 
+        filt_size2 = 64 
+        filt_fc1 = 512
+        last_kernel_sz = 8 #should be 6 or 5 according to previous padding
+        num_classes = 10
 
         # 1st layer decomposition
         self.conv11 = nn.Conv2d(3, rank1, 1)
-        self.conv12 = nn.Conv2d(rank1, rank1, (3, 1), groups=1)
-        self.conv13 = nn.Conv2d(rank1, rank1, (1, 3), groups=rank1)
+        self.conv12 = nn.Conv2d(rank1, rank1, (3, 1), padding=1, groups=rank1)
+        self.conv13 = nn.Conv2d(rank1, rank1, (1, 3), padding=1,  groups=rank1)
         self.conv14 = nn.Conv2d(rank1, filt_size1, 1)
 
         # 2nd layer decomposition
@@ -95,8 +103,8 @@ class CPD_All_Conv(nn.Module):
 
         # 3rd layer decomposition
         self.conv31 = nn.Conv2d(filt_size2, rank2, 1)
-        self.conv32 = nn.Conv2d(rank2, rank2, (3, 1), groups=rank2)
-        self.conv33 = nn.Conv2d(rank2, rank2, (1, 3), groups=rank2)
+        self.conv32 = nn.Conv2d(rank2, rank2, (3, 1), padding=1, groups=rank2)
+        self.conv33 = nn.Conv2d(rank2, rank2, (1, 3), padding=1, groups=rank2)
         self.conv34 = nn.Conv2d(rank2, filt_size2, 1)
 
         # 4th layer decomposition
@@ -105,15 +113,35 @@ class CPD_All_Conv(nn.Module):
         self.conv43 = nn.Conv2d(rank2, rank2, (1, 3), groups=rank2)
         self.conv44 = nn.Conv2d(rank2, filt_size2, 1)
 
-        # Normalization
+        # Regularization 
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2_dropout = nn.Dropout2d(0.25)
-        self.bn_1 = nn.BatchNorm2d(rank1)
-        self.bn_2 = nn.BatchNorm2d(rank2)
-        self.bn_3 = nn.BatchNorm2d(1)
-        self.bn_4 = nn.BatchNorm2d(filt_size1)
-        self.bn_5 = nn.BatchNorm2d(filt_size2)
-        self.bn_6 = nn.BatchNorm2d(filt_fc1)
+        self.dropout_1 = nn.Dropout2d(0.25)
+        self.dropout_2 = nn.Dropout2d(0.25)
+        # Normalization
+        self.bn_11 = nn.BatchNorm2d(rank1)
+        self.bn_12 = nn.BatchNorm2d(rank1)
+        self.bn_13 = nn.BatchNorm2d(rank1)
+        self.bn_14 = nn.BatchNorm2d(filt_size1)        
+        
+        self.bn_21 = nn.BatchNorm2d(rank1)
+        self.bn_22 = nn.BatchNorm2d(rank1)
+        self.bn_23 = nn.BatchNorm2d(rank1)
+        self.bn_24 = nn.BatchNorm2d(filt_size1)
+
+        self.bn_31 = nn.BatchNorm2d(rank2)
+        self.bn_32 = nn.BatchNorm2d(rank2)
+        self.bn_33 = nn.BatchNorm2d(rank2)
+        self.bn_34 = nn.BatchNorm2d(filt_size2)
+
+        self.bn_41 = nn.BatchNorm2d(rank2)
+        self.bn_42 = nn.BatchNorm2d(rank2)
+        self.bn_43 = nn.BatchNorm2d(rank2)
+        self.bn_44 = nn.BatchNorm2d(filt_size2)
+
+        self.bn_51 = nn.BatchNorm2d(rank1)
+        self.bn_52 = nn.BatchNorm2d(rank1)
+        self.bn_53 = nn.BatchNorm2d(rank1)
+        self.bn_54 = nn.BatchNorm2d(filt_fc1)
 
         # conv2fc
         # 4-way decomposition
@@ -124,52 +152,61 @@ class CPD_All_Conv(nn.Module):
 
         # self.conv2fc1 = nn.Conv2d(64, self.filt_fc1, 5)
         self.conv2fc2 = nn.Conv2d(filt_fc1, num_classes, 1)
-        self.fc3 = nn.Linear(10, 10)
-        self.classifier = nn.Softmax(dim=1)
+
 
     def forward(self, x):
         num_classes = 10
 
         x = self.conv11(x)
-        x = self.bn_1(x)
+        x = self.bn_11(x)
         x = self.conv12(x)
-        x = self.bn_1(x)
+        x = self.bn_12(x)
         x = self.conv13(x)
-        x = self.bn_1(x)
+        x = self.bn_13(x)
         x = F.relu(self.conv14(x))
-        x = self.bn_4(x)
+        x = self.bn_14(x)
 
         x = self.conv21(x)
-        x = self.bn_1(x)
+        x = self.bn_21(x)
         x = self.conv22(x)
-        x = self.bn_1(x)
+        x = self.bn_22(x)
         x = self.conv23(x)
-        x = self.bn_1(x)
+        x = self.bn_23(x)
         x = self.pool(F.relu(self.conv24(x)))
-        x = self.conv2_dropout(x)
+        x = self.dropout_1(x)
+
+        x = self.conv31(x)
+        x = self.bn_31(x)
+        x = self.conv32(x)
+        x = self.bn_32(x)
+        x = self.conv33(x)
+        x = self.bn_33(x)
+        x = F.relu(self.conv34(x))
+        x = self.bn_34(x)
+
 
         x = self.conv41(x)
-        x = self.bn_2(x)
+        x = self.bn_41(x)
         x = self.conv42(x)
-        x = self.bn_2(x)
+        x = self.bn_42(x)
         x = self.conv43(x)
-        x = self.bn_2(x)
+        x = self.bn_43(x)
         x = self.pool(F.relu(self.conv44(x)))
-        x = self.bn_5(x)
+        x = self.bn_44(x)
+        x = self.dropout_2(x)
 
         # x = F.relu(self.conv2fc1(x))
         x = self.cpdfc1(x)
-        x = self.bn_1(x)
+        x = self.bn_51(x)
         x = self.cpdfc2(x)
-        x = self.bn_1(x)
+        x = self.bn_52(x)
         x = self.cpdfc3(x)
-        x = self.bn_1(x)
+        x = self.bn_53(x)
         x = F.relu(self.cpdfc4(x))
-        x = self.bn_6(x)
+        x = self.bn_54(x)
         x = self.conv2fc2(x)
 
-        x = x.view(-1, num_classes)  # Flatten! <---
-        x = self.fc3(x)
+        x = x.view(-1, 10)  # Flatten! <---
         return x
 
 
@@ -192,7 +229,7 @@ class Keras_Cifar_classic(nn.Module):
         self.pool = nn.MaxPool2d(2, 2)
         
         self.dropout_1 = nn.Dropout2d(0.25)
-        self.dropout_2 = nn.Dropout2d(0.5)
+        self.dropout_2 = nn.Dropout2d(0.25)
 
         # fully connected
         self.fc1 = nn.Linear(64 * 6 * 6, 512)

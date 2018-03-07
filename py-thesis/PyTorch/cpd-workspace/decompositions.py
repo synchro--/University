@@ -69,7 +69,7 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
         if compression <= 2:
             rank = ((d**2) * S * T) / (compression_factor * (S +2*d+ T))
             ranks[0] = np.floor(rank).astype(int) 
-            print('compression factor for layer {} : {.4f}'.format(
+            print('compression factor for layer {} : {}'.format(
                 weights.shape, compression_factor))
             # Log compression factors and number of weights
             log_compression(weights, compression_factor)

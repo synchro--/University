@@ -232,7 +232,7 @@ class Net(nn.Module):
 logger = Logger('./logs')
 log_file = 'cifar10_keras.csv'
 model_file = 'm_finetuned.pth'
-model_weights = 's_finetuned.pth'
+model_weights = 's_trained.pth'
 retrain = False
 
 from custom_models import *
@@ -240,7 +240,10 @@ from custom_models import *
 # net = Keras_Cifar_Separable(20, 5)
 # net = Net()
 # net = torch.load(model_file)
-net = NIN_BN() 
+# net = NIN_BN() 
+net = CPD_All_Conv(relu=False)
+# net.xavier_init()
+# net = Keras_Cifar_classic()
 
 if retrain:
     # load previous model
@@ -267,7 +270,7 @@ import torch.optim as optim
 
 criterion = nn.CrossEntropyLoss()
 
-# optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+# optimizer = optim.SGD(net.parameters(), lr=0.00001, momentum=0.9)
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 
 ########################################################################
@@ -284,7 +287,7 @@ loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=Fals
                                             random_seed=7)
 dataloaders = {'train': loaders[0], 'val': loaders[1]}
 
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 net = train_model(trainloader, net, criterion, optimizer, exp_lr_scheduler, epochs=50)
 dump_model_weights(net)
 

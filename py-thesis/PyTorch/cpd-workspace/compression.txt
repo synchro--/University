@@ -13,3 +13,10 @@ Weights before: 7200 - Weights after:2400 - Compression ratio: 3.0000
 
 Weights before: 7200 - Weights after:3600 - Compression ratio: 2.0000
 Weights before: 7200 - Weights after:987 - Compression ratio: 7.2948
+Weights before: 7200 - Weights after:880 - Compression ratio: 8.1725
+Weights before: 307200 - Weights after:103188 - Compression ratio: 2.9771
+Weights before: 307200 - Weights after:9828 - Compression ratio: 31.2576
+Weights before: 307200 - Weights after:9828 - Compression ratio: 31.2576
+Weights before: 307200 - Weights after:22230 - Compression ratio: 13.8192
+Weights before: 14400 - Weights after:7200 - Compression ratio: 2.0000
+Weights before: 30720 - Weights after:15360 - Compression ratio: 2.0000

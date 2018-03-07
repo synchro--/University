@@ -25,9 +25,10 @@ def cifar10_testloader(root='./data', batch_size=32, num_workers=4):
     return data.DataLoader(testset, batch_size=32, shuffle=False, num_workers=2)
 
 
-#model = Keras_Cifar2(20, 5)
-model = Keras_Cifar_AllConv()
-model = LenetZhang() 
+#model = Keras_Cifar_AllConv()
+#model = LenetZhang() 
+model = Keras_Cifar_classic() 
+# model = CPD_All_Conv(relu=False) 
 
 if len(sys.argv) == 3:
     print("Loading model from " + str(sys.argv[2])) 

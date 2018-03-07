@@ -152,7 +152,7 @@ def decompose_model(model, layer_name, model_file):
                 print('rank: ', rank)
                 if 'conv2fc' in layer_name:
                     rank = 40
-                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank)
+                decomposed = cp_decomposition_conv_layer(conv_layer, rank)
                 # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
@@ -181,7 +181,8 @@ if __name__ == '__main__':
         if args.model:
             model = torch.load(args.model)
         else:
-            model = LenetZhang()
+            # model = LenetZhang()
+            model = NIN_BN() 
 
         if args.state:
             model.load_state_dict(torch.load(args.state))
@@ -203,7 +204,8 @@ if __name__ == '__main__':
         if args.model:
             model = torch.load(args.model)
         else:
-            model = LenetZhang()
+            # model = LenetZhang()
+            model = NIN_BN() 
 
         if args.state:
             model.load_state_dict(torch.load(args.state))

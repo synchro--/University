@@ -157,6 +157,11 @@ def dump_model_weights(model, save_dir='./dumps'):
 
 # def save_best_model(best_avg, current_avg, )
 
+def xavier_weights(self): 
+    for m in self.modules(): 
+        if isinstance(m, nn.Conv2d):
+            torch.nn.init.xavier_uniform(m.weight)
+
 # Xavier init for custom NN modules
 def xavier_init_net(self):
     for m in self.modules():
