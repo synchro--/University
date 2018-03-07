@@ -19,6 +19,29 @@
 
 \refsection{0}
   \sortlist[entry]{none/global/}
+    \entry{tensor-hackbusch}{book}{}
+      \name{author}{1}{}{%
+        {{hash=01bcfafc59c11a565163fcf9ef2a0907}{%
+           family={Hackbusch},
+           familyi={H\bibinitperiod},
+           given={Wolfgang},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Science \& Business Media}%
+      }
+      \strng{namehash}{01bcfafc59c11a565163fcf9ef2a0907}
+      \strng{fullhash}{01bcfafc59c11a565163fcf9ef2a0907}
+      \strng{authornamehash}{01bcfafc59c11a565163fcf9ef2a0907}
+      \strng{authorfullhash}{01bcfafc59c11a565163fcf9ef2a0907}
+      \field{sortinit}{3}
+      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Tensor spaces and numerical tensor calculus}
+      \field{volume}{42}
+      \field{year}{2012}
+    \endentry
     \entry{WTensor}{online}{}
       \name{author}{1}{}{%
         {{hash=9c677286866aad38f8e9b660f5411814}{%
@@ -29,8 +52,8 @@
       \strng{fullhash}{9c677286866aad38f8e9b660f5411814}
       \strng{authornamehash}{9c677286866aad38f8e9b660f5411814}
       \strng{authorfullhash}{9c677286866aad38f8e9b660f5411814}
-      \field{sortinit}{1}
-      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
+      \field{sortinit}{4}
+      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{{https://en.wikipedia.org/w/index.php?title=Tensor&oldid=826559352}}
@@ -68,8 +91,8 @@
       \strng{fullhash}{d54573fe2b0878de7720297338fc4f5b}
       \strng{authornamehash}{d54573fe2b0878de7720297338fc4f5b}
       \strng{authorfullhash}{d54573fe2b0878de7720297338fc4f5b}
-      \field{sortinit}{2}
-      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
+      \field{sortinit}{5}
+      \field{sortinithash}{c9df3c9fb8f555dd9201cedc5e343021}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Computer}
@@ -108,8 +131,8 @@
       \strng{fullhash}{a60eaaeac402f8cfe261a070e583e388}
       \strng{authornamehash}{59a326d7936e4a4648e6f35da8e5d3ad}
       \strng{authorfullhash}{a60eaaeac402f8cfe261a070e583e388}
-      \field{sortinit}{3}
-      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
+      \field{sortinit}{6}
+      \field{sortinithash}{02bbed3ed82f61ae046619460488516d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Application of dimensionality reduction in recommender system-a case study}
@@ -128,8 +151,8 @@
       \strng{fullhash}{9a7c142e8c3b0579fcb4fe1a121bdbe2}
       \strng{authornamehash}{9a7c142e8c3b0579fcb4fe1a121bdbe2}
       \strng{authorfullhash}{9a7c142e8c3b0579fcb4fe1a121bdbe2}
-      \field{sortinit}{4}
-      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
+      \field{sortinit}{7}
+      \field{sortinithash}{6ac7fe70cdec8cba8f65694411ce2532}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of KDD cup and workshop}
@@ -149,8 +172,8 @@
       \strng{fullhash}{9c677286866aad38f8e9b660f5411814}
       \strng{authornamehash}{9c677286866aad38f8e9b660f5411814}
       \strng{authorfullhash}{9c677286866aad38f8e9b660f5411814}
-      \field{sortinit}{5}
-      \field{sortinithash}{c9df3c9fb8f555dd9201cedc5e343021}
+      \field{sortinit}{8}
+      \field{sortinithash}{2f1b0e69e7617f99664f1cd00bb9603c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{{Universal Approximation Theorem}}
@@ -192,8 +215,8 @@
       \strng{fullhash}{723bb32440a5213c2fe103a3b04b74b8}
       \strng{authornamehash}{82027e1522112696f03a80446732fb85}
       \strng{authorfullhash}{723bb32440a5213c2fe103a3b04b74b8}
-      \field{sortinit}{6}
-      \field{sortinithash}{02bbed3ed82f61ae046619460488516d}
+      \field{sortinit}{9}
+      \field{sortinithash}{2999ebab86052e6d71b434385f8b4ed2}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:1511.06067}
@@ -227,8 +250,8 @@
       \strng{fullhash}{9147daa2f6a058d5b8880ff5cf38abd6}
       \strng{authornamehash}{4c9093705c2d81c64ebf3509f96715c5}
       \strng{authorfullhash}{9147daa2f6a058d5b8880ff5cf38abd6}
-      \field{sortinit}{7}
-      \field{sortinithash}{6ac7fe70cdec8cba8f65694411ce2532}
+      \field{sortinit}{1}
+      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Computer Vision and Pattern Recognition}
@@ -247,8 +270,8 @@
       \strng{fullhash}{bd5dadbe57bedc5957c19a3154c4d424}
       \strng{authornamehash}{bd5dadbe57bedc5957c19a3154c4d424}
       \strng{authorfullhash}{bd5dadbe57bedc5957c19a3154c4d424}
-      \field{sortinit}{8}
-      \field{sortinithash}{2f1b0e69e7617f99664f1cd00bb9603c}
+      \field{sortinit}{1}
+      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{pyfaster-rcnn implementation}
@@ -260,6 +283,38 @@
       \verb{url}
       \verb https://github.com/rbgirshick/py-faster-rcnn/blob/master/tools/compress_net.py
       \endverb
+    \endentry
+    \entry{tensor2009kolda}{article}{}
+      \name{author}{2}{}{%
+        {{hash=f723163c6ff27569c0d17d041b49b15d}{%
+           family={Kolda},
+           familyi={K\bibinitperiod},
+           given={Tamara\bibnamedelima G},
+           giveni={T\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=691681febf8e6962443b1f9498413ff2}{%
+           family={Bader},
+           familyi={B\bibinitperiod},
+           given={Brett\bibnamedelima W},
+           giveni={B\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {SIAM}%
+      }
+      \strng{namehash}{3098c670632949aa8a42f430eef47f19}
+      \strng{fullhash}{3098c670632949aa8a42f430eef47f19}
+      \strng{authornamehash}{3098c670632949aa8a42f430eef47f19}
+      \strng{authorfullhash}{3098c670632949aa8a42f430eef47f19}
+      \field{sortinit}{1}
+      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{SIAM review}
+      \field{number}{3}
+      \field{title}{Tensor decompositions and applications}
+      \field{volume}{51}
+      \field{year}{2009}
+      \field{pages}{455\bibrangedash 500}
+      \range{pages}{46}
     \endentry
     \entry{WTucker}{online}{}
       \name{author}{1}{}{%
@@ -273,8 +328,8 @@
       \strng{fullhash}{cb8457d5f0d53333982f10a052123c6a}
       \strng{authornamehash}{cb8457d5f0d53333982f10a052123c6a}
       \strng{authorfullhash}{cb8457d5f0d53333982f10a052123c6a}
-      \field{sortinit}{9}
-      \field{sortinithash}{2999ebab86052e6d71b434385f8b4ed2}
+      \field{sortinit}{1}
+      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Understanding tucker decomposition}
@@ -324,37 +379,19 @@
       \field{pages}{1253\bibrangedash 1278}
       \range{pages}{26}
     \endentry
-    \entry{tensor2009kolda}{article}{}
-      \name{author}{2}{}{%
-        {{hash=f723163c6ff27569c0d17d041b49b15d}{%
-           family={Kolda},
-           familyi={K\bibinitperiod},
-           given={Tamara\bibnamedelima G},
-           giveni={T\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
-        {{hash=691681febf8e6962443b1f9498413ff2}{%
-           family={Bader},
-           familyi={B\bibinitperiod},
-           given={Brett\bibnamedelima W},
-           giveni={B\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {SIAM}%
-      }
-      \strng{namehash}{3098c670632949aa8a42f430eef47f19}
-      \strng{fullhash}{3098c670632949aa8a42f430eef47f19}
-      \strng{authornamehash}{3098c670632949aa8a42f430eef47f19}
-      \strng{authorfullhash}{3098c670632949aa8a42f430eef47f19}
+    \entry{WTensorlab}{online}{}
       \field{sortinit}{1}
       \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
-      \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{SIAM review}
-      \field{number}{3}
-      \field{title}{Tensor decompositions and applications}
-      \field{volume}{51}
-      \field{year}{2009}
-      \field{pages}{455\bibrangedash 500}
-      \range{pages}{46}
+      \field{title}{Tensorlab: A MATLAB package for tensor computations}
+      \field{urlday}{2}
+      \field{urlmonth}{3}
+      \field{urlyear}{2018}
+      \field{year}{2016}
+      \field{urldateera}{ce}
+      \verb{url}
+      \verb https://www.tensorlab.net/
+      \endverb
     \endentry
     \entry{astrid2017}{inproceedings}{}
       \name{author}{2}{}{%
@@ -439,6 +476,45 @@
       \verb http://arxiv.org/abs/1511.06530
       \endverb
     \endentry
+    \entry{resnet}{article}{}
+      \name{author}{4}{}{%
+        {{hash=6b4b60e909e78633945f3f9c9dc83e01}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Kaiming},
+           giveni={K\bibinitperiod}}}%
+        {{hash=5e72bc22dbcf0984c6d113d280e36990}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xiangyu},
+           giveni={X\bibinitperiod}}}%
+        {{hash=bb295293acacd54387339079ebbe4ead}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Shaoqing},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f85751488058842b5777c7b4074077b5}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Jian},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{3733dbdff90171390240438fddfbc952}
+      \strng{fullhash}{42c4b52dc3a62cebabbc11c73e1afb53}
+      \strng{authornamehash}{3733dbdff90171390240438fddfbc952}
+      \strng{authorfullhash}{42c4b52dc3a62cebabbc11c73e1afb53}
+      \field{sortinit}{2}
+      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{CoRR}
+      \field{title}{Deep Residual Learning for Image Recognition}
+      \field{volume}{abs/1512.03385}
+      \field{year}{2015}
+      \verb{url}
+      \verb http://arxiv.org/abs/1512.03385
+      \endverb
+    \endentry
     \entry{jaderberg2014}{article}{}
       \name{author}{3}{}{%
         {{hash=7dc1446dea7ff50b2b02fb83780cc9c6}{%
@@ -461,12 +537,52 @@
       \strng{fullhash}{f2ebcce81900df83b3f29e4afeb6f9fa}
       \strng{authornamehash}{f2ebcce81900df83b3f29e4afeb6f9fa}
       \strng{authorfullhash}{f2ebcce81900df83b3f29e4afeb6f9fa}
-      \field{sortinit}{1}
-      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
+      \field{sortinit}{2}
+      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:1405.3866}
       \field{title}{Speeding up convolutional neural networks with low rank expansions}
+      \field{year}{2014}
+    \endentry
+    \entry{lebedev2014}{article}{}
+      \name{author}{5}{}{%
+        {{hash=fa1a5ac60e32e44bf8ee9f723bd9ed41}{%
+           family={Lebedev},
+           familyi={L\bibinitperiod},
+           given={Vadim},
+           giveni={V\bibinitperiod}}}%
+        {{hash=08ddf7ec3c94815436149213b48c1dc1}{%
+           family={Ganin},
+           familyi={G\bibinitperiod},
+           given={Yaroslav},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=3188aaa6506c835d1a6eab56c8791674}{%
+           family={Rakhuba},
+           familyi={R\bibinitperiod},
+           given={Maksim},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9854b5eb0ee156689ff45d80042f6c12}{%
+           family={Oseledets},
+           familyi={O\bibinitperiod},
+           given={Ivan},
+           giveni={I\bibinitperiod}}}%
+        {{hash=a48f60762c88685a899455e12615e1df}{%
+           family={Lempitsky},
+           familyi={L\bibinitperiod},
+           given={Victor},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{45b14118e7e1d72a2517928bd3354fde}
+      \strng{fullhash}{0e02b2e367658b2b89eb255612f3d9b6}
+      \strng{authornamehash}{45b14118e7e1d72a2517928bd3354fde}
+      \strng{authorfullhash}{0e02b2e367658b2b89eb255612f3d9b6}
+      \field{sortinit}{2}
+      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1412.6553}
+      \field{title}{Speeding-up convolutional neural networks using fine-tuned cp-decomposition}
       \field{year}{2014}
     \endentry
     \entry{rank-hard1}{article}{}
@@ -481,8 +597,8 @@
       \strng{fullhash}{69e37069cb469ffcf7bc14a369dfa5df}
       \strng{authornamehash}{69e37069cb469ffcf7bc14a369dfa5df}
       \strng{authorfullhash}{69e37069cb469ffcf7bc14a369dfa5df}
-      \field{sortinit}{1}
-      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
+      \field{sortinit}{2}
+      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:1611.01559}
@@ -548,63 +664,48 @@
       \field{pages}{644\bibrangedash 654}
       \range{pages}{11}
     \endentry
-    \entry{lebedev2014}{article}{}
-      \name{author}{5}{}{%
-        {{hash=fa1a5ac60e32e44bf8ee9f723bd9ed41}{%
-           family={Lebedev},
-           familyi={L\bibinitperiod},
-           given={Vadim},
-           giveni={V\bibinitperiod}}}%
-        {{hash=08ddf7ec3c94815436149213b48c1dc1}{%
-           family={Ganin},
-           familyi={G\bibinitperiod},
-           given={Yaroslav},
-           giveni={Y\bibinitperiod}}}%
-        {{hash=3188aaa6506c835d1a6eab56c8791674}{%
-           family={Rakhuba},
-           familyi={R\bibinitperiod},
-           given={Maksim},
+    \entry{nakajima2013}{article}{}
+      \name{author}{4}{}{%
+        {{hash=c354d7937ae8e23c8cebce2cee4fb1f8}{%
+           family={Nakajima},
+           familyi={N\bibinitperiod},
+           given={Shinichi},
+           giveni={S\bibinitperiod}}}%
+        {{hash=39334f77cbd67c8922133952b8095d89}{%
+           family={Sugiyama},
+           familyi={S\bibinitperiod},
+           given={Masashi},
            giveni={M\bibinitperiod}}}%
-        {{hash=9854b5eb0ee156689ff45d80042f6c12}{%
-           family={Oseledets},
-           familyi={O\bibinitperiod},
-           given={Ivan},
-           giveni={I\bibinitperiod}}}%
-        {{hash=a48f60762c88685a899455e12615e1df}{%
-           family={Lempitsky},
-           familyi={L\bibinitperiod},
-           given={Victor},
-           giveni={V\bibinitperiod}}}%
+        {{hash=aeaf1de1f5d7a09b4ef6918f853d70d6}{%
+           family={Babacan},
+           familyi={B\bibinitperiod},
+           given={S\bibnamedelima Derin},
+           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=a913d7d5cce289c85c9bfab142ba0636}{%
+           family={Tomioka},
+           familyi={T\bibinitperiod},
+           given={Ryota},
+           giveni={R\bibinitperiod}}}%
       }
-      \strng{namehash}{45b14118e7e1d72a2517928bd3354fde}
-      \strng{fullhash}{0e02b2e367658b2b89eb255612f3d9b6}
-      \strng{authornamehash}{45b14118e7e1d72a2517928bd3354fde}
-      \strng{authorfullhash}{0e02b2e367658b2b89eb255612f3d9b6}
-      \field{sortinit}{2}
-      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
+      \strng{namehash}{162f0cb585dc13c3423469c8dc872362}
+      \strng{fullhash}{db2624755c3ad795adad7f7b2581ab1e}
+      \strng{authornamehash}{162f0cb585dc13c3423469c8dc872362}
+      \strng{authorfullhash}{db2624755c3ad795adad7f7b2581ab1e}
+      \field{sortinit}{3}
+      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{arXiv preprint arXiv:1412.6553}
-      \field{title}{Speeding-up convolutional neural networks using fine-tuned cp-decomposition}
-      \field{year}{2014}
-    \endentry
-    \entry{WTensorlab}{online}{}
-      \field{sortinit}{2}
-      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
-      \field{labeltitlesource}{title}
-      \field{title}{Tensorlab: A MATLAB package for tensor computations}
-      \field{urlday}{2}
-      \field{urlmonth}{3}
-      \field{urlyear}{2018}
-      \field{year}{2016}
-      \field{urldateera}{ce}
-      \verb{url}
-      \verb https://www.tensorlab.net/
-      \endverb
+      \field{journaltitle}{Journal of Machine Learning Research}
+      \field{number}{Jan}
+      \field{title}{Global analytic solution of fully-observed variational Bayesian matrix factorization}
+      \field{volume}{14}
+      \field{year}{2013}
+      \field{pages}{1\bibrangedash 37}
+      \range{pages}{37}
     \endentry
     \entry{WTensorlab-ref}{online}{}
-      \field{sortinit}{2}
-      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
+      \field{sortinit}{3}
+      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
       \field{labeltitlesource}{title}
       \field{title}{Tensorlab: References}
       \field{urlday}{2}
@@ -628,8 +729,8 @@
       \strng{fullhash}{1ef67b5beae25e4a83bce84b1cbef7d6}
       \strng{authornamehash}{1ef67b5beae25e4a83bce84b1cbef7d6}
       \strng{authorfullhash}{1ef67b5beae25e4a83bce84b1cbef7d6}
-      \field{sortinit}{2}
-      \field{sortinithash}{0aa614ace9f3a40ef5a67e7f7a184048}
+      \field{sortinit}{4}
+      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{The Canonical Tensor Decomposition and Its Applications to Social Network AnalysisIts Applications to Social Network Analysis}
@@ -642,9 +743,76 @@
       \verb http://www.cid.csic.es/homes/rtaqam/web_tricap/pres/acar.pdf
       \endverb
     \endentry
+    \entry{tucker-fast1}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=000e4f9a9c783fd4f247acb377cd6dbe}{%
+           family={Phan},
+           familyi={P\bibinitperiod},
+           given={Anh-Huy},
+           giveni={A\bibinithyphendelim H\bibinitperiod}}}%
+        {{hash=08ffe474d1c0bebee63a5696b8bc17dd}{%
+           family={Cichocki},
+           familyi={C\bibinitperiod},
+           given={Andrzej},
+           giveni={A\bibinitperiod}}}%
+        {{hash=64acf4528932fa15eed1753e97af5d98}{%
+           family={Tichavsky},
+           familyi={T\bibinitperiod},
+           given={Petr},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{58029ab3066846c9b107db40027cbf66}
+      \strng{fullhash}{58029ab3066846c9b107db40027cbf66}
+      \strng{authornamehash}{58029ab3066846c9b107db40027cbf66}
+      \strng{authorfullhash}{58029ab3066846c9b107db40027cbf66}
+      \field{sortinit}{4}
+      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Acoustics, Speech and Signal Processing (ICASSP), 2014 IEEE International Conference on}
+      \field{title}{On fast algorithms for orthogonal Tucker decomposition}
+      \field{year}{2014}
+      \field{pages}{6766\bibrangedash 6770}
+      \range{pages}{5}
+    \endentry
+    \entry{tucker-fast2}{article}{}
+      \name{author}{2}{}{%
+        {{hash=0582b1f51ec419c2ae4bbcdba417d032}{%
+           family={Badeau},
+           familyi={B\bibinitperiod},
+           given={Roland},
+           giveni={R\bibinitperiod}}}%
+        {{hash=e4e32ee2319cc65c68850b4ee076d805}{%
+           family={Boyer},
+           familyi={B\bibinitperiod},
+           given={Rémy},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {SIAM}%
+      }
+      \strng{namehash}{fccaeaf5b183619da4666a58a6ef5596}
+      \strng{fullhash}{fccaeaf5b183619da4666a58a6ef5596}
+      \strng{authornamehash}{fccaeaf5b183619da4666a58a6ef5596}
+      \strng{authorfullhash}{fccaeaf5b183619da4666a58a6ef5596}
+      \field{sortinit}{4}
+      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{SIAM Journal on Matrix Analysis and Applications}
+      \field{number}{3}
+      \field{title}{Fast multilinear singular value decomposition for structured tensors}
+      \field{volume}{30}
+      \field{year}{2008}
+      \field{pages}{1008\bibrangedash 1021}
+      \range{pages}{14}
+    \endentry
     \entry{WTorch}{online}{}
-      \field{sortinit}{3}
-      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
+      \field{sortinit}{4}
+      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
       \field{labeltitlesource}{title}
       \field{title}{Torch: a scientific computing framework for LuaJit}
       \field{urlday}{20}
@@ -657,7 +825,7 @@
       \endverb
     \endentry
   \endsortlist
-  \missing{lebedev}
+  \missing{VAE}
 \endrefsection
 \endinput
 

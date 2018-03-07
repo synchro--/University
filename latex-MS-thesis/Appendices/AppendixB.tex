@@ -5,6 +5,64 @@
 <<<<<<< HEAD
 \def \path {Appendices/}
 \section{Introduzione}
+
+
+\begin{lstlisting}[language={Matlab}]
+%% Rankest performance evaluation 
+%{
+Running rankest(T) on a dense, sparse or incomplete tensor T plots an L-curve which represents the balance
+between the relative error of the CPD and the number of rank-one terms R. 
+
+The lower bound is based on the truncation error of the tensors multilinear singular values 
+For incomplete and sparse tensors, this lower bound is not available and the first value to be tried for R is 1. 
+The number of rank-one terms is increased until the relative error of the approximation is less than options.MinRelErr. 
+In a sense, the corner of the resulting L-curve makes an optimal trade-off between accuracy and
+compression. The rankest tool computes the number of rank-one terms R corresponding to
+the L-curve corner and marks it on the plot with a square. This optimal number of rank-one
+terms is also rankests first output.
+%}
+
+A = {}
+times = []
+ranks = []
+n_inputs = [3, 9, 12, 32, 64]
+n_outputs = [12, 32, 64, 128, 256]
+kernel_size = 3; 
+
+for i=1:5
+    A{i} = abs(randn(n_inputs(i), kernel_size, kernel_size, n_outputs(i)))
+    tic
+    ranks(i) = rankest(A{i})
+    times(i) = toc
+end 
+
+disp('estimated rankest times:') 
+disp(times)
+ 
+mul_dims = n_inputs + n_outputs; 
+
+h3 = figure(3);
+h3 = plot(mul_dims(1:end), times);
+set(h1, 'LineWidth',3);
+grid on
+
+title('Rankest computation time') 
+xlabel('(N. of Inputs) x (N. of Outputs)') 
+ylabel('Rank estimation in SECONDS') 
+
+
+%% plot
+h = figure(3);
+h = plot(mul_dims, times);
+set(h, 'LineWidth',3);
+grid on
+
+title('Rankest computation time') 
+xlabel('(N. of INPUTS) + (N. of OUTPUTS)') 
+ylabel('Rank estimation in SECONDS') 
+
+\end{lstlisting}
+
 Torch\parencite{WTorch} è un framework per il calcolo numerico versatile che estende il linguaggio Lua. L'obiettivo è quello di fornire un ambiente flessibile per il progetto e addestramento di sistemi di machine learning anche su larga scala.\\
 La flessibilità è ottenuta grazie a Lua stesso, un linguaggio di scripting estremamente leggero e efficiente. Le prestazioni sono garantite da backend compilati ed ottimizzati (C,C++,CUDA,OpenMP/SSE) per le routine di calcolo numerico di basso livello.
 \\

@@ -5,34 +5,49 @@
 \contentsline {chapter}{Acknowledgements}{v}{section*.2}
 \contentsline {chapter}{\numberline {1}4 Tensor Decomposition}{1}{chapter.11}
 \contentsline {section}{\numberline {1.1}Background}{1}{section.12}
-\contentsline {subsection}{\numberline {1.1.1}Tensor rank}{1}{subsection.13}
-\contentsline {subsection}{\numberline {1.1.2}Singular value decomposition}{2}{subsection.16}
-\contentsline {subsection}{\numberline {1.1.3}SVD Applications}{3}{subsection.18}
-\contentsline {subsubsection}{SVD on Convnets}{4}{section*.22}
-\contentsline {subsubsection}{SVD on fully-connected layers}{4}{section*.23}
-\contentsline {section}{\numberline {1.2}Tensor mathematical tools}{4}{section.30}
-\contentsline {subsection}{\numberline {1.2.1}Basic operations}{4}{subsection.31}
-\contentsline {subsection}{\numberline {1.2.2}Tucker Decomposition}{7}{subsection.42}
-\contentsline {subsubsection}{HO-SVD}{8}{section*.49}
-\contentsline {subsubsection}{Higher order orthogonal iteration}{8}{section*.52}
-\contentsline {subsection}{\numberline {1.2.3}Canonical Polyadic Decomposition}{9}{subsection.54}
-\contentsline {section}{\numberline {1.3}Application of tensor decompositon on CNN}{9}{section.56}
-\contentsline {subsection}{\numberline {1.3.1}Convolutional layer as 4-mode tensors}{9}{subsection.57}
-\contentsline {subsection}{\numberline {1.3.2}CP}{10}{subsection.59}
-\contentsline {subsubsection}{CPD-3}{11}{section*.67}
-\contentsline {subsection}{\numberline {1.3.3}Tucker}{12}{subsection.68}
-\contentsline {subsection}{\numberline {1.3.4}Complexity analysis}{12}{subsection.73}
-\contentsline {subsubsection}{CP complexity}{12}{section*.74}
-\contentsline {subsubsection}{CP-3 complexity}{13}{section*.78}
-\contentsline {subsubsection}{Tucker complexity}{13}{section*.79}
-\contentsline {paragraph}{Complexity recap}{13}{section*.80}
-\contentsline {section}{\numberline {1.4}In-depth discussion}{13}{section.81}
-\contentsline {subsection}{\numberline {1.4.1}Rank estimation}{13}{subsection.82}
-\contentsline {subsubsection}{iterative methods}{13}{section*.83}
-\contentsline {paragraph}{iterative compression and fine-tuning}{15}{section*.159}
-\contentsline {subsubsection}{Global Analytics VBMF}{16}{section*.161}
-\contentsline {subsubsection}{Variational autoencoders}{16}{section*.162}
-\contentsline {subsubsection}{Decomposition algorithms overview}{16}{section*.163}
-\contentsline {subsubsection}{CP}{16}{section*.164}
-\contentsline {subsubsection}{Tucker}{17}{section*.165}
-\contentsline {subsection}{\numberline {1.4.2}A framework for decomposition}{17}{subsection.166}
+\contentsline {subsection}{\numberline {1.1.1}Tensor rank}{2}{subsection.14}
+\contentsline {subsection}{\numberline {1.1.2}Tensor fibers \& slices}{2}{subsection.16}
+\contentsline {subsection}{\numberline {1.1.3}Singular value decomposition}{3}{subsection.43}
+\contentsline {subsection}{\numberline {1.1.4}SVD Applications}{4}{subsection.45}
+\contentsline {subsubsection}{SVD on CNN}{5}{section*.49}
+\contentsline {subsubsection}{SVD on fully-connected layers}{5}{section*.50}
+\contentsline {section}{\numberline {1.2}Tensor mathematical tools}{6}{section.57}
+\contentsline {subsection}{\numberline {1.2.1}Basic operations}{6}{subsection.58}
+\contentsline {subsection}{\numberline {1.2.2}Tucker Decomposition}{11}{subsection.73}
+\contentsline {subsubsection}{HO-SVD}{12}{section*.81}
+\contentsline {subsubsection}{Higher order orthogonal iteration}{12}{section*.85}
+\contentsline {subsection}{\numberline {1.2.3}Canonical Polyadic Decomposition}{13}{subsection.87}
+\contentsline {section}{\numberline {1.3}Application of tensor decompositon on CNN}{14}{section.89}
+\contentsline {subsection}{\numberline {1.3.1}Convolutional layer as 4-mode tensors}{14}{subsection.90}
+\contentsline {subsection}{\numberline {1.3.2}CP}{14}{subsection.92}
+\contentsline {subsubsection}{CPD-3}{16}{section*.100}
+\contentsline {subsubsection}{Summary}{17}{section*.104}
+\contentsline {subsection}{\numberline {1.3.3}Tucker}{17}{subsection.113}
+\contentsline {subsubsection}{Full Tucker}{18}{section*.126}
+\contentsline {subsection}{\numberline {1.3.4}Complexity analysis}{20}{subsection.132}
+\contentsline {subsubsection}{CP complexity}{20}{section*.133}
+\contentsline {subsubsection}{CP-3}{20}{section*.137}
+\contentsline {subsubsection}{Tucker}{21}{section*.139}
+\contentsline {paragraph}{Complexity recap}{21}{section*.140}
+\contentsline {section}{\numberline {1.4}In-depth discussion}{22}{section.142}
+\contentsline {subsection}{\numberline {1.4.1}Rank estimation}{22}{subsection.143}
+\contentsline {subsubsection}{iterative methods}{22}{section*.144}
+\contentsline {paragraph}{iterative compression and fine-tuning}{23}{section*.149}
+\contentsline {subsubsection}{Global Analytics VBMF}{23}{section*.151}
+\contentsline {subsubsection}{Variational autoencoders}{24}{section*.153}
+\contentsline {subsection}{\numberline {1.4.2}Decomposition algorithms overview}{25}{subsection.155}
+\contentsline {subsubsection}{CP}{25}{section*.156}
+\contentsline {subsubsection}{Tucker}{27}{section*.160}
+\contentsline {subsection}{\numberline {1.4.3}A micro-architectural view}{28}{subsection.161}
+\contentsline {subsection}{\numberline {1.4.4}TP-block model}{29}{subsection.163}
+\contentsline {subsection}{\numberline {1.4.5}A framework for decomposition}{29}{subsection.164}
+\contentsline {chapter}{\numberline {A}MLP: Codice addizionale}{31}{appendix.173}
+\contentsline {section}{\numberline {A.1}Classi in Lua}{31}{section.174}
+\contentsline {section}{\numberline {A.2}La classe Neural\_Network}{32}{section.221}
+\contentsline {section}{\numberline {A.3}Metodi getter e setter}{33}{section.273}
+\contentsline {chapter}{\numberline {B}Il framework Torch}{35}{appendix.296}
+\contentsline {section}{\numberline {B.1}Introduzione}{35}{section.297}
+\contentsline {section}{\numberline {B.2}Utilizzo base per reti neurali}{37}{section.353}
+\contentsline {subsection}{\numberline {B.2.1}Supporto CUDA}{38}{subsection.385}
+\contentsline {section}{\numberline {B.3}ResNet}{38}{section.400}
+\contentsline {chapter}{Bibliography}{47}{appendix*.813}

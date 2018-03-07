@@ -12,29 +12,83 @@ Following, we will see how to apply these operators to decompose a convolutional
 \section{Background}}
 \label{sec:bg}
 %% intro 
-[A better introduction to tensors is needed. !!]\\
-A tensor is a geometric object that generalizes all the structures usually defined in linear algebra to the \emph{n}-dimensional space. As such, they can be defined as \emph{n}-dimensional arrays. \\
-Given a reference basis of vectors - i.e. a set of linearly independent vectors with which we can represent every other vector in the correspondent vector space - (cite needed) a tensor can be represented as a multidimensional array of numeric values. We define \emph{rank} (or order) of a tensor the dimensionality of the array needed to represent it with respect to this basis, or the number of indices needed to label a component of that array. Thus, an \emph{k-th} order tensor in an \emph{n}-dimensional space is a mathematical object that has \emph{n} indices and $n^k$ components; each index ranges over the number of dimensions of the space.
+A tensor is a geometric object that generalizes all the structures usually defined in linear algebra to the \emph{n}-dimensional space. As such, they can be defined as \emph{n}-dimensional arrays. 
+
+In fact, recalling that a vectors basis is a set of linearly independent vectors with which we can represent every other vector in the correspondent vector space, a general vector $v$ can be defined as \emph{n}-dimensional array of length \emph{n}. In the same way, we can define \emph{order} (or way) of a tensor the dimensionality of the array needed to represent it with respect to this basis, or the number of indices needed to label a component of that array. 
+
+Thus, an \emph{k-th} order tensor in an \emph{n}-dimensional space is a mathematical object that has \emph{n} indices and $n^k$ components; each index ranges over the number of dimensions of the space.
+\newline 
 
 A third-order tensor is showed in \ref{fig:tensor}. 
 
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.4\textwidth]{\path/tens.png} 
+ \caption{A third order tensor.}
+ \label{fig:tensor}
+\end{figure}
+
+\pagebreak
 \subsection{Tensor rank} 
 \label{subsec:tensor-rank}
 Intuitevely, a scalar would be a tensor of \emph{order 0}; a vector of \emph{order 1}; a matric of \emph{order 2} and so on. 
 
-The intuitive definition can also be used using "\emph{rank}" instead of order, but that may be somewhat misleading since there's a subtle difference. To avoid confusion, the following definitions are introduced: 
+The intuitive definition can also be used using "\emph{rank}" instead of order, but that may be somewhat misleading since there is a subtle difference. To avoid confusion, the following definitions are introduced: 
 \begin{itemize}
-  \item a tensor of \emph{rank}-1 or a decomposable tensor \parencit{tensor-hackbush2009} is a tensor that can be written as a product of a product of tensors of the form: 
+  \item a tensor of \emph{rank}-1 (or a decomposable tensor \parencite{tensor-hackbusch}) is a tensor that can be written as a product of tensors of the form: 
   \begin{equation}
   \label{eq:rank1-tens}
     T = a \circ b \circ \ldots \circ d  
   \end{equation}   
   
-  \item The \emph{rank} of a tensor $T$ is the minimum number of rank-1 tensor that sum to $T$.
+  \item The \emph{rank} of a tensor $X$ is the minimum number of rank-1 tensor that sum to $X$.
 
 \end{itemize}
 
-The product used in \ref{eq:rank1-tens} is an outer product for vectors and will be defined in detail in the coming section. 
+The product used in \ref{eq:rank1-tens} is an outer product for vectors and will be defined in details in the coming section. 
+
+\subsection{Tensor fibers \& slices}
+Tensor fibers are very intuitive to represent visually but not as easy to explain. \\
+
+Let $A(i,j,k)$ be a third-order tensor. The mode-1 fiber of index $s,t$  of $A(i,j,k)$ contains all the elements of A, which have the $j=s$ and $k=t$. 
+
+Intuitively, the \emph{i}-fiber is the "column" that is obtained by fixing one index. Conversely, a tensor \emph{slice} is instead obtained by fixing two indeces. It becomes immediately clear when observing figure \ref{fig:tensor-fibers}. The three different ways in which it is possible to orient a fiber are called \emph{tensor modes}. They are very important to define some basic tensor operation. 
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/tensor-mode.jpg} 
+ \caption{Fibers and slices of a tensor according to each mode.}
+ \label{fig:tensor-fibers}
+\end{figure}
+
+\pagebreak
+To make things even clearer, here is a snippet code to index fibers and slices in Python: 
+\begin{lstlisting}[language={Python}]
+In [13]: tensor = numpy.arange(24).reshape(2,3,4) 
+In [14]: tensor
+Out[14]: 
+array([[[ 0,  1,  2,  3],
+        [ 4,  5,  6,  7],
+        [ 8,  9, 10, 11]],
+
+       [[12, 13, 14, 15],
+        [16, 17, 18, 19],
+        [20, 21, 22, 23]]])
+
+
+In [18]: tensor[:,0,0]
+Out[18]: array([ 0, 12])  #Fiber
+
+In [16]: tensor[0,:,:]
+Out[16]: 
+array([[ 0,  1,  2,  3],
+       [ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]]) #Slice 
+
+In [17]: 
+
+\end{lstlisting}
+
 
 Tensors are extensively used in many applications \parencite{WTensor} to modelize multi-dimensional data. In the CNN scenario, a CONV layer with $\mathcal{W}$ weights is defined through a tensor of size: 
 \begin{equation}
@@ -77,11 +131,11 @@ A thorough explanation of the above terms is required, so the following definiti
  		M^* = \bar{(M)}^T = \bar{M*T}
  		$$  
  
- \item A quadratic matrix $M$ is said to be \emph{unitary} if $MM^* = M*M = I$, where $I$ is the identity matrix. In the case $M \in \mathbb{R}}$ the matrix is called \emph{orthogonal} and it satisfies the equivalence $MM^T = M^TM = I$. 
+ \item A quadratic matrix $M$ is said to be \emph{unitary} if $MM^* = M*M = I$, where $I$ is the identity matrix. In the case $M \in \mathbb{R}$ the matrix is called \emph{orthogonal} and it satisfies the equivalence $MM^T = M^TM = I$. 
  
  \item An \emph{orthogonal} matrix has rows and columns that are unitary or orthogonal between each other, respectively. 
  
- \item A non-negative real number $\sigma$ is a singular value for $M$ of a space $F^{m \times n}$ if and only if there exist unit-length vectors  $u \in \mathbf{F}^m, \, v \in \mathbf{F}^n$ such that $Mv=\sigmau$ and $M^*u=\sigmav$. The vectors $u$ and $v$ are called left-singular and right-singular vectors for $\sigma$ respectively. 
+ \item A non-negative real number $\sigma$ is a singular value for $M$ of a space $F^{m \times n}$ if and only if there exist unit-length vectors  $u \in \mathbf{F}^m, \, v \in \mathbf{F}^n$ such that $Mv=\sigma u$ and $M^*u=\sigma v$. The vectors $u$ and $v$ are called left-singular and right-singular vectors for $\sigma$ respectively. 
 
 \end{itemize}
 
@@ -118,7 +172,7 @@ For this purpose, given a matrix $M$, the best method to find a truncated matrix
 
 The Eckart-Young theorem \parencite{Weckart} states that the best solution to the problem is given by its SVD decomposition. 
 
-\subsubsection{SVD on Convnets}
+\subsubsection{SVD on CNN}
 Given its application to speed up convolution filters, it is not surprising that SVD has been one of the methods used in recent developments on deep CNN compression, as portrayed in chapter \ref{Chapter2}.
 In particular, the work of Cheng et al. \parencite{zhang2015SVD} applies an original decomposition scheme which is based on top of SVD. 
 
@@ -159,18 +213,33 @@ The first reference of this approach could be find in the \emph{Fast R-CNN} pape
 \subsection{Basic operations}
 In multi-linear algebra it actually does not exist a method that satisfy all SVD properties for \emph{m-way arrays}, i.e. tensors. However, by taking a closer look at SVD we can formulate two main requirements that a tensor decomposition algorithm should satisfy to be a feasible alternative to SVD in a tensor-world: 
 {\begin{enumerate}
-	\item a Rank-\mathit{R} decomposition
+	\item a Rank-\textit{R} decomposition
 	\item the orthonormal row/column matrices.
 \end{enumerate}}
 
 SVD computes both of them simultaneously. Regarding tensors, these properties can be captured separately by two different family of decompositions.
 
-The first property is extended to the multi-linear world by a class of decompositions that fall under the name of \textit{CP decomposition} (named after the two most popular variants, CANDECOMP and PARAFAC). The latter is provided by the Tucker methods (and many other names). For each axes of a tensor, these methods compute the associated orthonormal space. Therefore, Tucker methods are also used in multilinear principal component analysis (PCA). \\
-Historically, much of the interest in higher-order SVDs was driven by the need to analize empirical data, expecially in psychometrics, chemometrics and neuroscience (CIT NEEDED). As such, these techniques have been rediscovered many times with different names leading to a confused literature. Thus, these methods are often presented in a more practical goal-driven way, rather than through rigourous abstract general theorems, which are in fact rare.\\
+The first property is extended to the multi-linear world by a class of decompositions that fall under the name of \textit{CP decomposition} (named after the two most popular variants, CANDECOMP and PARAFAC). The latter is provided by the Tucker methods (and many other names). For each axes of a tensor, these methods compute the associated orthonormal space. Therefore, Tucker methods are also used in multilinear principal component analysis (PCA). 
+\newline 
+	
+Historically, much of the interest in higher-order SVDs was driven by the need to analize empirical data, expecially in psychometrics, chemometrics and neuroscience \parencite{tensor2009kolda}. As such, these techniques have been rediscovered many times with different names leading to a confused literature. Thus, these methods are often presented in a more practical goal-driven way, rather than through rigourous abstract general theorems, which are in fact rare.\\
 
 Before diving into tensor decomposition algorithms, we need to introduce some fundamental tensor operations: 
 
 \begin{itemize}
+	\item \textbf{Tensor unfolding}: Tensor unfolding, also called \emph{matrization}, is an operation that maps a tensor $X$ into a matrix $M$. It is done by taking each mode-\emph{i} fiber of a tensor and lay them down as columns in the resulting matrix. The other modes are handled cyclically. The specified mode will be the first mode of the matrix i.e., given $X$ of size $I \times J \times K$, the first-mode unfolding will produce a matrix $M$ of size $I \times JK$.
+
+	A simpler way to look at it is by taking the mode-\emph{i} slices and put them one after the other. An example for the a third-order tensor is illustrated in \ref{fig:unfolding}.
+	
+				
+			\begin{figure}[h!]
+			 \centering
+			 \includegraphics[width=1.0\textwidth]{\path/tensor-unfold.jpg} 
+			 \caption{Tensor unfolding or matricization along different modes.}}
+			 \label{fig:unfolding}
+			\end{figure}
+			            
+
     \item  \textbf{Tensor times matrix: \textit{k}-mode product:} 
             The $k$-mode product of a tensor X $\in \mathbb{R}^{I_{1} \times I_{2} \times \ldots \times I_{N}}$ with a matrix $M \in \mathbb{R}^{J \times I_{k}}$ is written as: 
            \begin{equation}
@@ -184,8 +253,10 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
              
              It can be hard to visualize this operation at first, but effectively it boils down to 
              multiply each mode-\textit{k} fiber of X by the matrix M. Looking at \ref{fig:unfolding}, we can also represent the same operation with 
-             $ \textbf{Y}_{(i)} = \textbf{X}_{(i)} \cdot M$, being $X_{(i)}$ the mode-i unfolding of the tensor X. \newline
+             $ \textbf{Y}_{(i)} = \textbf{X}_{(i)} \cdot M$, being $\mathbf{X}_{(i)}$ the mode-i unfolding of the tensor X.
              
+
+
              To simplify things, let \textbf{X} be a 3-mode tensor $\in F^{I \times J \times K}$ and $M$ a matrix $\in F^{N \times J}$, the k-mode product on axis 1 of X and M is:
             
             \begin{equation}
@@ -196,8 +267,15 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
                 y_{n,j,k} = \sum_{i} x_{i,j,k}  \cdot  b_{n,j}  
             \end{equation}
             
-            A visual example is depicted in \ref{k-mode}.
+            A visual example is depicted in \ref{fig:k-mode}.
             
+            
+			\begin{figure}[h!]
+			 \centering
+			 \includegraphics[width=1.0\textwidth]{\path/k-mode.png} 
+			 \caption{An example of a \emph{k}-mode product i.e., a tensor-matrix multiplication of a 3-dimensional tensor.}}
+			 \label{fig:k-mode}
+			\end{figure}
                         
             Few interesting properties of the k-mode product are: \\
             \begin{itemize}
@@ -219,6 +297,18 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
        \end{equation}
        
        An example is illustrated in \ref{fig:tensor-to-vec}.
+		 
+		 \begin{figure}[h!]
+		 \centering
+		 \includegraphics[width=1.0\textwidth]{\path/tensor-vec.png} 
+		 \caption{An example of a tensor-vector product.}}
+		 \label{fig:tensor-to-vec}
+		\end{figure}
+
+
+
+
+
         
     \item \textbf{Matrix Kronecker product}: 
        A Kronecker product of two matrices $A \in \mathbf{R}^{M \times N}$ and $B \in \mathbf{R}^{P \times Q}$
@@ -228,7 +318,7 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
         \end{equation}
         
         and more explicitly: 
-        \begin{align*}
+\begin{align*}
 \centering
    \mathbf{A}\otimes\mathbf{B} = \begin{bmatrix}
    a_{11} b_{11} & a_{11} b_{12} & \cdots & a_{11} b_{1q} &
@@ -261,11 +351,17 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
         \end{align}
 
         Let $a \in \mathbf{R}^I$, $b \in \mathbf{R}^J$  $c \in \mathbf{R}^K$ be three vectors. Computing the outer 
-        product ($a  \circ  b$) of two of them will result in a matrix, as showed above. Proceeding in this way is easy to show that an outer product of 3-vectors will result in a 3-dimensional tensor, as illustrated in \ref{fig:outer-product}.
+        product ($a  \circ  b$) of two of them will result in a matrix, as showed above. Proceeding in this way is easy to show that an outer product of 3-vectors will result in a 3-dimensional tensor, as illustrated in \ref{fig:tensor-outer-product}.
         
-        This comes in handy the other way around: a rank-1 tensor can be decomposed into 3 vectors. As we will see in the following sections, this operation is fundamental for tensor decomposition.
-        
+        This comes in handy the other way around: a rank-1 tensor can be decomposed into 3 vectors. As we will see in the following sections, this operation is fundamental for tensor decomposition.\\
         Another interesting way to look at it is that the outer product operation “◦” is a way of combining a tensor of $d1$-order and a tensor of $d2$-order to obtain a tensor of order-$(d1+d2)$.
+        
+         \begin{figure}[h!]
+ 		\centering
+ 		\includegraphics[width=0.7\textwidth]{\path/tensor-vec3.jpg} 
+ 		\caption{Representation of third-order tensor with an outer product of vectors.}
+ 		\label{fig:tensor-outer-product}
+		\end{figure}
 
     \item \textbf{Matrix Khatri-Rao product}: given two matrices $A \in \mathbf{R}^{M \times N}$ and $B \in            \mathbf{R}^{P \times R}$ is defined as: 
         \begin{equation}
@@ -273,10 +369,9 @@ Before diving into tensor decomposition algorithms, we need to introduce some fu
         \end{equation}
         
         Note that the Kronecker matrix operation returns the same number of elements of the Khatri-Rao product, but while the former produce a matrix, the latter is shaped into a vector.   
-
 \end{itemize}
 
-
+\newpage
 \subsection{Tucker Decomposition}
 The Tucker decomposition is a way to write a tensor of size $I_1 \times I_2 \times \ldots \times I_N$ as the multi-linear tensor-matrix product of a \emph{core} tensor $\mathbf{G}$ of size $R_1 \times R_2 \times \cdots \times R_N$ with $N$ factors $A^{(n)}$ of size $I_n \times R_n$:
 
@@ -291,14 +386,24 @@ To make this definition a little bit more intuitive, let X be a third-order tens
 
 \begin{equation}
 \label{eq:tucker-3}
-	X = \mathbf{G} \times_1 A \times_2 B \times_3 C  = \sum_r \sum_s \sum_t \mathit{g}_{r,s,t} u_r \circ v_s \circ w_t 
+	X = \mathbf{G} \times_1 A \times_2 B \times_3 C  = \sum_r \sum_s \sum_t \mathit{\sigma}_{r,s,t} u_r \circ v_s \circ w_t 
 \end{equation}
  
  where $A$ is a $I \times R$ matrix, $B$ is a $J \times S$ matrix, $C$ is a $K \times T$ matrix and $\mathbf{G}$ is a $R \times S \times T$-tensor with $R < I$, $S < J$ and $T < K$. 
+\newline
 
-An example of third-order tensor Tucker decomposition is depicted in figure \ref{fig:tucker-decomposition}. 
 
-FIGURA TENSORE QUI 
+An example of third-order tensor Tucker decomposition is depicted in figure \ref{fig:tucker-dec}. 
+
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/tucker-dec.jpg} 
+ \caption{A Tucker decomposition of a three-modes tensor}
+ \label{fig:tucker-dec}
+\end{figure}
+
+
 
 A matrix representation of the Tucker tensor is given by the following equations: 
 \begin{equation}
@@ -350,7 +455,14 @@ This approach may be regarded as one generalization of the matrix SVD, because:
 	\item the subtensors in the core tensor $\mathbf{G}}$ are ordered according to their Frobenius norm, i.e. $\left \| \mathbf{G}_1 \right \|  \geq  \left \| \mathbf{G}_2 \right \| \geq \ldots  \geq \left \| \mathbf{G}_n \right \|_{\: for \: n=1,\ldots,N} $
 \end{itemize}
 	
-The tensor $\mathbf{G}$ is said to be \emph{"ordered"} and \emph{"all-ortoghonal"}. For further explanation see \parencite{multilinear}. 
+A nice visualization of HOSVD is given in figure \ref{fig:hosvd}. The tensor $\mathbf{G}$ is said to be \emph{"ordered"} and \emph{"all-ortoghonal"}. For further explanation see \parencite{multilinear}. 
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/HOSVD.jpg} 
+ \caption{An Higher Order SVD of a third-order rank-(R1-R2-R3) tensor and the different spaces, from Tensorlab \parencite{WTensorlab}.}
+ \label{fig:hosvd}
+\end{figure}
 
 \subsubsection{Higher order orthogonal iteration}
 As for SVD, it is important to notice that HOSVD can be used to compress $X$ by truncating the matrices $A(k)$. The problem with respect to matrices though, is that a truncated HOSVD is known not to give the best fit. However, as a logical consequence of two concepts that have been introduced earlier, an iterative algorithm to find the best solution can be proposed.
@@ -454,12 +566,13 @@ This decomposition scheme is illustrated in figure \ref{fig:cpd-pass}.
 
 \begin{figure}[h!]
  \centering
- \includegraphics[width=1.0\textwidth]{\path/CPD.jpg} 
+ \includegraphics[width=1.15\textwidth]{\path/CPD.jpg} 
  \caption{Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d × d window over all input maps. 
 Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate mpa stack has R  maps, being R the rank of the decomposition. Each of the two-components 
 computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf{only on one} input map. Each box is mathematically described in equation (\ref{eq:cpd1}-\ref{eq:cpd2})}
  \label{fig:cpd-pass}
 \end{figure}
+\pagebreak
 
 Note that the "actual" convolution step is performed in the two middle equations in a \emph{separable} way i.e., the two spatial kernal are 1D with size $d \times 1$ and $1 \times d$ respectively. These are the steps in which \emph{convolution properties (padding, stride, etc.) need to remain the same} as the original convolution in order to preserve the original output size ($H'$ $W'$). These two steps alone could already replace the previous convolution and gain a speedup. 
 \newline
@@ -491,7 +604,11 @@ In these scenarios, a simple reshaping of the 4D tensor $K$ of size $(d \times d
     V(x,y,t) = \sum_{r=1}^R K^t (t,r) U^{syx}(x,y,r),
 \end{equation}
 
-\paragraph{Summary}\\
+This process is described in figure \ref{fig:tucker-pass} in the Tucker decomposition section. 
+
+\pagebreak
+\subsubsection{Summary}
+\label{subsec:cp-summary}
 It is convenient to summarize all the properties of CP-decomposition on CNN: 
 \begin{enumerate}[(i)]
 	\item the \emph{first layer} of the decomposition acts as a channel reduction;
@@ -513,46 +630,115 @@ It is convenient to summarize all the properties of CP-decomposition on CNN:
 \end{enumerate}
 
 \subsection{Tucker}
+The Tucker method is a more generalized way of decomposing a tensor with respect to CP. It factorizes a tensor $K$ into a core tensor $\mathbf{G}$ and a list of factor matrices. If we apply a full Tucker decomposition on a convolutional forward pass, we end up with the following formula: 
+\begin{equation}
+   K(i, j, s, t) = \sum_{r_1=1}^{R_1}\sum_{r_2=1}^{R_2}\sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}G_{r_1, r_2, r_3, r_4}  K^x_{r1}(i)K^y_{r2}(j)K^s_{r3}(s)K^t_{r4}(t) 
+\end{equation}
 
-
-
-%% forward pass con Tucker 
-$$ K(i, j, s, t) = \sum_{r_1=1}^{R_1}\sum_{r_2=1}^{R_2}\sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}G_{r_1, r_2, r_3, r_4} * K^x_{r1}(i)K^y_{r2}(j)K^s_{r3}(s)K^t_{r4}(t) $$
-
-The Tucker Decomposition has a property that's useful for our purposes: it doesn't have to be applied along all modes (axis) of the tensors. We have seen how CPD decomposes the kernel also spatial-wise; this acts
-pretty aggressively on the number of parameters and since the convolutional kernels are small in most of the recent implementations ($3 \times 3$ or $5 \times 5$) it arguably doesn't save a lot of computation. Hence, we can skip
-this decomposition with Tucker, going for what is known as a Tucker-2 Decomposition: 
+However, this is not the only way to apply it. In fact, while CP-decomposition needs a "hack" to be applied on 3-dimensions only, the Tucker decomposition exposes a property that comes in handy for this specific purpose: it does not need to be applied along \emph{all modes} (axis) of the tensors.\\
+This is useful when we want to be more conservative and preserve the $d \times d$ convolution, going for what is known as a \emph{Tucker-2} decomposition, from Kim et al.\parencite{Tucker-mobile}:
 
 \begin{equation}
 \label{eq:tucker-def}
-	K(i, j, s, t) = \sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4} \textbf{G} {i,j,r_3, r_4}(j)K^s_{r3}(s)K^t_{r4}(t) 
+	K(i, j, s, t) = \sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4} \mathbf{G}_{i,j,r_3, r_4}(j)K^s_{r3}(s)K^t_{r4}(t) 
 \end{equation} 
 
-Using equation \ref{eq:tucker-def} and plugging into the formula for the convolutional forward pass, we obtain the new equation for the Tucker convolutional forward pass: 
+Plugging equation \ref{eq:tucker-def} into \ref{eq:convolution} a new equation for the Tucker convolutional forward pass is obtained: 
 
 \begin{equation}
-V(x, y, t) = \sum_i \sum_j \sum_sK(x-i, y-j, s, t)X(i, j, s) 
+V(x, y, t) = \sum_{i=x-\delta}^{x+\delta} \sum_{j=y-\delta}^{y+\delta} \sum_s \sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}\mathbf{G}(i-x+\delta)(j-y+\delta) r_3 r_4}K^s_{r3}(s)K^t_{r4}(t)X(i, j, s) 
+\end{equation}
 
+If we divide the former equation we can define a three steps Tucker convolutional pass: 
+
+\begin{equation}
+\label{eq:tucker1}
+    U^s(i,j,r) =\sum^{S}_{s=1}=K^s(s,r)U(i,j,s)    
 \end{equation}
 
 \begin{equation}
-V(x, y, t) = \sum_i \sum_j \sum_s\sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4}\mathbf{G}(x-i)(y-j) r_3 r_4}K^s_{r3}(s)K^t_{r4}(t)X(i, j, s) 
+    U^{syx}(i,y,r) = \sum_{i=x-\delta}^{x + \delta} \sum_{j=y-\delta}^{y+\delta} \mathbf{G}_{i,j,r_3, r_4}U^{s}(i,j,r)
 \end{equation}
 
 \begin{equation}
-V(x, y, t) = \sum_i \sum_j \sum_{r_4=1}^{R_4}\sum_{r_3=1}^{R_3}K^t_{r4}(t)\mathbf{G}(x-i)(y-j) r_3 r_4} \sum_s\ K^s_{r3}(s)X(i, j, s) 
+\label{eq:tucker3}
+    V(x,y,t) = \sum_{r=1}^R K^t (t,r) U^{syx}(x,y,r),
 \end{equation}
 
 
+From which we can deduce few properties: 
+\begin{enumerate}[(i)]
+	\item similarly to the standard CP, the first and the last layers act as a dimensionality reduction ($S $ to $R_3$) and reshaping back ($R_4$ to $T$) respectively; 
+	
+	\item differently from CP, the decomposition results in three layers and the one in the middle performs a regular $[d \times d]$ spatial convolution; 
+	
+	\item diffrently from CP, the spatial convolution is \emph{not} depthwise separable (i.e. 1-by-1 connectivity) 
+	
+	\item the compression comes only from channels dimensionality reduction: the spatial convolution counts $[d \times d \times R_3 \times R_4$ parameters; if $R_3 \ll S$ and $R_4 \ll T$, the impact is significant. 
+	
+	\item the scheme is instead similar to CPD-3 with the difference of being more elastic thanks to two degrees of freedom i.e., the ranks $R_3, R_4$, instead of only one rank-$R$.
+\end{enumerate}
+
+Figure \ref{fig:tucker-pass} illustrate equation \ref{eq:tucker1}-\ref{eq:tucker3}. 
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.15\textwidth]{\path/tucker-pass.jpg} 
+ \caption{Tucker-2  Decompositions  for  speeding-up  a generalized convolution. Each box corresponds to a 3-way tensor $X, Z, Z^' and Y$ in equation (\ref{eq:tucker1}-\ref{eq:tucker3}). Arrows represent linear mappings and illustrate how each scalar value on the right is computed. Red tube, green cube and blue tube correspond to 1x1, dxd and 1x1 convolution respectively.}
+ \label{fig:tucker-pass}
+\end{figure}
+
+
+\subsubsection{Full Tucker}
+As mentioned earlier, Tucker is more flexible compared to CP and there are other ways to explore for Tucker. 
+
+Instead of truncating the factors, we could compute a full Tucker decomposition and use all the resulting terms. Mathematically, this is described in the following equations:  
+
+
+First again is the dimensionality reduction from $S$ to $R_3$. 
+\begin{equation}
+    U^s(i,j,r_3) = \sum_s K^s(s, r_3) U(i,j,s)
+\end{equation}
+
+Then we apply 1D vertical convolution: 
+\begin{equation}
+        U^{sy}(i,y,r_3) = \sum_j K^y(j-y+\delta, r_3) U^{sx}(i,j,r_3)
+\end{equation}
+
+a 1D horizontal convolution: 
+\begin{equation}
+    U^{syx}(x,y,r_3) = \sum_i K^x(i-x+\delta, r_3) U^{sy}(i,y,r_3)
+\end{equation}
+
+we compute the convolution with smaller core kernel $\mathbf{G}$:
+\begin{equation}
+U^{syx\sigma}(x,y,r_4) = \sum_{r_3} \mathbf{G}_{1,1,r_3,r_4} U^{syx}(x,y,r_3)
+\end{equation}
+
+and finally reshape the output channel:
+\begin{equation}
+    V(x, y,t) = \sum_{r_4} K^t(t, r_4)U^{syx\sigma}(x,y,r_4)
+\end{equation}
+
+This method will enable a separable 1D convolution instead of a regular $[d \times d]$. However, it seems more complex to model than a 4-way CP-decomposition while also being more computationally expensive (for more details on complexity see the following section). \\
+In a sense, it seems like CP-decomposition is naively best suited to obtain the spatially separable kernels and so be the more aggressive between the two, whilst Tucker is mathematically more flexible and can be more easily adapted to different designs. Hence, for this work the methods that have been employed are CPD and Tucker-2. 
+
+Moreover, it is possible to combine the two in a gradually more aggressive approach: at first the model can be decomposed using Tucker; if the central regular convolution still have many parameters, it can be decomposed again but with CP this time. This will probably lead to too many layers and would open a vanishing gradient scenario. However, deep residual nets\parencite{resnet} have already shown how to tackle this issue. 
+
+
+\pagebreak
 \subsection{Complexity analysis}
 \label{subsec:complexity}
-\subsubsection{CP complexity}
 Standard convolution operation is defined by $STd^2$ parameters i.e, the number of parameters in the tensors. The computational cost is obtained by taking into account the height $H$ and the width $W$ of the input maps: $(STd^2)(HW)$. 
-\newline
+
+\subsubsection{CP complexity}
+
 With their approaches, both in Jaderberg et al.\parencite{jaderberg2014} and Zhang et al. \parencite{zhang2015SVD} drop this complexity down to $Rd(S+T)$. Assuming the required rank is comparable or several times smaller than S and T, that is taking a rank $R\approx \frac{ST}{S+T}$, then the complexity would be reduced by a factor of $d$ times. 
 \newline 
-Following the decomposition proposed by Lebedev et al. \parencite{lebedev2014}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. \newline
-Hence, if we call $\mathcal{K}_{std}$ and $\mathcal{K}_{dec}$ the standard and decomposed convolution operation respectively,  the \emph{compression ratio} can be defined as
+Following the CP-decomposition proposed by Lebedev et al. \parencite{lebedev2014}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. 
+
+
+If we call $\mathbf{K}_{std}$ and $\mathbf{K}_{dec}$ the standard and decomposed convolution operation respectively,  the \emph{compression ratio} can be defined as
 \begin{equation}
     \mathbf{\mathcal{C}}_r = \frac{O(\mathcal{K}_{std})}{O(\mathcal{K}_{dec})}
 \end{equation}
@@ -568,21 +754,45 @@ Similarly, we can define the speed-up ratio $\marhcal{S}_r$ by considering the \
 \end{equation}
 
 
-Clearly both $\mathcal{C_r}$ and $\marhcal{S}_r$ depend on the rank $R$, which is the most important \emph{hyper-parameter} of this approach. As described in the coming sections, the choice of the rank is non trivial; it is rather an ill-posed problem that boasts its very own research field \parencite{rank-hard1}. 
+Clearly both $\mathcal{C}_r$ and $\marhcal{S}_r$ depend on the rank $R$, which is the most important \emph{hyper-parameter} of this approach. As described in the coming sections, the choice of the rank is non trivial; it is rather an ill-posed problem that boasts its very own research field \parencite{rank-hard1}. 
 
 However, after several experiments and careful parameter tuning, few patterns will come out and a \emph{rule-of-thumb} can be spotted, at least on the same kind of architecture. After that, a trial-and-error strategy can be applied to enforce a more aggressive compression; more details will be described in section \ref{subsec:framework}
 
-\subsubsection{CP-3 complexity}
+\subsubsection{CP-3}
+The compression factor for CP-decomposition on a reshaped 3D tensor $K$ of size $S \times d^2 \times T$ is equal to: 
+\begin{equation}
+	mathcal{C}_r = \frac{d^2ST}{R(S+d^2+T)}
+\end{equation}
+which has a $d$ factor more than classical CP on the central convolution, but still having less parameters than Tucker-2. 
 
+\subsubsection{Tucker} 
+Tucker-2 decomposition boasts a compression factor of: $$\mathcal{C}_r = \frac{d^2ST}{SR_3 + R_3 R_4 d^2 + R_4T}$$ which is more conservative than the CP approaches but has a good impact when the ranks are much smaller than the channels dimensions. 
 
-\subsubsection{Tucker complexity} 
+The full Tucker decomposition is a bit more complex with its five steps; the compression ratio amount to  $$\mathcal{C}_r = \frac{d^2ST}{SR_3 + dR_1+dR_2+R_1R_2R_3R_4 + R_4T}$$.
+
+In all cases it is assumed $${R_1, R_2, R_3, R_4} > {1,1,1,1}$$. The speedup ratio can be computed from the quantities potrayed above by multipying them with $H, W, H', W'$ which are the height and width before and after the spatial convolution respectively. 
 
 \paragraph{Complexity recap}\\
-Taking into account also the approach of Zheng et al. \parencite{zhang2015SVD}, in table \ref{table:complexity} is depicted a comparison of complexity reduction with the different methods explored. 
+Taking into account also the approach of Zheng et al. \parencite{zhang2015SVD}, in table \ref{tab:compression} can be seen a comparison of parameters reduction for the different methods explored. 
 
 %% TABLE COMPLEXITY %% 
+\begin{table}[]
+\centering
+\caption{Summary of the parameters required by the different decomposition methods analyzed.}
+\label{tab:compression}
+\begin{tabular}{l|l}
+\hline
+Method                                            & Params                \\ \hline
+\multicolumn{1}{|l|}{Low rank SVD (Zhang et al.)} & \multicolumn{1}{l|}{$Rd(S+T)$ } \\ \hline
+\multicolumn{1}{|l|}{Full Tucker}                 & \multicolumn{1}{l|}{$SR_3 + dR_1+dR_2+R_1R_2R_3R_4 + R_4T$ } \\ \hline
+\multicolumn{1}{|l|}{Tucker-2 (Kim et al.)}       & \multicolumn{1}{l|}{$SR_3 + R_3 R_4 d^2 + R_4T$ } \\ \hline
+\multicolumn{1}{|l|}{CPD (Lebedev et. al)}        & \multicolumn{1}{l|}{$R(S+2d+T)$} \\ \hline
+\multicolumn{1}{|l|}{CPD-3 (Astrid)}              & \multicolumn{1}{l|}{$R(S+d^2*T)$} \\ \hline
+\end{tabular}
+\end{table}    
+    
 
-
+\pagebreak
 %--------------------------------------------------------------------
 %	SECTION 3
 %--------------------------------------------------------------------
@@ -601,86 +811,17 @@ One simple but costly way to predict a good rank is a trial-and-error approach, 
 		\item if the error is less than the threshold i.e., $Err \leq th$, the rank is chosen as the best rank; otherwise increment the rank and restart from 1. 
 	\end{enumerate}
 
-In Tensorlab this is done by a utility function called \texttt{'rankest'}. A function to estimate how scalable is this method for large tensors is showed below: 
-
-
-\begin{lstlisting}[language={Matlab}]
-%% Rankest performance evaluation 
-%{
-Running rankest(T) on a dense, sparse or incomplete tensor T plots an L-curve which represents the balance
-between the relative error of the CPD and the number of rank-one terms R. 
-
-The lower bound is based on the truncation error of the tensors multilinear singular values 
-For incomplete and sparse tensors, this lower bound is not available and the first value to be tried for R is 1. 
-The number of rank-one terms is increased until the relative error of the approximation is less than options.MinRelErr. 
-In a sense, the corner of the resulting L-curve makes an optimal trade-off between accuracy and
-compression. The rankest tool computes the number of rank-one terms R corresponding to
-the L-curve corner and marks it on the plot with a square. This optimal number of rank-one
-terms is also rankests first output.
-%}
-
-A = {}
-times = []
-ranks = []
-n_inputs = [3, 9, 12, 32, 64]
-n_outputs = [12, 32, 64, 128, 256]
-dim = 3; 
-
-for i=1:5
-    A{i} = abs(randn(n_inputs(i), dim, dim, n_outputs(i)))
-    tic
-    ranks(i) = rankest(A{i})
-    times(i) = toc
-end 
-
-disp('estimated rankest times:') 
-disp(times)
- 
-mul_dims = n_inputs .* n_outputs; 
-
-h3 = figure(3);
-h3 = plot(mul_dims(1:end-1), times);
-set(h1, 'LineWidth',3);
-grid on
-
-title('Rankest computation time') 
-xlabel('(N. of Inputs) x (N. of Outputs)') 
-ylabel('Rank estimation in SECONDS') 
-
-
-%% plots 
-h1 = figure(1); 
-h1 = plot(n_inputs, times);
-set(h1, 'LineWidth',3);
-grid on
-
-title('Rankest computation time') 
-xlabel('Number of INPUTS') 
-ylabel('Rank estimation in SECONDS') 
-
-h2 = figure(2); 
-h2 = plot(n_outputs, times); 
-set(h2, 'LineWidth',3);
-grid on
-
-title('Rankest computation time') 
-xlabel('Number of OUTPUTS') 
-ylabel('Rank estimation in SECONDS') 
-
-h3 = figure(3);
-h3 = plot(mul_dims, times);
-set(h1, 'LineWidth',3);
-grid on
-
-title('Rankest computation time') 
-xlabel('(N. of INPUTS) x (N. of OUTPUTS)') 
-ylabel('Rank estimation in SECONDS') 
-
-\end{lstlisting}
+In Tensorlab this is done by a utility function called \texttt{'rankest'}. A simple script to estimate how scalable this method is for large tensors is showed in \ref{AppendixB}. 
 
 In figure \ref{fig:rankest} we can see how this approach does not scale so well with increasing input and output maps dimensions, which are also all not so large i.e., less than 256.
 
-FIGURA RANKEST 
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/rank-eval-def.png} 
+ \caption{Evaluation of the \texit{'rankest'} method for different sizes of input and output maps. Note that the maps sizes can be even higher in CNNs. Clearly, an iterative rank estimation approach does not scale well.}
+ \label{fig:rankest}
+\end{figure}
 
 
 \newline 
@@ -699,15 +840,52 @@ Once a good rank for a specific layer is found, we can move to the next one. Fol
 
 \subsubsection{Global Analytics VBMF}
 %% cenni 
+A work from 2013 by Nakajima et al. \parencite{nakajima2013} has proven to find a way to compute \emph{analytically} a solution to the \emph{variational Bayesian matrix factorization} (VBMF). 
+
+More precisely, the global solutionis a reweighted SVD of the observed matrix, and each weight can be obtained by solving a quartic equation. This will result in a global optimum instead of a local one. VBMF is able to  automatically find noise variance, de-noise the matrix under a low-rank assumption and thus compute the rank. 
+\newline
+
+Since VBMF operates on matrices, the afore step to apply it on convolution tensors is a tensor-unfolding (or \emph{matricization}). 
+
+Given the tensor $K$ of size $[S \times T \times d \times d]$ we have to unfold it on mode=1 and mode=2 (with indices starts at 1), obtaining two matrices of size $[S \times d^2T]$ and $[T \times d^2S]$ respectively. An example of this process is depicted in figure \ref{fig:vbmf}.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/unfold-vbmf.png} 
+ \caption{Mode-1 (top left), mode-2 (top-right), and mode-3 (bottom left) tensor unfolding of a third-order tensor. \textbf{Not shown}: after unfolding, the rank $R$ of the resulting matrices is computed with VBMF.
+ (Bottom right): Then, given the rank $R$, the Tucker decomposition produces a core tensor $\mathcal{S}$ and  factor matrices $A^(1)$, $A^(2)$ and $A^(3)$ of size $I_1 \times R$ $I_2 \times R$ and $I_3 \times R$ respectively. } 
+ \label{fig:vbmf}
+\end{figure}
+
+
+Last but not least, comes the actual choice of the rank. If Tucker-2 decomposition is employed, the resulting ranks will be both selected as $R_3$ $R_4$ as in Kim et al. \parencite{Tucker-mobile}. On the other hand, if we are using CPD we only need one rank $R$. Thus, we can take the highest rank to be more accurate;
+the lowest to apply a more aggressive decomposition or an average for a trade-off.
+\newline 
 
 VBMF can also be used to tackle a subtle issue with the iterative approach of \parencite{astrid2017}: in fact when fine-tuning is performed on the whole network, the sensitivity on a layer is computed after previous layers have already been compressed and thus the previous rank change is ignored. Employing VBMF enable us to compute a rank estimation independently on each layer \emph{before} actually doing the compressing-and-fine-tuning step. 
 
 
 \subsubsection{Variational autoencoders}
 %% cenni alla fine 
+Despite the advanteges of bayesian methods like VBMF over multi-linear ones, 
+A recent work by Yingming et al, \parencite{VAE} have shown how Variational Auto-Encoders (VAE) can outperform state-of-the-art methods to tackle this issue. VAEs are actually a way to compute the CP-decomposition and not the rank of a tensor, but they are capable of doing so without depending heavily on a correct rank. \\
+Their model leverage on a neural network to learn a complex non-linear function whose parameters can be learned from data. The authors explain that tensor entries can be generated via a very complex and intractable random process determined by some \emph{latent} variables (as the rank). This complex generative process can be captured by training a neural network (VAE). 
+
+Their proposed model outperforms by a significant margin tradtional methods, as depicted in \ref{fig:VAE}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.80\textwidth]{\path/VAE.png} 
+ \caption{Comparison of different optimization algorithms to compute tensor decomposition on real datasets. The method proposed by Liu et al. outperforms other methods by a large margin.}
+ \label{fig:VAE}
+\end{figure} 
+
+The most captivating idea of this work is that it prove how tensor decomposition is a perfect task for neural networks. There are too many latent variables to be accounted to compute a perfect tensor decomposition with non-probabilistic models. 
+
+Therefore, it would be interesting to combine their variational auto-encoder model to optimize the accuracy of another network by finding the best tensor approximation of its layers. The outlined scenario could be tackled through the use of of Generative Adversarial Networks (GANs)\parencite{GAN} that are actually related to VAEs. It would be interesting, as a future work, to understand if this is actually possible. 
 
 
-\subsubsection{Decomposition algorithms overview}
+\subsection{Decomposition algorithms overview}
 While the decomposition scenario for convolutional neural networks has been defined, it has not been clarified yet \emph{how} to actually compute a decomposition. To this aim, this section provides a quick overview of the available algorithms in literature with few examples computed with the aim of powerful tensor toolbox for $MATLAB$, called Tensorlab \parencite{WTensorlab}. \newline
 A depth discussion of these algorithms is out of the scope of this work. For more details please check this rich reference page of the Tensorlab documentation \parencite{WTensorlab-ref}.
 
@@ -717,36 +895,128 @@ The CP-decomposition can be computed in a variety of different ways:
         \item \emph{alternating least squares} (ALS)
         \item \emph{nonlinear least squares} (NLS)
         \item \emph{nonlinear unconstrained optimization}
+        \item \emph{Variational Auto-Encoder CP} (VAE-CP)
+        \item \emph{non-negative cpd} (NCP)
         \item \emph{randomized block sampling for large-scale tensors}
         \item \emph{generalized eigenvalue decomposition}
         \item \emph{simultaneous diagonalization}
         \item \emph{simultaneous generalized Schur decomposition}
 \end{itemize}
-It seems that the most often used algorithms for CNN compression are ALS and NLS. \\
+Usually, the most common algorithms for CNN compression are ALS and NLS. \\
 Beside the principal algorithm itself, the convergence of the computation for large tensors is influenced - like many other optimization problems - by a good initialization. Thus, most algorithms works by starting with an initial guess; also the computational time is reduced by a significant factor when a pre-computed solution is used. 
 \newline
 
 Basically, the computation of a good CPD is a multi-step approach that relies on a main algorithm (ALS, NLS, unconstrained opt) and a bunch of other methods that help the optimization. 
-A simple test to compute a difference has been implemented, the results are showed in figure \ref{fig:tensorlab-cp-comparison}.
+A simple test in Tensorlab to compare different algorithms is shown in appendix \ref{AppendixB}, the results can be observed in figure \ref{fig:cp-als-nls}.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.80\textwidth]{\path/cp-nls-als.png} 
+ \caption{Comparison of different optimization algorithms to compute CPD; between yellow and blue line only the init method is diverse. It is evident how ALS is indeed faster but more unstable and less precise.}
+ \label{fig:cp-als-nls}
+\end{figure} 
+
+ALS is often faster while being less accurate than NLS. As it will be presented in the experiments chapter, they can both successfully be applied to CNN with minor difference. In fact, thanks to fine-tuning, we are able to minimize the reconstruction error of kernel tensors through SGD. 
+
+To dig deeper into the optimization details, an exhaustive comparison between four main algorithms is explained in \parencite{WCPD-talk}. Their results on accuracy and timing are reported in figure \ref{fig:cp-comparison}.
 \newline 
 
-ALS is often faster while being less accurate than NLS. As it will be presented in the experiments chapter, they can both successfully be applied to Convnets without a meaningful difference. 
-An exhaustive comparison can be found here \parencite{WCPD-talk}. 
+It is also interesting to see how these methods depend heavily on the chosen rank $R$. To this aim, a MATLAB script that computes CP-NLS of a relatively large matrix for different values of $R$ is available in appendix \ref{AppendixB}. Results are shown in \ref{fig:rank-loop}. 
 
+Notably, the higest rank leads to a far better minimum of the NLS optimization. However, such values of $R$ are incompatible with a good speeup in convolutions. Thus, between an accurate but costly decomposition and a fast inaccurate one plus retraining, the trade-off discussion seems to fall in favor of the latter.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/cpd-rank-loop-500.png} 
+ \caption{Comparison of CP-NLS decomposition for different ranks: the higher the \emph{R}-terms, the higher is the accuracy. For $R$=500 the decomposition is much more accurate than other ranks.}
+ \label{fig:rank-loop}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/cp-comparison.jpg} 
+ \caption{Accuracy and timing comparison between various CP-decomposition algorithms. ALS is always fast but much less accurate than CP-OPT. Image from \parencite{WCPD-talk}.}
+ \label{fig:cp-comparison}
+\end{figure}
+
+\newpage
 \subsubsection{Tucker}
 Like CP, the Tucker decomposition can also by computed in several different ways: 
 \begin{itemize}
-    \item 
+    \item NLS
     
-    \item 
+    \item higher order orthogonal iteration (HOOI)
+
+    \item nonlinear unconstrained optimization with initial guess
     
-    \item 
+    \item adaptive cross approximation 
+        
+    \item differential-Newton (only for dense third-order tensor) 
+    
+    \item Riemannian trust region method (only for dense third-order tensor) 
 \end{itemize}
 
-The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a logical consequence of the combination Eckart-Young theorem for SVD and the higher-order SVD. 
+The \emph{HOOI} was already introduced in section \ref{subsec:hosvd} as a logical consequence of the combination Eckart-Young theorem for SVD and the higher-order SVD, and have been extensively applied througout the experiments as the implementation was straightforward, being available in python libraries. 
+
+Interestingly, faster methods have been proposed in literature \parencite{tucker-fast1} \parencite{tucker-fast2} and coule be subject for further experiments in future work.
+
+\subsection{A micro-architectural view}
+The concepts of macro and micro-architecture of a CNN have been introduced in chapter 3. Taking a closer look to how the decomposed layers are assembled, we can lay out a common pattern that lead us to a generalised decomposition block. 
+\newline 
+
+As a matter of fact, regardless of the method (CP/Tucker), the first and the last layer of the decomposition always act as a dimensionality reduction whereas the layers in the middle perform the spatial convolution (more details are explained in section \ref{subsec:cp-summary}. This idea is very close to that of the \emph{Inception-module} firstly introduced by Google in 2014 \parencite{googlenet}. and then widely applied in successive works \parencite{squeeznet}, \parencite{chollet}, \parencite{mobilenets}.  
+\newline
+The nice thing is that this design fits perfectly with the factor matrices of the decomposition.  
+Therefore a general architecture of a \emph{"tensor decomposition block"} (TP-block) can be finally introduced in figure \ref{fig:TP-block}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=.5\textwidth]{\path/TP-block.png} 
+ \caption{A generic Tensor Decomposition (TP) block micro-architecture. The first and last layers performs channels squeezing/restoration while the actual convolution is performed inside these two layers. This convolution can be either separable or standard; either way the cross-channel parameters redundancy is exploited. }
+ \label{fig:TP-block}
+\end{figure}
+
+The type of convolution that is computed in the middle can be either separable or standard and can have an arbitrary number of channels depending on the choice of the rank(s) of the decomposition. 
+\newline 
+As a side note: it can also be pointed out that since this block is not a composition of several regular layers but of smaller parts of a single of them, we could coin the term \emph{nano-architecture} of a convolutional neural network. 
+
+\newpage
+\subsection{TP-block model}
+The original goal of applying tensor decomposition on CNNs is the ability to shrink a pre-trained model without accuracy drop. However, one can easily guess that if a TP-block is a good fit to substitute a whole layer after training, then it will likely be as good if applied from the beginning. 
+\newline
+Indeed, in the next chapter several experiments about this approach demonstrate how TP-blocks can perform well when training models from scratch. 
+\newline 
+
+
+This suggests \emph{a new way} of building standard CNNs. To this aim, it is interesting how \emph{Mobile Nets} \parencite{mobilenets}, that builds upon a similar architecture that exploits channels redundancy, have been included in Tensorflow Lite \parencite{WTFlite}, the mobile-optimized version of the most popular deep learning framework \parencite{tensorflow}, becoming the go-to solution to deploy CNNs on mobile.  
+
+
 \subsection{A framework for decomposition}
 \label{subsec:framework}
+In lights of all the concepts explained in this chapter, it is finally possible to outline a framework for CNN decomposition. The following constitute the main key points to address in order to apply tensor decompositions on CNNs: 
 
+\begin{enumerate}
+    \item choice of a model that can arguably be over-parametrized and thus suitable for decomposition; 
+    
+    \item selection of a desired range for compression ratio and speed-up;
+    
+    \item selection of the number and connectivity of the layers that the TP-Block should enclose;
+    
+    \item according to the first points, selection of the type of the decomposition between CP (more aggressive) and Tucker (more stable); 
+    
+    \item selection of a rank estimation technique (e.g. iterative, VBMF);
+    
+    \item selection of the class of algorithms to actually compute the tensor decomposition (e.g. ALS, NLS, VAE, ...);
+    
+    \item selection of a metric to measure the performance of the CNN according to the specific domain;
+    
+    \item enforcing on the rank according to rule of thumbs and results. 
+    
+\end{enumerate}
+
+Regarding the last point, it should be noted that after successfully trained a decomposed model, we may want to enforce a higher compression rate with an again arbitrary rank. This time though, the higher bound wold be given by  techniques like VBMF, while the lower bound can be found with a "rule of thumb" dependent on the order of magnitude of the layer size.
+
+As a final note: this chapter focused only on the 2D convolution scenario, but with due consideration every aspect that have been analyzed can be extended also to the 3D convolution (or convolutions between volumes) scheme. Indeed, 3D convolutions could expose an even bigger advantage in employing decomposition; it would be interesting to explore the best decomposition strategy for that scheme as a future work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -775,6 +1045,7 @@ The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a 
 \end{figure}
 \end{comment}
 
+
 \\
 %%%%% NEW PAGE FOR THE NEW FIGURES %%%% 
 \newpage
@@ -782,80 +1053,11 @@ The \emph{HOOI} was already introduced in section \ref{subsec:tensor-math} as a 
 \medskip
 \newpage
 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/TP-block.jpg} 
- \caption{An example of a \emph{k}-mode product i.e., a tensor-matrix multiplication of a 3-dimensional tensor.}}
- \label{fig:k-mode}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/unfold-vbmf.png} 
- \caption{VBMF rank estimation of a convolutional tensor: first off the tensor is reshaped into an $S \times d^2 \times T$ three-way tensor; secondly it is unfolded along each of the modes; 
- thirdly each of the k-unfolding matrices is given as an input to the VBMF algorithm and a rank is estimated; lastly the effective choice of the rank. We can take the highest rank to be more accurate; 
- the lowest to apply a more aggressive decomposition; an average of all three for a trade-off.}}
- \label{fig:vbmf}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/k-mode.png} 
- \caption{An example of a \emph{k}-mode product i.e., a tensor-matrix multiplication of a 3-dimensional tensor.}}
- \label{fig:k-mode}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/tensor-vec.png} 
- \caption{An example of a tensor-vector product.}}
- \label{fig:tensor-vec-product}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/tensor-unfold.jpg} 
- \caption{Tensor unfolding or matricization along different modes.}}
- \label{fig:tensor-unfolding}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/tucker-dec.jpg} 
- \caption{A Tucker decomposition of a three-modes tensor}
- \label{fig:tucker-dec}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/tensor-vec3.jpg} 
- \caption{Representation of third-order tensor with an outer product of vectors.}
- \label{fig:tensor-outer-product}
-\end{figure
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/HOSVD.jpg} 
- \caption{An Higher Order SVD of a third-order rank-(R1-R2-R3) tensor and the different spaces.}
- \label{fig:hosvd}
-\end{figure}
 
 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/tensor-mode.jpg} 
- \caption{Fibers and slices of a tensor: fibers is an equivalent term for a tensor mode.}
- \label{fig:tensor-fibers}
-\end{figure}
 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/tucker-pass.jpg} 
- \caption{Tucker-2  Decompositions  for  speeding-up  a generalized convolution. Each box corresponds to a 3-way tensor $X, Z, Z^' and Y$ in equation (\ref{eq:tucker1}-\ref{eq:tucker3}). Arrows represent linear mappings 
-and illustrate each scalar value on the right is computed. Red tube, green cube and blue tube correspond to 
-1x1, dxd and 1x1 convolution respectively.}
- \label{fig:tucker-pass}
-\end{figure}
+ 
+
 
 
 
