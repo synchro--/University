@@ -48,16 +48,45 @@ def log_compression(layer_weights, compression_factor, file='compression.txt'):
         out.close()
 
 
+def get_layer_bias(layer, numpy=True):
+    '''
+        Return weights of the given layer. 
+    Args:
+        numpy: bool. Defalt true. If false return weights as torch array. 
+    '''
+    
+    print('Retrieving weights of size: ' +
+          str(layer.bias.data.cpu().numpy().shape))
+    if numpy:
+        return layer.bias.data.cpu().numpy()
+    else:
+        return layer.bias
+
+
+def set_layer_bias(layer, tensor):
+    '''
+    Set specified tensor as the layer weights. If sizes don't match raise exception. 
+    Args: 
+        layer: the specified layer 
+        tensor: tensor as an ndarray (Numpy)
+    '''
+    if not(layer.bias.numpy().shape == tensor.shape):
+        raise Exception('Size mismatch! Cannot asssign weights')
+
+    layer.bias = torch.from_numpy(np.float32(tensor))
+
+
 def get_layer_weights(layer, numpy=True):
     '''
         Return weights of the given layer. 
     Args:
         numpy: bool. Defalt true. If false return weights as torch array. 
     '''
+
     print('Retrieving weights of size: ' +
-          str(layer.weight.data.numpy().shape))
+          str(layer.weight.data.cpu().numpy().shape))
     if numpy:
-        return to_np(layer.weight.data)
+        return to_np(layer.weight)
     else:
         return layer.weight.data
 
@@ -133,6 +162,7 @@ def save_weigths_to_mat(allweights, save_dir):
         sio.savemat(name,  {'weights': weights})
 
 
+
 def dump_model_weights(model, save_dir='./dumps'):
     '''
     Dump weights for all Conv2D layers and saves it as .mat files
@@ -153,6 +183,47 @@ def dump_model_weights(model, save_dir='./dumps'):
             allweights.append(tmp)
 
     save_weigths_to_mat(allweights, save_dir)
+
+
+def dump_layer_weights(layer, filename="weights.mat", save_dir='dumps/'):
+    '''
+    Dump weights for specified layer as .mat file
+    '''
+    save_dir = os.path.join(os.getcwd(), save_dir)
+    # create dir if not exists
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+
+    weights = get_layer_weights(layer, numpy=True)
+    print('Saving layer ' + str(layer) + " to" + save_dir)
+
+    name = save_dir + filename
+    print(name)
+    sio.savemat(name,  {'weights': weights})
+
+
+def load_cpd_weights(filename):
+        import scipy.io as sio
+        import os
+
+        if not os.path.isfile(filename):
+            print("ERROR: .mat file not found")
+            return
+
+        # load struct 'cpd_s' from file
+        mat_contents = sio.loadmat(filename)['cpd_s']
+
+      #  bias = mat_contents['bias'][0][0][0]  # retrieve bias weights
+        cpd = mat_contents['weights'][0][0]  # cell of 4 tensors
+
+        f_last  = cpd[0][0]
+        f_first = cpd[0][1]
+        f_vertical = cpd[0][2]
+        f_horizontal = cpd[0][3]
+        print('Loaded cpd weights succesfully.')
+
+        return f_last, f_first, f_vertical, f_horizontal   #  , bias
+
 
 
 # def save_best_model(best_avg, current_avg, )

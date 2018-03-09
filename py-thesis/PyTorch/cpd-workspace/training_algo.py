@@ -144,6 +144,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
     model.train(True)  # Set model to training mode
     since = time.time()
 
+    switched_opt = False 
     # Here we store the best model
     model_file = 's_trained.pth'
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -213,21 +214,29 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
                 # (2) Log CSV file 
                 log_csv(total_step, info['accuracy'], info['loss'])
                 # (3) Tensorboard specific logging
-                tensorboard_log(total_step, model, info)
+                # tensorboard_log(total_step, model, info)
 
                 # for each epoch, save best model
                 if best_loss > step_loss:
                     print('loss improved from %.3f to %.3f'
                         % (best_loss, step_loss))
-                    print('Saving model to ' + model_file + "...\n")
                     best_loss = step_loss
                     best_acc = step_acc
-                    best_model_wts = copy.deepcopy(model.state_dict())
-                    torch.save(model.state_dict(), model_file)
-                    torch.save(model, "dump_model.pth")
+                    
+                    if((epoch+1) % 5 == 0):
+                        print('Saving model to ' + model_file + "...\n")
+                        best_model_wts = copy.deepcopy(model.state_dict())
+                        torch.save(model.state_dict(), model_file)
+                        torch.save(model, "dump_model.pth")
+
+                    ## Switch to SGD + Nesterov 
+                    if best_loss <= 0.6 and not switched_opt:
+                        print('Switching to SGD wt Nesterov Momentum...')
+                       # optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True) 
+                        switched_opt = True
                 
                 ## EARLY STOPPING ## 
-                if best_loss <= loss_threshold and epoch >= 9:
+                if best_loss <= loss_threshold and epoch >= 5:
                     print('EARLY STOPPING!')
                     time_elapsed = time.time() - since
                     print('Training complete in {:.0f}m {:.0f}s'.format(

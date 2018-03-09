@@ -66,17 +66,22 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
     elif flag == 'cpd':
         rank = ranks[0] # it is a single value
         compression = ((d**2)*T*S) / (rank*(S+2*d+T))
-        if compression <= 2:
+        if compression <= 3:
             rank = ((d**2) * S * T) / (compression_factor * (S +2*d+ T))
             ranks[0] = np.floor(rank).astype(int) 
+
+            # recompute new compression ratio 
+            compression_factor = ((d**2) * S * T) / (rank * (S +2*d+ T))
             print('compression factor for layer {} : {}'.format(
                 weights.shape, compression_factor))
             # Log compression factors and number of weights
             log_compression(weights, compression_factor)
+            
         else:
             # Log the standard compression
             log_compression(weights, compression)
-
+            print('compression factor for layer {} : {}'.format(
+                weights.shape, compression))
     else:
         #other cases not yet supported
         print('Different decomposition not yet supported!')
@@ -114,6 +119,7 @@ def cp_ranks(layer):
     print(diag_0.shape[0])
     print(diag_1.shape[1])
     rank=max(diag_0.shape[0], diag_1.shape[1])
+    print('VBMF estimated rank:', rank)
     ranks=[rank, rank]
     rank, _=choose_compression(
         layer, ranks, compression_factor=10, flag='cpd')
@@ -157,7 +163,7 @@ def FC_SVD_compression(layer):
     new_layers = [fc1, fc2]
     return nn.Sequantial(*new_layers)
 
-def cp_decomposition_conv_layer(layer, rank):
+def cp_decomposition_conv_layer(layer, rank, matlab=False):
     """ Gets a conv layer and a target rank, di
         returns a nn.Sequential object with the decomposition """
 
@@ -166,12 +172,17 @@ def cp_decomposition_conv_layer(layer, rank):
     X = layer.weight.data.numpy()
     size = max(X.shape)
     # Using the SVD init gives better results, but stalls for large matrices.
-    if size >= 256:
-        print("Init random")
-        last, first, vertical, horizontal = parafac(
-            X, rank=rank, init='random')
+
+    if matlab: 
+        last, first, vertical, horizontal = load_cpd_weights('dumps/out_file.mat')
+    
     else:
-        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
+        if size >= 256:
+            print("Init random")
+            last, first, vertical, horizontal = parafac(
+                X, rank=rank, init='random')
+        else:
+            last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
 
     pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
                                              out_channels=first.shape[1],
@@ -246,7 +257,7 @@ def cp_decomposition_conv_layer(layer, rank):
     return nn.Sequential(*new_layers)
 
 
-def cp_decomposition_conv_layer_BN(layer, rank):
+def cp_decomposition_conv_layer_BN(layer, rank, matlab=False):
     """ Gets a conv layer and a target rank, 
         returns a nn.Sequential object with the decomposition """
 
@@ -254,13 +265,20 @@ def cp_decomposition_conv_layer_BN(layer, rank):
     print(layer, rank)
     X = layer.weight.data.numpy()
     size = max(X.shape)
-    # Using the SVD init gives better results, but stalls for large matrices.
-    if size >= 256:
-        print("Init random")
-        last, first, vertical, horizontal = parafac(
-            X, rank=rank, init='random', random_state=np.random.RandomState())
+
+    if matlab:
+        last, first, vertical, horizontal = load_cpd_weights(
+            'dumps/out_file.mat')
+
     else:
-        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd', random_state=10)
+        # Using the SVD init gives better results, but stalls for large matrices.
+        if size >= 256:
+            print("Init random")
+            last, first, vertical, horizontal = parafac(
+                X, rank=rank, init='random')
+        else:
+            last, first, vertical, horizontal = parafac(
+                X, rank=rank, init='svd')
 
     pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
                                              out_channels=first.shape[1],
@@ -329,7 +347,7 @@ def cp_decomposition_conv_layer_BN(layer, rank):
     bn_last = nn.BatchNorm2d(last.shape[0])
 
     new_layers = [pointwise_s_to_r_layer, bn_first, depthwise_vertical_layer, bn_vertical,
-                  depthwise_horizontal_layer, bn_horizontal, pointwise_r_to_t_layer,
+                  depthwise_horizontal_layer, bn_horizontal,  pointwise_r_to_t_layer,
                   bn_last]
     return nn.Sequential(*new_layers)
 

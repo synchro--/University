@@ -136,28 +136,61 @@ def get_args():
     return args
 
 
+def decompose_model_seq(model, layer_name, model_file):
+    print(model)
+    model.cpu()
+    complete_name = ""
+    for i, (name, conv_layer) in enumerate(model.named_modules()):
+        ## for sequential nets, 'in' is sufficient
+        ## as long as there are not 2 homonimous layers
+        if layer_name in name:
+            print(name)
+
+            if args.cp:
+                rank = max(conv_layer.weight.data.shape) // 3
+                rank, _ = choose_compression(
+                    conv_layer, ranks=[rank, rank], compression_factor=5, flag='cpd')
+                print('rank: ', rank)
+                rank = cp_ranks(conv_layer)
+                print('rank: ', rank)
+
+                if 'conv2fc' in layer_name:
+                    rank = 40
+                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=True)
+                # decomposed = cp_xavier_conv_layer(conv_layer, rank)
+            else:
+                decomposed = tucker_decomposition_conv_layer(conv_layer)
+
+    # first modules return a sequential, then we need to call the proper layer 
+    model._modules['sequential']._modules[layer_name] = decomposed 
+    torch.save(model, model_file)
+    return model
 
 def decompose_model(model, layer_name, model_file):
     print(model)
     model.cpu()
+    complete_name = "" 
     for i, (name, conv_layer) in enumerate(model.named_modules()):
         ## for sequential nets, 'in' is sufficient
         ## as long as there are not 2 homonimous layers
         if layer_name in name: 
             print(name)
+            complete_name = name
             if args.cp:
                 rank = max(conv_layer.weight.data.shape) // 3
-                rank, _ = choose_compression(conv_layer, ranks=[rank, rank], flag='cpd')
-                # rank = cp_ranks(conv_layer)
+                rank, _ = choose_compression(conv_layer, ranks=[rank, rank], compression_factor = 10, flag='cpd')
                 print('rank: ', rank)
+                rank = cp_ranks(conv_layer)
+                print('rank: ', rank)
+                
                 if 'conv2fc' in layer_name:
                     rank = 40
-                decomposed = cp_decomposition_conv_layer(conv_layer, rank)
+                decomposed = cp_decomposition_conv_layer(conv_layer, rank, matlab=True)
                 # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
 
-    model._modules[layer_name] = decomposed
+    model._modules[complete_name] = decomposed ## WARNING: IF USING SEQUENTIAL WE NEED THE FULL NAME: e.g. sequential.conv1 
 
     torch.save(model, model_file)
     return model
@@ -212,29 +245,31 @@ if __name__ == '__main__':
 
         # Print summary of the model
         print(torch_summarize(model))
+        print('BEFORE: Number of trainable params:', sum(
+                        [param.nelement() for param in model.parameters()]))
         
         layers = args.layers
 
         for i, layer in enumerate(layers):
-            dec = decompose_model(model, layer, 'decomposed_model.pth')
-            dec = model 
+            dec = decompose_model_seq(model, layer, 'decomposed_model.pth')
             dec.cuda()
 
             for param in dec.parameters():
                 param.requires_grad = True
             print(torch_summarize(dec))
             print('###################')
-            print('Number of trainable params:', sum([param.nelement() for param in dec.parameters()]))
+            print('DEC: Number of trainable params:', sum([param.nelement() for param in dec.parameters()]))
 
             ### Training with my training procedure ###
             if args.cp:
                 lr = 0.001
-                step_size = 30
+                step_size = 5
             else:
                 lr = 0.001
-                step_size = 20
+                step_size = 10
 
-            optimizer = optim.Adam(dec.parameters(), lr=lr)
+            #  optimizer = optim.Adam(dec.parameters(), lr=lr)
+            optimizer = optim.SGD(dec.parameters(), lr=lr, momentum=0.9, nesterov=True)
             # Decay LR by a factor of 0.1 every X epochs
             exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
             

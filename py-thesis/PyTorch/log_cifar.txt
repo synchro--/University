@@ -228,4 +228,34 @@ Accuracy of  ship : 84 %
 Accuracy of truck : 86 %
 
 
+--------------------------------------
+BASELINE 
+Keras Classic Model:
+params: 1250858
+test accuracy: 74%
+test speed: 0.0398
 
+--------------------------------------
+Params: 27224:
+CPD ALL CONV wt. BN only 
+Accuracy of the network on the 10000 test images: 80/81 %
+Average prediction time 0.109803 313
+
+
+---------------------------------------
+ 1: CPD ALL CONV with BN + ReLU 
+ Accuracy of the network on the 10000 test images: 74 %
+ Average prediction time 0.118877 313
+
+
+--------------------------------------
+ 2: CPD ALL CONV with BN xavier NO ReLU()
+ Accuracy of the network on the 10000 test images: 82 %
+ Average prediction time 0.099441 313
+
+
+--------------------------------------
+Params: 27224:
+3: CPD ALL CONV wt. BN  (NO relu No xavier) (same as above)
+Accuracy of the network on the 10000 test images: 81 %
+Average prediction time 0.103136 313

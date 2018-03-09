@@ -77,29 +77,22 @@ class LenetZhang(nn.Module):
 
 # Network defined as CP-Decomposed architecture
 class CPD_All_Conv(nn.Module):
-    
-    def xavier_init(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                torch.nn.init.xavier_uniform(m.weight)
 
-    def __init__(self, relu=True):
+    def __init__(self):
         super(CPD_All_Conv, self).__init__()
-
-        self.relu_on = relu
-
-        rank1 = 30 
-        rank2 = 100
+        
+        rank1 = 15 
+        rank2 = 30
         filt_size1 = 32 
         filt_size2 = 64 
         filt_fc1 = 512
-        last_kernel_sz = 6 #should be 6 or 5 according to previous padding
+        last_kernel_sz = 8 #should be 6 or 5 according to previous padding
         num_classes = 10
 
         # 1st layer decomposition
         self.conv11 = nn.Conv2d(3, rank1, 1)
-        self.conv12 = nn.Conv2d(rank1, rank1, (3, 1), padding=(1,0), groups=rank1)
-        self.conv13 = nn.Conv2d(rank1, rank1, (1, 3), padding=(0,1), groups=rank1)
+        self.conv12 = nn.Conv2d(rank1, rank1, (3, 1), padding=1, groups=rank1)
+        self.conv13 = nn.Conv2d(rank1, rank1, (1, 3), padding=1,  groups=rank1)
         self.conv14 = nn.Conv2d(rank1, filt_size1, 1)
 
         # 2nd layer decomposition
@@ -110,8 +103,8 @@ class CPD_All_Conv(nn.Module):
 
         # 3rd layer decomposition
         self.conv31 = nn.Conv2d(filt_size2, rank2, 1)
-        self.conv32 = nn.Conv2d(rank2, rank2, (3, 1), padding=(1,0), groups=rank2)
-        self.conv33 = nn.Conv2d(rank2, rank2, (1, 3), padding=(0,1), groups=rank2)
+        self.conv32 = nn.Conv2d(rank2, rank2, (3, 1), padding=1, groups=rank2)
+        self.conv33 = nn.Conv2d(rank2, rank2, (1, 3), padding=1, groups=rank2)
         self.conv34 = nn.Conv2d(rank2, filt_size2, 1)
 
         # 4th layer decomposition
@@ -124,8 +117,6 @@ class CPD_All_Conv(nn.Module):
         self.pool = nn.MaxPool2d(2, 2)
         self.dropout_1 = nn.Dropout2d(0.25)
         self.dropout_2 = nn.Dropout2d(0.25)
-        self.relu = nn.ReLU()
-
         # Normalization
         self.bn_11 = nn.BatchNorm2d(rank1)
         self.bn_12 = nn.BatchNorm2d(rank1)
@@ -163,226 +154,43 @@ class CPD_All_Conv(nn.Module):
         self.conv2fc2 = nn.Conv2d(filt_fc1, num_classes, 1)
 
 
-
-    def resnet_forward(self, x):
-        num_classes = 10
-
-        res = x # residual 
-
-        x = self.conv11(x)
-        x = self.bn_11(x)
-        if self.relu_on: 
-            x = self.relu(x)
-        x+= res 
-
-        res = x 
-        x = self.conv12(x)
-        x = self.bn_12(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x 
-        x = self.conv13(x)
-        x = self.bn_13(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x 
-        x = F.relu(self.conv14(x))
-        x = self.bn_14(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x 
-        x = self.conv21(x)
-        x = self.bn_21(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x 
-        x = self.conv22(x)
-        x = self.bn_22(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.conv23(x)
-        x = self.bn_23(x)
-        if self.relu_on:
-            x = self.relu(x)
-
-        x = self.pool(F.relu(self.conv24(x)))
-        x = self.dropout_1(x)
-        x += res
-
-        res = x
-        x = self.conv31(x)
-        x = self.bn_31(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.conv32(x)
-        x = self.bn_32(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.conv33(x)
-        x = self.bn_33(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = F.relu(self.conv34(x))
-        x = self.bn_34(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.conv41(x)
-        x = self.bn_41(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.conv42(x)
-        x = self.bn_42(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.conv43(x)
-        x = self.bn_43(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.pool(F.relu(self.conv44(x)))
-        x = self.bn_44(x)
-        x = self.dropout_2(x)
-        x += res
-
-        res = x
-        # x = F.relu(self.conv2fc1(x))
-        x = self.cpdfc1(x)
-        x = self.bn_51(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.cpdfc2(x)
-        x = self.bn_52(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = self.cpdfc3(x)
-        x = self.bn_53(x)
-        if self.relu_on:
-            x = self.relu(x)
-        x += res
-
-        res = x
-        x = F.relu(self.cpdfc4(x))
-        x = self.bn_54(x)
-        x = self.conv2fc2(x)
-
-        x = x.view(-1, 10)  # Flatten! <---
-        return x
-    
-
     def forward(self, x):
         num_classes = 10
 
         x = self.conv11(x)
         x = self.bn_11(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv12(x)
         x = self.bn_12(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv13(x)
         x = self.bn_13(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = F.relu(self.conv14(x))
         x = self.bn_14(x)
-        if self.relu_on:
-            x = self.relu(x)
 
         x = self.conv21(x)
         x = self.bn_21(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv22(x)
         x = self.bn_22(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv23(x)
         x = self.bn_23(x)
-        if self.relu_on:
-            x = self.relu(x)
-
-        x = F.relu(self.conv24(x))
-        x = self.bn_24(x)
+        x = self.pool(F.relu(self.conv24(x)))
         x = self.dropout_1(x)
 
         x = self.conv31(x)
         x = self.bn_31(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv32(x)
         x = self.bn_32(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv33(x)
         x = self.bn_33(x)
-        if self.relu_on:
-            x = self.relu(x)
-
-        x = self.pool(F.relu(self.conv34(x)))
+        x = F.relu(self.conv34(x))
         x = self.bn_34(x)
-        if self.relu_on:
-            x = self.relu(x)
+
 
         x = self.conv41(x)
         x = self.bn_41(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv42(x)
         x = self.bn_42(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.conv43(x)
         x = self.bn_43(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.pool(F.relu(self.conv44(x)))
         x = self.bn_44(x)
         x = self.dropout_2(x)
@@ -390,19 +198,10 @@ class CPD_All_Conv(nn.Module):
         # x = F.relu(self.conv2fc1(x))
         x = self.cpdfc1(x)
         x = self.bn_51(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.cpdfc2(x)
         x = self.bn_52(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = self.cpdfc3(x)
         x = self.bn_53(x)
-        if self.relu_on:
-            x = self.relu(x)
-
         x = F.relu(self.cpdfc4(x))
         x = self.bn_54(x)
         x = self.conv2fc2(x)
@@ -435,7 +234,7 @@ class Keras_Cifar_classic(nn.Module):
         # fully connected
         self.fc1 = nn.Linear(64 * 6 * 6, 512)
         self.fc2 = nn.Linear(512, 10)
-        # self.classifier = nn.Linear(10,10)
+        self.classifier = nn.Linear(10,10)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -449,8 +248,7 @@ class Keras_Cifar_classic(nn.Module):
 
         x = self.fc1(x)
         x = self.fc2(x)
-        # x = self.classifier(x)
-    
+        x = self.classifier(x)
 
         return x
 

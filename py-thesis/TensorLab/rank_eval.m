@@ -19,21 +19,28 @@ n_inputs = [3, 9, 12, 32, 64]
 n_outputs = [12, 32, 64, 128, 256]
 dim = 3; 
 
-for i=1:5
+%{
+for i=1:1
     A{i} = abs(randn(n_inputs(i), dim, dim, n_outputs(i)))
     tic
     ranks(i) = rankest(A{i})
     times(i) = toc
 end 
+%}
 
 disp('estimated rankest times:') 
 disp(times)
- 
+
+ranks = [19,28,90,111]
+
+times = 1.0e+03 * [0.0127, 0.1148,  0.3198,  5.0639, 28.800]
+
+
 %mul_dims = n_inputs .* n_outputs;
 mul_dims = n_inputs + n_outputs;  
-
-h3 = figure(3);
-h3 = plot(mul_dims(1:end-1), times);
+%{
+h1 = figure(3);
+h1 = plot(mul_dims(1:end), times);
 set(h1, 'LineWidth',3);
 grid on
 
@@ -43,31 +50,32 @@ ylabel('Rank estimation in SECONDS')
 
 
 %% plots 
-h1 = figure(1); 
-h1 = plot(n_inputs, times);
-set(h1, 'LineWidth',3);
+h2 = figure(1); 
+h2 = plot(n_inputs, times);
+set(h2, 'LineWidth',3);
 grid on
 
 title('Rankest computation time') 
 xlabel('Number of INPUTS') 
 ylabel('Rank estimation in SECONDS') 
 
-h2 = figure(2); 
-h2 = plot(n_outputs, times); 
-set(h2, 'LineWidth',3);
+h3 = figure(2); 
+h3 = plot(n_outputs, times); 
+set(h3, 'LineWidth',3);
 grid on
 
 title('Rankest computation time') 
 xlabel('Number of OUTPUTS') 
 ylabel('Rank estimation in SECONDS') 
+%} 
 
 h3 = figure(3);
 h3 = plot(mul_dims, times);
-set(h1, 'LineWidth',3);
+set(h3, 'LineWidth',3);
 grid on
 
 title('Rankest computation time') 
-xlabel('(N. of Inputs) x (N. of Outputs)') 
+xlabel('(N. of Inputs) + (N. of Outputs)') 
 ylabel('Rank estimation in SECONDS') 
 
 
