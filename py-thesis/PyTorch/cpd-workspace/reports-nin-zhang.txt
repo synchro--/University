@@ -115,3 +115,14 @@ conv4     16448  > rank 100 560K params 86% quindi buona
 conv7            > 300K parametri in meno, con rank 20 8K params accuracy 83%, 0.18 time  MA QUI CON RELU 
 fc1       262400 > 
 
+
+Compressed with CPD: only conv DxD
+layer 7: rank 64 
+layer 4: rank 100 
+layer 1: rank 14 
+Accuracy of the network on the 10000 test images: 86 %
+Average prediction time 0.182376 313
+Number of trainable params:  258664
+--- AFTER FINE TUNING!!! 
+Accuracy of the network on the 10000 test images: 87 %
+Average prediction time 0.196912 313

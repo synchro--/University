@@ -151,12 +151,11 @@ def decompose_model_seq(model, layer_name, model_file):
                 rank, _ = choose_compression(
                     conv_layer, ranks=[rank, rank], compression_factor=5, flag='cpd')
                 print('rank: ', rank)
+
                 rank = cp_ranks(conv_layer)
                 print('rank: ', rank)
 
-                if 'conv2fc' in layer_name:
-                    rank = 40
-                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=True)
+                decomposed = cp_decomposition_conv_layer(conv_layer, rank, matlab=True)
                 # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)

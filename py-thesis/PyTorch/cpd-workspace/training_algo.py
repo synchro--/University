@@ -236,7 +236,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
                         switched_opt = True
                 
                 ## EARLY STOPPING ## 
-                if best_loss <= loss_threshold and epoch >= 5:
+                if best_loss <= loss_threshold and epoch >= 500:
                     print('EARLY STOPPING!')
                     time_elapsed = time.time() - since
                     print('Training complete in {:.0f}m {:.0f}s'.format(

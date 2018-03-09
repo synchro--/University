@@ -66,3 +66,5 @@ Weights before: 331776 - Weights after:24960 - Compression ratio: 13.2923
 Weights before: 331776 - Weights after:24180 - Compression ratio: 13.7211
 Weights before: 331776 - Weights after:24960 - Compression ratio: 13.2923
 Weights before: 331776 - Weights after:24180 - Compression ratio: 13.7211
+Weights before: 331776 - Weights after:24960 - Compression ratio: 13.2923
+Weights before: 331776 - Weights after:24180 - Compression ratio: 13.7211

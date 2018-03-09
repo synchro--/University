@@ -475,62 +475,44 @@ def cp_xavier_conv_layer(layer, rank):
 
     # Perform CP decomposition on the layer weight tensor.
     print(layer, rank)
-    X = layer.weight.data.numpy()
-    size = max(X.shape)
-    # Using the SVD init gives better results, but stalls for large matrices.
-    if size >= 256:
-        print("Init random")
-        last, first, vertical, horizontal = parafac(
-            X, rank=rank, init='random')
-    else:
-        last, first, vertical, horizontal = parafac(X, rank=rank, init='svd')
+    weights = layer.weight.data.numpy()
 
-    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=first.shape[0],
-                                             out_channels=first.shape[1],
+
+    pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=weights.shape[1],
+                                             out_channels=rank,
                                              kernel_size=1,
                                              stride=layer.stride,
                                              padding=0,
                                              dilation=layer.dilation,
                                              bias=False)
 
-    depthwise_vertical_layer = torch.nn.Conv2d(in_channels=vertical.shape[1],
-                                               out_channels=vertical.shape[1],
-                                               kernel_size=(
-                                                   vertical.shape[0], 1),
+    depthwise_vertical_layer = torch.nn.Conv2d(in_channels=rank,
+                                               out_channels=rank,
+                                               kernel_size=(weights.shape[2], 1),
                                                stride=layer.stride,
                                                padding=(layer.padding[0], 0),
                                                dilation=layer.dilation,
-                                               groups=vertical.shape[1],
+                                               groups=rank,
                                                bias=False)
 
-    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels=horizontal.shape[1],
-                                                 out_channels=horizontal.shape[1],
-                                                 kernel_size=(
-                                                     1, horizontal.shape[0]),
+    depthwise_horizontal_layer = torch.nn.Conv2d(in_channels=rank,
+                                                 out_channels=rank,
+                                                 kernel_size=(1, weights.shape[3]),
                                                  stride=layer.stride,
                                                  padding=(0, layer.padding[0]),
                                                  dilation=layer.dilation,
-                                                 groups=horizontal.shape[1],
+                                                 groups=rank,
                                                  bias=False)
 
-    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels=last.shape[1],
-                                             out_channels=last.shape[0],
+    pointwise_r_to_t_layer = torch.nn.Conv2d(in_channels=rank,
+                                             out_channels=weights.shape[0],
                                              kernel_size=1,
                                              stride=layer.stride,
                                              padding=0,
                                              dilation=layer.dilation,
                                              bias=True)
+                                             
     pointwise_r_to_t_layer.bias.data = layer.bias.data
-
-    # Transpose dimensions back to what PyTorch expects
-    depthwise_vertical_layer_weights = np.expand_dims(np.expand_dims(
-        vertical.transpose(1, 0), axis=1), axis=-1)
-    depthwise_horizontal_layer_weights = np.expand_dims(np.expand_dims(
-        horizontal.transpose(1, 0), axis=1), axis=1)
-    pointwise_s_to_r_layer_weights = np.expand_dims(
-        np.expand_dims(first.transpose(1, 0), axis=-1), axis=-1)
-    pointwise_r_to_t_layer_weights = np.expand_dims(np.expand_dims(
-        last, axis=-1), axis=-1)
 
     new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer,
                   depthwise_horizontal_layer, pointwise_r_to_t_layer]
