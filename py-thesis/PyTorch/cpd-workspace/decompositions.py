@@ -174,7 +174,7 @@ def cp_decomposition_conv_layer(layer, rank, matlab=False):
     # Using the SVD init gives better results, but stalls for large matrices.
 
     if matlab: 
-        last, first, vertical, horizontal = load_cpd_weights('dumps/out_file.mat')
+        last, first, vertical, horizontal = load_cpd_weights('dumps/TODO.mat')
     
     else:
         if size >= 256:
@@ -268,7 +268,7 @@ def cp_decomposition_conv_layer_BN(layer, rank, matlab=False):
 
     if matlab:
         last, first, vertical, horizontal = load_cpd_weights(
-            'dumps/out_file.mat')
+            'dumps/TODO.mat')
 
     else:
         # Using the SVD init gives better results, but stalls for large matrices.
@@ -511,7 +511,7 @@ def cp_xavier_conv_layer(layer, rank):
                                              padding=0,
                                              dilation=layer.dilation,
                                              bias=True)
-                                             
+
     pointwise_r_to_t_layer.bias.data = layer.bias.data
 
     new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer,

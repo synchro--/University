@@ -5,4 +5,4 @@ LAYER=$4
 
 python dump_layer.py $MODEL $LAYER
 cd dumps; matlab -nodesktop -nojvm -nodisplay -r "compute_cpd('weights.mat', $RANK, $METHOD);"
-cd .. 
+mv out_file.mat zhang.mat; cd .. 

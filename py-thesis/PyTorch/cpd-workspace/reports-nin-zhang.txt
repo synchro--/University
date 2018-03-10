@@ -36,10 +36,12 @@ avg speed 0.052749 --> speedup 3.14 x
 #######################################
 CP - Rank // 3
 conv1     7296   > 
-conv2     307328 > 
-conv3     819456 > 
+conv2     307328 > Weights after:9828 TOT 334666 - Compression ratio: 31X - 0.60275  - 82% 50/60 epochs
+conv3     819456 > Weights after:33490 TOT 630810 - Compression ratio: 25X - 0.130760 - 80% in accuracy! 
 conv4     16448  > 
 fc1       262400 > 
+
+
 
 
 --------------------------------------

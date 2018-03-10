@@ -155,7 +155,7 @@ def decompose_model_seq(model, layer_name, model_file):
                 rank = cp_ranks(conv_layer)
                 print('rank: ', rank)
 
-                decomposed = cp_decomposition_conv_layer(conv_layer, rank, matlab=True)
+                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=True)
                 # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
@@ -176,15 +176,16 @@ def decompose_model(model, layer_name, model_file):
             print(name)
             complete_name = name
             if args.cp:
+                rank = cp_ranks(conv_layer)
+                print('rank: ', rank)
+
                 rank = max(conv_layer.weight.data.shape) // 3
                 rank, _ = choose_compression(conv_layer, ranks=[rank, rank], compression_factor = 10, flag='cpd')
                 print('rank: ', rank)
-                rank = cp_ranks(conv_layer)
-                print('rank: ', rank)
-                
+
                 if 'conv2fc' in layer_name:
                     rank = 40
-                decomposed = cp_decomposition_conv_layer(conv_layer, rank, matlab=True)
+                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=True)
                 # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
@@ -250,7 +251,7 @@ if __name__ == '__main__':
         layers = args.layers
 
         for i, layer in enumerate(layers):
-            dec = decompose_model_seq(model, layer, 'decomposed_model.pth')
+            dec = decompose_model(model, layer, 'decomposed_model.pth')
             dec.cuda()
 
             for param in dec.parameters():
@@ -262,13 +263,13 @@ if __name__ == '__main__':
             ### Training with my training procedure ###
             if args.cp:
                 lr = 0.001
-                step_size = 5
+                step_size = 15
             else:
                 lr = 0.001
                 step_size = 10
 
-            #  optimizer = optim.Adam(dec.parameters(), lr=lr)
-            optimizer = optim.SGD(dec.parameters(), lr=lr, momentum=0.9, nesterov=True)
+            optimizer = optim.Adam(dec.parameters(), lr=lr)
+            # optimizer = optim.SGD(dec.parameters(), lr=lr, momentum=0.9, nesterov=True)
             # Decay LR by a factor of 0.1 every X epochs
             exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
             
