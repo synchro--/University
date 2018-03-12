@@ -89,24 +89,22 @@ import torch.optim as optim
 
 criterion = nn.CrossEntropyLoss()
 
-optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9, nesterov=True)
-# optimizer = optim.Adam(net.parameters(), lr=0.001)
+# optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9, nesterov=True)
+optimizer = optim.Adam(net.parameters(), lr=0.0001)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
 ########################################################################
 # 4. Train the network
 # 
 
-
-loaders = get_train_valid_loader (data_dir='./data', batch_size=32, augment=False,
-                                            random_seed=7)
-dataloaders = {'train': loaders[0], 'val': loaders[1]}
-
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
-
 if args.val: 
+    loaders = get_train_valid_loader(data_dir='./data', batch_size=32, augment=False,
+                                    random_seed=7)
+    dataloaders = {'train': loaders[0], 'val': loaders[1]}
     net = train_model_val(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=25)
 else: 
-    net = train_model(trainloader, net, criterion, optimizer, exp_lr_scheduler, epochs=25)
+    dataloaders = {'train': trainloader, 'test': testloader}
+    net = train_test_model(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=25)
 
 # dump_model_weights(net)
 

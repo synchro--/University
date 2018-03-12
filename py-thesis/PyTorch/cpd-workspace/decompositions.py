@@ -95,6 +95,7 @@ def estimate_ranks(layer):
     Unfold the 2 modes of the Tensor the decomposition will
     be performed on, and estimates the ranks of the matrices using VBMF
     """
+    '''
     weights = layer.weight.data.numpy()
     unfold_0 = tl.base.unfold(weights, 0)
     unfold_1 = tl.base.unfold(weights, 1)
@@ -104,7 +105,9 @@ def estimate_ranks(layer):
 
     # Check if the VBMF ranks are small enough
     ranks = choose_compression(
-        layer, ranks, compression_factor=2, flag='Tucker2')
+        layer, ranks, compression_factor=10, flag='Tucker2')
+    '''
+    ranks = [54, 29]
     return ranks
 
 
@@ -121,8 +124,8 @@ def cp_ranks(layer):
     rank=max(diag_0.shape[0], diag_1.shape[1])
     print('VBMF estimated rank:', rank)
     ranks=[rank, rank]
-    rank, _=choose_compression(
-        layer, ranks, compression_factor=10, flag='cpd')
+  #  rank, _=choose_compression(
+  #      layer, ranks, compression_factor=30, flag='cpd')
     return rank
 
 def SVD_weights(weights, t):
@@ -150,18 +153,70 @@ def FC_SVD_compression(layer):
     """
     Compress a FC layer applying SVD 
     """
-    trunc = layer.weight.data.numpy().shape[0]
-
-    weights1, weights2 = SVD_weights(layer.weight, trunc)
+    # trunc = layer.weight.data.numpy().shape[0]
+    trunc = 15
+    weights1, weights2 = SVD_weights(layer.weight.data.cpu().numpy().T, trunc)
 
     # create SVD FC-layers:
     fc1 = torch.nn.Linear(weights1.shape[0], weights1.shape[1])
     fc2 = torch.nn.Linear(weights2.shape[0], weights2.shape[1])
+    print('created: ')
+    print(fc1)
+    print(fc2)
 
     fc1.weight.data = torch.from_numpy(np.float32(weights1))
     fc2.weight.data = torch.from_numpy(np.float32(weights2))
     new_layers = [fc1, fc2]
-    return nn.Sequantial(*new_layers)
+    return nn.Sequential(*new_layers)
+
+
+def conv1x1_SVD_compression(layer):
+    """
+    Compress a 1x1 conv layer applying SVD 
+    """
+    # trunc = layer.weight.data.numpy().shape[0]
+    trunc = 15
+    W = layer.weight.data.cpu().numpy()
+    bias = layer.bias.data
+    first = torch.nn.Conv2d(in_channels=W.shape[0],
+                            out_channels=trunc,
+                            kernel_size=1,
+                            stride=layer.stride,
+                            padding=0,
+                            dilation=layer.dilation,
+                            bias=False)
+
+    second = torch.nn.Conv2d(in_channels=trunc,
+                            out_channels=W.shape[1],
+                            kernel_size=1,
+                            stride=layer.stride,
+                            padding=0,
+                            dilation=layer.dilation,
+                            bias=True)
+    second.bias.data = bias 
+
+
+    W = W.T
+    W.resize(W.shape[2], W.shape[3])
+    weights1, weights2 = SVD_weights(W.T, trunc)
+
+    # Transpose dimensions back to what PyTorch expects
+    first_weights = np.expand_dims(
+        np.expand_dims(weights1.T, axis=-1), axis=-1)
+    second_weights = np.expand_dims(np.expand_dims(
+        weights2.T, axis=-1), axis=-1)
+    
+    print(first)
+    print(first_weights.shape)
+
+    set_layer_weights(first,
+                      first_weights)
+    set_layer_weights(second,
+                      second_weights)
+
+
+    new_layers = [first, second]
+    return nn.Sequential(*new_layers)
 
 def cp_decomposition_conv_layer(layer, rank, matlab=False):
     """ Gets a conv layer and a target rank, di
@@ -476,7 +531,7 @@ def cp_xavier_conv_layer(layer, rank):
     # Perform CP decomposition on the layer weight tensor.
     print(layer, rank)
     weights = layer.weight.data.numpy()
-
+    print(weights.shape[1])
 
     pointwise_s_to_r_layer = torch.nn.Conv2d(in_channels=weights.shape[1],
                                              out_channels=rank,
@@ -511,14 +566,21 @@ def cp_xavier_conv_layer(layer, rank):
                                              padding=0,
                                              dilation=layer.dilation,
                                              bias=True)
-
+    print('LOL')
     pointwise_r_to_t_layer.bias.data = layer.bias.data
 
-    new_layers = [pointwise_s_to_r_layer, depthwise_vertical_layer,
-                  depthwise_horizontal_layer, pointwise_r_to_t_layer]
+    # create BatchNorm layers wrt to decomposed layers weights
+    bn_first = nn.BatchNorm2d(rank)
+    bn_vertical = nn.BatchNorm2d(rank)
+    bn_horizontal = nn.BatchNorm2d(rank)
+    bn_last = nn.BatchNorm2d(weights.shape[0])
+
+    new_layers = [pointwise_s_to_r_layer, bn_first, depthwise_vertical_layer, bn_vertical,
+                  depthwise_horizontal_layer, bn_horizontal,  pointwise_r_to_t_layer,
+                  bn_last]
 
     # Xavier init:
     for l in new_layers:
-        xavier_init(l)
+        xavier_weights2(l)
 
     return nn.Sequential(*new_layers)

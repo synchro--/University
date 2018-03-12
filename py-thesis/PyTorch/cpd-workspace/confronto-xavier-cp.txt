@@ -1,0 +1,32 @@
+CONFRONTO CP VS. XAVIER 
+
+CP: RANK 85 
+
+Accuracy of the network on the 10000 test images: 78 %
+Average prediction time 0.172639 313
+Accuracy of plane : 81 %
+Accuracy of   car : 93 %
+Accuracy of  bird : 65 %
+Accuracy of   cat : 62 %
+Accuracy of  deer : 78 %
+Accuracy of   dog : 65 %
+Accuracy of  frog : 86 %
+Accuracy of horse : 82 %
+Accuracy of  ship : 92 %
+Accuracy of truck : 91 %
+
+
+XAVIER RANK 85 
+
+Accuracy of the network on the 10000 test images: 77 %
+Average prediction time 0.152543 313
+Accuracy of plane : 79 %
+Accuracy of   car : 86 %
+Accuracy of  bird : 67 %
+Accuracy of   cat : 70 %
+Accuracy of  deer : 81 %
+Accuracy of   dog : 59 %
+Accuracy of  frog : 84 %
+Accuracy of horse : 77 %
+Accuracy of  ship : 89 %
+Accuracy of truck : 89 %

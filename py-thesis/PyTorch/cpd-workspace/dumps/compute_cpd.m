@@ -84,7 +84,7 @@ function cpd_out = compute_cpd(weights_file, rank, algorithm)
 
     % print error 
     disp('Rank computed with NLS!')
-    fprintf('\n\n\nDifference in reconstruction: %e\n', res);
+    % fprintf('\n\n\nDifference in reconstruction: %e\n', res);
     fprintf('Approx err with frobenius norm: %e\n', relerr);
 
     cpd_s = struct 

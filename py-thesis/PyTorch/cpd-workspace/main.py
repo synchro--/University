@@ -155,9 +155,10 @@ def decompose_model_seq(model, layer_name, model_file):
                 rank = cp_ranks(conv_layer)
                 print('rank: ', rank)
 
-                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=True)
-                # decomposed = cp_xavier_conv_layer(conv_layer, rank)
+                # decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=False)
+                decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
+                
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
 
     # first modules return a sequential, then we need to call the proper layer 
@@ -169,29 +170,48 @@ def decompose_model(model, layer_name, model_file):
     print(model)
     model.cpu()
     complete_name = "" 
-    for i, (name, conv_layer) in enumerate(model.named_modules()):
-        ## for sequential nets, 'in' is sufficient
-        ## as long as there are not 2 homonimous layers
-        if layer_name in name: 
-            print(name)
-            complete_name = name
-            if args.cp:
-                rank = cp_ranks(conv_layer)
-                print('rank: ', rank)
 
-                rank = max(conv_layer.weight.data.shape) // 3
-                rank, _ = choose_compression(conv_layer, ranks=[rank, rank], compression_factor = 10, flag='cpd')
-                print('rank: ', rank)
+    if 'conv' in layer_name: 
+        for i, (name, conv_layer) in enumerate(model.named_modules()):
+            ## for sequential nets, 'in' is sufficient
+            ## as long as there are not 2 homonimous layers
+            if layer_name in name: 
+                # if CONV 1X1
+                if conv_layer.weight.shape[2] == conv_layer.weight.shape[3] == 1: 
+                    print('1x1 layer, hard to make it converge...')
+                    decomposed = conv1x1_SVD_compression(conv_layer)
+                else:
+                    # NORMAL LAYER 
+                    print(name)
+                    complete_name = name
+                    if args.cp:
+                        rank = cp_ranks(conv_layer)
+                        print('rank: ', rank)
 
-                if 'conv2fc' in layer_name:
-                    rank = 40
-                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=True)
-                # decomposed = cp_xavier_conv_layer(conv_layer, rank)
-            else:
-                decomposed = tucker_decomposition_conv_layer(conv_layer)
+                      #  rank = max(conv_layer.weight.data.shape) // 3
+                      #  rank, _ = choose_compression(conv_layer, ranks=[rank, rank], compression_factor = 10, flag='cpd')
+                      #  print('rank: ', rank)
+                        if name == 'conv2': 
+                            matlab=True  
+                        else: 
+                            matlab = False 
+                        decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=matlab)
+                        # decomposed = cp_xavier_conv_layer(conv_layer, rank)
+                    else:
+                        decomposed = tucker_decomposition_conv_layer(conv_layer)
 
-    model._modules[complete_name] = decomposed ## WARNING: IF USING SEQUENTIAL WE NEED THE FULL NAME: e.g. sequential.conv1 
-
+        model._modules[complete_name] = decomposed ## WARNING: IF USING SEQUENTIAL WE NEED THE FULL NAME: e.g. sequential.conv1 
+    
+    else: 
+        for i, (name, fc_layer) in enumerate(model.named_modules()):
+            if layer_name in name: 
+                print('Decomposing FC layer' + name)
+                complete_name = name
+                decomposed_fc = FC_SVD_compression(fc_layer)
+            
+        model._modules[complete_name] = decomposed_fc
+    
+    # Save decomposed model 
     torch.save(model, model_file)
     return model
 
@@ -214,8 +234,8 @@ if __name__ == '__main__':
         if args.model:
             model = torch.load(args.model)
         else:
-            # model = LenetZhang()
-            model = NIN_BN() 
+            model = LenetZhang()
+            # model = NIN_BN() 
 
         if args.state:
             model.load_state_dict(torch.load(args.state))
@@ -250,8 +270,9 @@ if __name__ == '__main__':
         
         layers = args.layers
 
+        # Decomposition time !!!!!!!!!!!!!! 
         for i, layer in enumerate(layers):
-            dec = decompose_model(model, layer, 'decomposed_model.pth')
+            dec = decompose_model_seq(model, layer, 'decomposed_model.pth')
             dec.cuda()
 
             for param in dec.parameters():
@@ -278,7 +299,10 @@ if __name__ == '__main__':
             
             criterion = torch.nn.CrossEntropyLoss()
             
-            dec = train_model(dataset.cifar10_trainloader(), dec, criterion,
+            dataloaders = {'train': dataset.cifar10_trainloader(), 
+                           'test': dataset.cifar10_testloader()}
+
+            dec = train_test_model(dataloaders, dec, criterion,
                             optimizer, exp_lr_scheduler, 0.276, 50)
             
             
