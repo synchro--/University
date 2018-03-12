@@ -201,7 +201,7 @@
 
 \RequirePackage{caption} % Required for customising the captions
 %\DeclareCaptionLabelFormat{lc}{\MakeLowercase{#1}~#2}
-\captionsetup{justification=centerlast,font=small,labelfont=it,figurename=Figura,margin=50pt}
+\captionsetup{justification=centerlast,font=small,labelfont=it,figurename=Figure,margin=50pt}
 \usepackage{caption}
 
 %----------------------------------------------------------------------------------------

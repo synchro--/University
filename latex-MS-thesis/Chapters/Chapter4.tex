@@ -1,5 +1,5 @@
 % Chapter Template
-\chapter{4 Tensor Decomposition} % Main chapter title
+\chapter{Tensor Decomposition} % Main chapter title
 \label{Chapter4}
 \def \path	{Figures/C4}
 
@@ -643,6 +643,7 @@ This is useful when we want to be more conservative and preserve the $d \times d
 	K(i, j, s, t) = \sum_{r_3=1}^{R_3}\sum_{r_4=1}^{R_4} \mathbf{G}_{i,j,r_3, r_4}(j)K^s_{r3}(s)K^t_{r4}(t) 
 \end{equation} 
 
+\pagebreak
 Plugging equation \ref{eq:tucker-def} into \ref{eq:convolution} a new equation for the Tucker convolutional forward pass is obtained: 
 
 \begin{equation}
@@ -665,6 +666,7 @@ If we divide the former equation we can define a three steps Tucker convolutiona
     V(x,y,t) = \sum_{r=1}^R K^t (t,r) U^{syx}(x,y,r),
 \end{equation}
 
+\vspace{30px}
 
 From which we can deduce few properties: 
 \begin{enumerate}[(i)]
@@ -688,7 +690,7 @@ Figure \ref{fig:tucker-pass} illustrate equation \ref{eq:tucker1}-\ref{eq:tucker
  \label{fig:tucker-pass}
 \end{figure}
 
-
+\newpage 
 \subsubsection{Full Tucker}
 As mentioned earlier, Tucker is more flexible compared to CP and there are other ways to explore for Tucker. 
 
@@ -722,6 +724,7 @@ and finally reshape the output channel:
 
 This method will enable a separable 1D convolution instead of a regular $[d \times d]$. However, it seems more complex to model than a 4-way CP-decomposition while also being more computationally expensive (for more details on complexity see the following section). \\
 In a sense, it seems like CP-decomposition is naively best suited to obtain the spatially separable kernels and so be the more aggressive between the two, whilst Tucker is mathematically more flexible and can be more easily adapted to different designs. Hence, for this work the methods that have been employed are CPD and Tucker-2. 
+\newline 
 
 Moreover, it is possible to combine the two in a gradually more aggressive approach: at first the model can be decomposed using Tucker; if the central regular convolution still have many parameters, it can be decomposed again but with CP this time. This will probably lead to too many layers and would open a vanishing gradient scenario. However, deep residual nets\parencite{resnet} have already shown how to tackle this issue. 
 
@@ -868,7 +871,9 @@ VBMF can also be used to tackle a subtle issue with the iterative approach of \p
 \subsubsection{Variational autoencoders}
 %% cenni alla fine 
 Despite the advanteges of bayesian methods like VBMF over multi-linear ones, 
-A recent work by Yingming et al, \parencite{VAE} have shown how Variational Auto-Encoders (VAE) can outperform state-of-the-art methods to tackle this issue. VAEs are actually a way to compute the CP-decomposition and not the rank of a tensor, but they are capable of doing so without depending heavily on a correct rank. \\
+A recent work by Yingming et al, \parencite{VAE} have shown how Variational Auto-Encoders (VAE) can outperform state-of-the-art methods to tackle this issue. VAEs are actually a way to compute the CP-decomposition and not the rank of a tensor, but they are capable of doing so without depending heavily on a correct rank.
+\newline 
+
 Their model leverage on a neural network to learn a complex non-linear function whose parameters can be learned from data. The authors explain that tensor entries can be generated via a very complex and intractable random process determined by some \emph{latent} variables (as the rank). This complex generative process can be captured by training a neural network (VAE). 
 
 Their proposed model outperforms by a significant margin tradtional methods, as depicted in \ref{fig:VAE}
@@ -880,9 +885,11 @@ Their proposed model outperforms by a significant margin tradtional methods, as 
  \label{fig:VAE}
 \end{figure} 
 
+\newpage 
 The most captivating idea of this work is that it prove how tensor decomposition is a perfect task for neural networks. There are too many latent variables to be accounted to compute a perfect tensor decomposition with non-probabilistic models. 
 
-Therefore, it would be interesting to combine their variational auto-encoder model to optimize the accuracy of another network by finding the best tensor approximation of its layers. The outlined scenario could be tackled through the use of of Generative Adversarial Networks (GANs)\parencite{GAN} that are actually related to VAEs. It would be interesting, as a future work, to understand if this is actually possible. 
+Therefore, it would be interesting to combine their variational auto-encoder model to optimize the accuracy of another network by finding the best tensor approximation of its layers. The outlined scenario could be tackled through the use of of Generative Adversarial Networks (GANs)\parencite{GAN} that are actually related to VAEs.\\
+ It would be interesting, as a future work, to understand if this is actually possible. 
 
 
 \subsection{Decomposition algorithms overview}
@@ -957,9 +964,11 @@ Like CP, the Tucker decomposition can also by computed in several different ways
 \end{itemize}
 
 The \emph{HOOI} was already introduced in section \ref{subsec:hosvd} as a logical consequence of the combination Eckart-Young theorem for SVD and the higher-order SVD, and have been extensively applied througout the experiments as the implementation was straightforward, being available in python libraries. 
+\newline 
 
 Interestingly, faster methods have been proposed in literature \parencite{tucker-fast1} \parencite{tucker-fast2} and coule be subject for further experiments in future work.
 
+\newpage 
 \subsection{A micro-architectural view}
 The concepts of macro and micro-architecture of a CNN have been introduced in chapter 3. Taking a closer look to how the decomposed layers are assembled, we can lay out a common pattern that lead us to a generalised decomposition block. 
 \newline 
@@ -967,7 +976,7 @@ The concepts of macro and micro-architecture of a CNN have been introduced in ch
 As a matter of fact, regardless of the method (CP/Tucker), the first and the last layer of the decomposition always act as a dimensionality reduction whereas the layers in the middle perform the spatial convolution (more details are explained in section \ref{subsec:cp-summary}. This idea is very close to that of the \emph{Inception-module} firstly introduced by Google in 2014 \parencite{googlenet}. and then widely applied in successive works \parencite{squeeznet}, \parencite{chollet}, \parencite{mobilenets}.  
 \newline
 The nice thing is that this design fits perfectly with the factor matrices of the decomposition.  
-Therefore a general architecture of a \emph{"tensor decomposition block"} (TP-block) can be finally introduced in figure \ref{fig:TP-block}
+Therefore a general architecture of a \emph{"tensor decomposition block"} (TP-block) can be finally introduced in figure \ref{fig:TP-block}.
 
 \begin{figure}[h!]
  \centering
@@ -976,19 +985,20 @@ Therefore a general architecture of a \emph{"tensor decomposition block"} (TP-bl
  \label{fig:TP-block}
 \end{figure}
 
+\pagebreak
 The type of convolution that is computed in the middle can be either separable or standard and can have an arbitrary number of channels depending on the choice of the rank(s) of the decomposition. 
 \newline 
 As a side note: it can also be pointed out that since this block is not a composition of several regular layers but of smaller parts of a single of them, we could coin the term \emph{nano-architecture} of a convolutional neural network. 
 
-\newpage
 \subsection{TP-block model}
 The original goal of applying tensor decomposition on CNNs is the ability to shrink a pre-trained model without accuracy drop. However, one can easily guess that if a TP-block is a good fit to substitute a whole layer after training, then it will likely be as good if applied from the beginning. 
 \newline
+To this aim, it is interesting how \emph{Mobile Nets} \parencite{mobilenets}, that builds upon a similar architecture that exploits channels redundancy, have been included in Tensorflow Lite \parencite{WTFlite}, the mobile-optimized version of the most popular deep learning framework \parencite{tensorflow}, becoming the go-to solution to deploy CNNs on mobile. 
+
 Indeed, in the next chapter several experiments about this approach demonstrate how TP-blocks can perform well when training models from scratch. 
 \newline 
 
-
-This suggests \emph{a new way} of building standard CNNs. To this aim, it is interesting how \emph{Mobile Nets} \parencite{mobilenets}, that builds upon a similar architecture that exploits channels redundancy, have been included in Tensorflow Lite \parencite{WTFlite}, the mobile-optimized version of the most popular deep learning framework \parencite{tensorflow}, becoming the go-to solution to deploy CNNs on mobile.  
+This suggests \emph{a new way} of building standard CNNs.  
 
 
 \subsection{A framework for decomposition}

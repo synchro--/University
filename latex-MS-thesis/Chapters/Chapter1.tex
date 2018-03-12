@@ -1,121 +1,144 @@
+% Chapter Template
 \chapter{Introduction} % Main chapter title
-\label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-%variables to define path to images
-\def \path {Figures/C1}
+\label{Chapter1}
 \def \teoria {Figures/teoria}
+\def \path	 {Figures/C1}
 
-%--------------------------------------------------------------------%--------------------
+
+%--------------------------------------------------------------------
 %	SECTION 1
-%--------------------
 %--------------------------------------------------------------------
-
-\section{}
-\label{sec:intro}
-%COSA SONO LE RETI NEURALI ARTIFICIALI
-Una rete neurale artificiale – chiamata normalmente solo rete neurale (in inglese \emph{Neural Network}) – è
-un modello di calcolo adattivo, ispirato ai principi di funzionamento del sistema nervoso degli organismi evoluti che secondo l'approccio connessionista \parencite{WConnessionismo} possiede una complessità non descrivibile con i metodi simbolici.  
-La caratteristica fondamentale di una rete neurale è che essa è capace di acquisire conoscenza modificando la propria struttura in base alle informazioni esterne (i dati in ingresso) e interne (le connessioni) durante il processo di apprendimento. Le informazioni vengono immagazzinate nei parametri della rete, in particolare, nei pesi associati alle connessioni. 
-Sono strutture non lineari in grado di simulare relazioni complesse tra ingressi e uscite che altre funzioni analitiche non sarebbero in grado di fare. 
-
-
-L'unità base di questa rete è il neurone artificiale introdotto per la prima volta da McCulloch e
-Pitts nel 1943 (fig. \ref{fig:neuron}).
-
-
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\teoria/NeuronePitts.png}
- \caption{Modello di calcolo di un neurone (a sinistra) e schema del neurone artificiale (a destra)}
- \label{fig:neuron}
-\end{figure}
-Si tratta di un'unità di calcolo a N ingressi e 1 uscita. Come si può vedere dall'immagine a
-sinistra gli ingressi rappresentano le terminazioni sinaptiche, quindi sono le uscite di altrettanti
-neuroni artificiali. A ogni ingresso corrisponde un peso sinaptico $w$, che stabilisce quanto quel
-collegamento sinaptico influisca sull'uscita del neurone. Si determina quindi il potenziale del neurone facendo una somma degli ingressi, pesata secondo i pesi $w$. \\
-A questa viene applicata una funziona di trasferimento non lineare: 
-\begin{equation}
- f(x) = H(\sum_{i}(w_i x_i))
-\end{equation} 
-ove $H$ è la funzione gradino di Heaviside \parencite{WHeaviside}. Vi sono, come vedremo, diverse altre funzioni non lineari tipicamente utilizzate come funzioni di attivazioni dei neuroni. 
-Nel '58 Rosenblatt propone il modello di \emph{Percettrone} rifinendo il modello di neurone a soglia, aggiungendo un termine di \emph{bias} e un algoritmo di apprendimento basato sulla minimizzazione dell'errore, cosiddetto \emph{error back-propagation} \parencite{WPercettrone}.
-\begin{equation}
- f(x) = H(\sum_{i}(w_i x_i)+b),\quad ove \quad b = bias \\
-\end{equation}
-\begin{equation} 
- w_i(t+1) = w_i(t)+\eta \delta x_i(t)
-\end{equation}
-dove $\eta$ è una costante di apprendimento strettamente positiva che regola la velocità di apprendimento, detta \emph{learning rate} e $\delta$ è la discrepanza tra l'output desiderato e l'effettivo output della rete. 
+\section{Computer Vision}
+Computer Vision (CV) is an interdisciplinary field that deals with how machines can be able to gain high-level understanding of images and videos. Its aim is to enable computers to perform visual tasks in the way the human visual system can do. 
 \\
-Il percettrone però era in grado di imparare solo funzioni linearmente separabili. Una maniera per oltrepassare questo limite è di combinare insieme le risposte di più percettroni, secondo architetture multistrato. 
-%--------------------------------------------------------------------%--------------------
+More specifically, it deals with image acquisition and processing and image feature extraction. The term \emph{feature} in this context, means that kind of peculiar information embedded in an image that is important to have a semantic understanding of it, thus relevant to solve a specific task. 
+\newline 
+
+Computer vision involves a wide range of techniques from a variety of scientific fields. It leverages on image processing (i.e. 2D signal processing) to elaborate images in ways that are convenient for feature extraction. In this regard, the most important operation is the 2D \emph{discrete convolution}. 
+\\
+Once extracted, the features can be used in a plethora of ways: image classification, object detection, video tracking, autonomous driving, visual-guided robotics and so on. 
+\newline 
+
+Image features are usually encoded into a \emph{feature vector} that is representative of the whole image; this piece of information is then further processed with specific techniques according to the goal. In order to achieve excellent results in visual tasks, a huge amount of information is required. It is at this point that computer vision embraces \emph{machine learning} and \emph{optimization}, which together define a broad range of methods to process a large number of information and create programs that are able to learn autonomously from data. 
+
+
+\subsection{Machine learning}
+There is an extremely broad space of important problems for which no closed-form solution is known, computer vision being one of those. What is the right equation to process pixels of an image and understand its contents? Thus far there is no procedural mathematical solution to this question. For this kind of problems, we often gamble on \emph{machine learning} (ML), which can be broadly defined as enabling programs to autonomously learn without being explicitly programmed. 
+\newline 
+
+With respect to computer vision, machine learning has produced few popular algorithms like \emph{support vector machines} (SVM).
+Figure \ref{fig:ml-map} shows prominent ML algorithms widely studied in 2012, for different research areas. However, the former showed few drawbacks as they had to be manually tuned for each specific domain and were not able to achieve excellent results. 
+
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/ml-map.png} 
+ \caption{For the year 2012, each of these problems was addressed by different methods. Image from \parencite{cnn-design}}
+ \label{fig:ml-map}
+\end{figure}
+
+
+
+
+%--------------------------------------------------------------------
 %	SECTION 2
-%--------------------
 %--------------------------------------------------------------------
-
-\section{Multi-layer Perceptron}
-\label{sec:mlp}
-Il Multi-layer Perceptron (\textit{MLP}) o percettrone multi-strato è un tipo di rete feed-forward che mappa un set di input ad un set di output. È la naturale estensione del percettrone singolo e permette di distinguere dati non linearmente separabili.
-
-
-
-
-Il \emph{mlp} possiede le seguenti caratteristiche: 
-\begin{itemize}
-\item Ogni neurone è un percettrone come quello descritto nella sezione \ref{sec:intro}. Ogni unità possiede quindi una propria funzione d'attivazione non lineare.
-\item A ogni connessione tra due neuroni corrisponde un peso sinaptico $w$.
-\item È formato da 3 o più strati. In \ref{fig:multilayer} è mostrato un MLP con uno strato di input, un solo strato nascosto (o \emph{hidden layer}) ed uno di output.
-\item L'uscita di ogni neurone dello strato precedente è l'ingresso per ogni neurone dello
-strato successivo. È quindi una rete \emph{completamente connessa}. Tuttavia, si possono
-disconnettere selettivamente settando il peso sinaptico $w$ a 0.
-\item La dimensione dell'input e la dimensione dell'output dipendono dal numero di
-neuroni di questi due strati. Il numero di neuroni dello strato nascosto è invece
-indipendente, anche se influenza di molto le capacità di apprendimento della rete. 
-\end{itemize}
-%non linearità 
-Se ogni neurone utilizzasse una funzione lineare allora si potrebbe ridurre l'intera rete ad una composizione di funzioni lineari. Per questo - come detto prima - ogni neurone possiede una funzione di attivazione non lineare. 
-
-%black box
-\subsection{Strati Nascosti}
-I cosiddetti \emph{hidden layers} sono una parte molto interessante della rete. Per il teorema di
-approssimazione universale \parencite{WApprox}, una rete con un singolo strato nascosto e un numero finiti di
-neuroni, può essere addestrata per approssimare una qualsiasi funzione continua su uno spazio compatto di $\mathbb{R}^n$. In altre parole, un singolo strato nascosto è abbastanza potente da imparare un ampio numero di funzioni. Precisamente, una rete a 3 strati è in grado di separare regioni convesse con un numero di lati $\leqslant$ numero neuroni nascosti. 
-
-Reti con un numero di strati nascosti maggiore di 3 vengono chiamate reti neurali profonde o \emph{deep neural network}; esse sono in grado di separare regioni qualsiasi, quindi di approssimare praticamente qualsiasi funzione. Il primo e l’ultimo strato devono avere un numero di neuroni pari alla dimensione dello spazio di ingresso e quello di uscita. Queste sono le terminazioni della \emph{"black box"} che rappresenta la funzione che vogliamo approssimare. 
-
-L'aggiunta di ulteriori strati non cambia \emph{formalmente} il numero di funzioni che si possono approssimare; tuttavia vedremo che nella pratica un numero elevato di strati migliora di gran lunga le performance della rete su determinati task, essendo gli hidden layers gli strati dove la rete memorizza la propria rappresentazione astratta dei dati in ingresso. Nel capitolo 4 vedremo un'architettura all'avanguardia con addirittura 152 strati.
+\section{The advent of Deep Learning}
+ Although Artificial Neural Networks (ANN) are well known since 1960, before the early years of 2000 was impractical to train ANN models, because of their computational requirements. Moreover, there was a fundamental ingredient that was missing to actually train models with many parameters: \emph{data}. Together with the recent explosion of \emph{Big Data}, a class of algorithms that fall under the name of \emph{deep learning} polarized the attention. In fact, these algorithms are able to outperform any other method provided that the proper (large) number of data required for training is available. This is shown in figure \ref{fig:bigdata}.
+\\ 
  
-%--------------------------------------------------------------------%--------------------
-%	SECTION 3
-%--------------------
-%--------------------------------------------------------------------
-
-\section{Caso di studio: prevedere il profitto di un ristorante}
-%%%  30 Coperti - 11 Mesi all'anno
-%%%  20 coperti - 38-42 ore di apertura a settimana 
-%%%  Profitto in % = Ricavo - Spesa, According to the Restaurant Resource Group, average profit margins for restaurants range from 2 to 6 percent. 
-%%% 
-Prendendo spunto dalla traccia d'esame di Sistemi Intelligenti M del 2 Aprile 2009:
-\begin{quote}
-\textit{"Loris è figlio della titolare di una famoso spaccio di piadine nel Riminese e sta tornando in Italia
-dopo aver frequentato con successo un prestigioso Master in Business Administration ad Harvard, a
-cui si è iscritto inseguendo il sogno di esportare in tutto il mondo la piadina romagnola. Nel lungo
-viaggio in prima classe, medita su come presentare alla mamma, che sa essere un tantino restia alle
-innovazioni, il progetto di aprire un ristorantino a New York City."}
-\end{quote}
-Loris ha esportato con successo la piadina a NY, (si veda \parencite{WGradisca}) ma col passare degli anni ha notato alcuni problemi e vuole utilizzare di nuovo le sue brillanti capacità analitiche per migliorare il profitto del suo ambizioso ristorante. \\
-I problemi sono 2: 
-\begin{enumerate}
-\item il ristorante è conosciuto ormai - si sa che tutti vogliono mangiare italiano - ma il numero dei coperti è rimasto a 22, come quelli iniziali; 
-\item gli orari di apertura sono troppo lunghi e vi sono alcune zone morte dove il costo di mantenere aperto il ristorante è maggiore rispetto al ricavo dei pochi clienti che si siedono a mangiare durante quelle ore; 
-\end{enumerate}
-Secondo la National Restaurant Association \parencite{WProfit} \parencite{WRRG}, il profitto medio lordo annuo di un ristorante negli Stati Uniti varia dal 2 al 6\%. Così Loris ha collezionato alcuni dati riguardo agli ultimi anni e - attratto da tutta quest'entusiasmo attorno alle reti neurali - decide di provare ad utilizzarle per trovare il trade-off ottimale di coperti e di orari di apertura settimanali per massimizzare il profitto del suo ristorante. 
-\\
-
-Dati questi presupposti, si vedrà nel capitolo \ref{Capitolo2} come implementare da zero un multi-layer perceptron e addestrarlo per suddetto scopo.
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.5\textwidth]{\path/bigdata.jpg} 
+ \caption{The relationship between Deep Learning and Big Data: when a lot of data is available, DL outperforms any other algorithm.}
+ \label{fig:bigdata}
+\end{figure}
+ 
+Deep Neural Networks (DNNs) are neural networks with more than one hidden layer (possibly many more). These networks are able to model any mathematical function, a peculiarity that makes DNNs powerful and flexible and, furthermore, the appointed candidate for problems where no procedural mathematical solution is known. The difference between regular ANNs and DNNs is depicted in fig. \ref{fig:dnn}. 
 
 \begin{figure}[h!]
  \centering
- \includegraphics[width=1.0\textwidth]{\teoria/multilayer.png}
- \caption{Struttura di un percettrone multistrato con un solo strato nascosto}
- \label{fig:multilayer}
+ \includegraphics[width=1.0\textwidth]{\path/dnn.jpg} 
+ \caption{An example of ANN and DNN. Each of the circle is called artificial neuron, or just neuron.}
+ \label{fig:dnn}
 \end{figure}
+
+ When data became ubiquitous, the machine learning community  discovered that deep learning was able to unlock significant achievements and outperform every other algorithm in a wide array of ML problems; a new trend was born. 
+ \\
+ \\
+In figure \ref{fig:dl-map}, it is possible to appreciate how DL have monopolized many research areas previously addressed by different techniques.
+ 
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\path/dl-map.png} 
+ \caption{Deep Neural Networks delivers the best accuracy for each of these fields. Image from \parencite{cnn-design}}
+ \label{fig:dl-map}
+\end{figure}
+ 
+  Indeed, Deep Neural Networks (DNNs) have achieved remarkable performance for a wide range of applications, including but not limited to computer vision, natural language processing and speech recognition. In the interest of this thesis, it is important to notice that visual recognition tasks are now based mainly on \emph{Convolutional Neural Networks} (CNNs). These models will be at the core of this research. 
+  \newline 
+  
+ 
+ Convolutional neural networks, to which we will refer from now on with its abbreviation (CNNs), are essentially DNNs paired up with \emph{convolution}, a mathematical operation that is essential to image processing. \\
+ Their main building block is the \emph{convolutional layer}, a stage of the network in which convolution operations are computed between a 3D input tensor and a 3D kernel tensor, in order to extract image information. It is easy to intuit that this operation can be computationally very intensive.
+ \\
+ A thorough overview of convolutional neural networks will be presented in Chapter 3.
+ \newline
+ 
+ Big data aside, these breakthroughs go abreast with the increasing computing resources of nowadays. For example, one groundbreaking result in natural image recognition was achieved in 2012 by AlexNet\parencite{alexnet}, a CNN that was trained using multiple graphic processing units (GPUs) on about 1.2M images. Since then, the performance of DNNs has been steadily improving. 
+ \newline
+ 
+ For many tasks, CNNs have been reported to be able to outperform humans. The problem however, is that the more these models grow in complexity and performance, the higher the computational resources needed to employ them. 
+ 
+ In table \ref{tab:survey}, complexity for state-of-art CNNs are reported. It is notable, how a model like VGG-16, which is widely used, requires more than 500MB of storage and over 15G FLOPs to classify a single image. 
+ 
+ 
+\begin{table}[]
+\centering
+\caption{Computation complexity and size of state-of-art Convolutional Neural Networks}
+\label{tab:survey}
+\begin{tabular}{@{}lllllll@{}}
+\toprule
+           & \multicolumn{3}{c}{Parameters} & \multicolumn{3}{c}{Computation} \\ \midrule
+           & Size(M)  & Conv(\%)  & FC(\%)  & FLOPS(G)  & Conv(\%)  & FC(\%)  \\
+AlexNet    & 61       & 3.8       & 96.2    & 0.72      & 91.9      & 8.1     \\
+VGG-S      & 103      & 6.3       & 93.7    & 2.6       & 96.3      & 3.7     \\
+VGG16      & 138      & 10.6      & 89.4    & 15.5      & 99.2      & 0.8     \\
+NIN        & 7.6      & 100       & 0       & 1.1       & 100       & 0       \\
+GoogLeNet  & 6.9      & 85.1      & 14.9    & 1.6       & 99.9      & 0.1     \\
+ResNet-18  & 5.6      & 100       & 0       & 1.8       & 100       & 0       \\
+ResNet-50  & 12.2     & 100       & 0       & 3.8       & 100       & 0       \\
+ResNet-101 & 21.2     & 100       & 0       & 7.6       & 100       & 0       \\ \bottomrule
+\end{tabular}
+\end{table}
+
+ 
+
+
+%--------------------------------------------------------------------
+%	SECTION 3
+%--------------------------------------------------------------------
+\section{Problem statement}
+ %% anche il pezzo di Squeezenet era figo, da aggiungere 
+Existing deep convolutional neural network models are computationally expensive and memory intensive, hindering their deployment in devices with low memory resources or in \emph{real-time} applications with strict latency requirements. After all, visual recognition tasks and mobility go side by side.
+\newline 
+
+Given \emph{equivalent accuracy}, a CNN with less parameters would expose a series of advantages: 
+
+\begin{itemize}
+    \item \textbf{Less overhead when exporting new models}: if we take a look at an important recent trend such as that of autonomous driving, it is immediately clear how big of a benefit this can be. Companies like Tesla periodically transfer new models from their servers to customers' cars, also called over-the-air (OTA) update. This is how Tesla \emph{Autopilot} improves \parencite{tesla}. An OTA with a network of the size of VGG-16, for instance, would require 500MB of data transfer from the server to the car. Thinner models instead would make frequent OTA updates more feasible, thus being a benefit to security as well. 
+    
+    \item \textbf{Feasible FPGA and embedded systems deployment}: FPGAs often have less than 10MB of on-chip memory \footnote{For example, the Xilinx Vertex-7 FPGA has 8.5 MBytes of on-chip memory and does not provide off-chip one.}. A sufficiently small model could be stored on an FPGA and used for inference in important applications as \emph{stereo vision} \parencite{mattoccia}. Additionally, a light model could be deployed on \emph{Application-Specific Integrate Circuits} (ASICs) that could fit on a smaller die.  \\
+    This would enable a wide range of applications from unmanned drones to intelligent glasses
+    
+    \item \textbf{Energy efficiency}: recent years have seen a spike in the number of mobile devices such as unmanned drones, smartphones, intelligent glasses, etc. Beside the already mentioned computational requirements, these devices would suffer from battery draining, making artificial intelligence application impracticable. \\
+    Moreover, the aforementioned autonomous driving industry aims at being the most environment-friendly vehicle ever designed. Hence, they need to optimize energy saving on every side. 
+    
+\end{itemize}
+
+Clearly, there are several advantages behind the search for smaller CNNs with same accuracy. In addition to the points above, during the course of this project I had the chance to get a closer look to the recent developments of M. Poggi and S. Mattoccia with respect to real-time stereo vision \parencite{poggi-wear} \parencite{poggi-crosswalk}.
+
+Therefore, a natural thought is to perform model compression and acceleration in deep networks without significantly decreasing the model performance. This is the goal of this thesis.
+\newline 
+
+Having introduced the motivation behind this work, the next chapter will introduce the current state-of-the-art approaches. 
+
