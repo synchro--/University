@@ -1,3 +1,9 @@
 Weights before: 331776 - Weights after:43974 - Compression ratio: 7.5448
 Weights before: 460800 - Weights after:71102 - Compression ratio: 6.4808
 Weights before: 460800 - Weights after:67964 - Compression ratio: 6.7801
+Weights before: 307200 - Weights after:109240 - Compression ratio: 2.8122
+Weights before: 307200 - Weights after:109240 - Compression ratio: 2.8122
+Weights before: 128000 - Weights after:7475 - Compression ratio: 17.1215
+Weights before: 128000 - Weights after:7475 - Compression ratio: 17.1215
+Weights before: 819200 - Weights after:33490 - Compression ratio: 24.4610
+Weights before: 819200 - Weights after:15753 - Compression ratio: 52.0000

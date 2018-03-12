@@ -42,6 +42,7 @@ def tensorboard_log(steps, model, info, dir='./logs'):
         logger.scalar_summary(tag, value, steps)
 
     # (2) Log values and gradients of the parameters (histogram)
+    '''
     for tag, value in model.named_parameters():
         # print(str(tag)+"  "+str(value))
         tag = tag.replace('.', '/')
@@ -49,6 +50,7 @@ def tensorboard_log(steps, model, info, dir='./logs'):
         if 'bn' not in tag and value.grad is not None:
             logger.histo_summary(
                 tag + '/grad', to_np(value.grad), steps)
+    '''
 
 
 def log_csv(step, acc, loss, val=0, file='cifar10.csv'):

@@ -188,9 +188,9 @@ def decompose_model(model, layer_name, model_file):
                         rank = cp_ranks(conv_layer)
                         print('rank: ', rank)
 
-                      #  rank = max(conv_layer.weight.data.shape) // 3
-                      #  rank, _ = choose_compression(conv_layer, ranks=[rank, rank], compression_factor = 10, flag='cpd')
-                      #  print('rank: ', rank)
+                        rank = max(conv_layer.weight.data.shape) // 3
+                        rank, _ = choose_compression(conv_layer, ranks=[rank, rank], compression_factor = 52, flag='cpd')
+                        print('rank: ', rank)
                         if name == 'conv2': 
                             matlab=True  
                         else: 
@@ -199,6 +199,7 @@ def decompose_model(model, layer_name, model_file):
                         # decomposed = cp_xavier_conv_layer(conv_layer, rank)
                     else:
                         decomposed = tucker_decomposition_conv_layer(conv_layer)
+                        # decomposed = tucker_xavier(conv_layer)
 
         model._modules[complete_name] = decomposed ## WARNING: IF USING SEQUENTIAL WE NEED THE FULL NAME: e.g. sequential.conv1 
     
@@ -272,7 +273,7 @@ if __name__ == '__main__':
 
         # Decomposition time !!!!!!!!!!!!!! 
         for i, layer in enumerate(layers):
-            dec = decompose_model_seq(model, layer, 'decomposed_model.pth')
+            dec = decompose_model(model, layer, 'decomposed_model.pth')
             dec.cuda()
 
             for param in dec.parameters():
@@ -303,19 +304,21 @@ if __name__ == '__main__':
                            'test': dataset.cifar10_testloader()}
 
             dec = train_test_model(dataloaders, dec, criterion,
-                            optimizer, exp_lr_scheduler, 0.276, 50)
+                            optimizer, exp_lr_scheduler, 0.276, 25)
             
             
            # train_model_val(dataloaders, dec, criterion, 
            #                     optimizer, exp_lr_scheduler, 25)
             
             test_model_cifar10(dataset.cifar10_testloader(), dec)
+            torch.save(dec, 'saved.pth')
             
             if args.cp:
                 logname = "cp-reverse." + str(layer) + ".csv"
-                modelname = "s_cp-reverse." + str(layer) + ".pth"
+                modelname = "f_cp-reverse." + str(layer) + ".pth"
+                print('moving log file to...' + logname)
                 cmd1 = "mv cifar10.csv " + logname
-                cmd2 = "cp s_trained.pth " + modelname
+                cmd2 = "cp saved.pth " + modelname
             else:
                 logname = "tucker-reverse." + str(layer) + ".csv"
                 modelname = "s_tucker-reverse." + str(layer) + ".pth"
@@ -324,9 +327,10 @@ if __name__ == '__main__':
 
             subprocess.call(cmd1.split())
             subprocess.call(cmd2.split())
-            
-            # Save last model
-            torch.save(dec, 'finetuned.pth')
+
+
+# Save last model
+torch.save(dec, 'finetuned.pth')
 
 
 

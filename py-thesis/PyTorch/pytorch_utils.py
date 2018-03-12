@@ -34,12 +34,33 @@ def to_var(x):
         x = x.cuda()
     return Variable(x)
 
+ # ============ TensorBoard logging ============#
+def tensorboard_log(steps, model, info, dir='./logs'):
+    logger = Logger(dir)
 
-def log_csv(step, acc, loss, file='cifar10.csv'):
+    for tag, value in info.items():
+        logger.scalar_summary(tag, value, steps)
+
+    # (2) Log values and gradients of the parameters (histogram)
+    for tag, value in model.named_parameters():
+        # print(str(tag)+"  "+str(value))
+        tag = tag.replace('.', '/')
+        logger.histo_summary(tag, to_np(value), steps)
+        if 'bn' not in tag and value.grad is not None:
+            logger.histo_summary(
+                tag + '/grad', to_np(value.grad), steps)
+
+
+def log_csv(step, acc, loss, val=0, file='cifar10.csv'):
     with open(file, 'a') as out:
         out.write("%d,%.3f,%.3f\n" % (step, acc, loss))
         out.close()
 
+
+def log_test(step, val=0, file='test.csv'):
+    with open(file, 'a') as out:
+        out.write("%d,%.3f\n" % (step, val))
+        out.close()
 
 def log_compression(layer_weights, compression_factor, file='compression.txt'):
     with open(file, 'a') as out:
@@ -99,7 +120,9 @@ def set_layer_weights(layer, tensor):
         tensor: tensor as an ndarray (Numpy)
     '''
     if not(layer.weight.data.numpy().shape == tensor.shape):
-        raise Exception('Size mismatch! Cannot asssign weights')
+        print(layer.weight.data.numpy().shape)
+        print(tensor.shape)
+        raise Exception('[MY]: Size mismatch! Cannot assign weights')
 
     layer.weight.data = torch.from_numpy(np.float32(tensor))
 
@@ -135,23 +158,7 @@ def torch_summarize(model, show_weights=True, show_parameters=True):
     tmpstr = tmpstr + ')'
     return tmpstr
 
- # ============ TensorBoard logging ============#
 
-
-def tensorboard_log(steps, model, info, dir='./logs'):
-    logger = Logger(dir)
-
-    for tag, value in info.items():
-        logger.scalar_summary(tag, value, steps)
-
-    # (2) Log values and gradients of the parameters (histogram)
-    for tag, value in model.named_parameters():
-        # print(str(tag)+"  "+str(value))
-        tag = tag.replace('.', '/')
-        logger.histo_summary(tag, to_np(value), steps)
-        if 'bn' not in tag and value.grad is not None:
-            logger.histo_summary(
-                tag + '/grad', to_np(value.grad), steps)
 
 
 # Helper function to save weights in MAT format
@@ -228,10 +235,22 @@ def load_cpd_weights(filename):
 
 # def save_best_model(best_avg, current_avg, )
 
+
+def xavier_weights2(layer):
+        if isinstance(layer, nn.BatchNorm2d):
+            layer.weight.data.fill_(1)
+            layer.bias.data.zero_()
+        else:
+            torch.nn.init.xavier_uniform(layer.weight)
+
+
 def xavier_weights(self): 
     for m in self.modules(): 
         if isinstance(m, nn.Conv2d):
             torch.nn.init.xavier_uniform(m.weight)
+        else: 
+            m.weight.data.fill_(1)
+            m.bias.data.zero_()
 
 # Xavier init for custom NN modules
 def xavier_init_net(self):
@@ -247,7 +266,7 @@ def xavier_init_net(self):
 def xavier_init(layer):
     if isinstance(layer, nn.BatchNorm2d):
         layer.weight.data.fill_(1)
-        layer.bias.data_zero_()
+        layer.bias.data.zero_()
     else:
         n = layer.kernel_size[0] * layer.kernel_size[1] * layer.out_channels
         layer.weight.data.normal_(0, math.sqrt(2. / n))

@@ -225,9 +225,10 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                 }
 
                 # (2) Log CSV file
+                print('logging...')
                 log_csv(total_step, info['accuracy'], info['loss'])
                 # (3) Tensorboard specific logging
-                # tensorboard_log(total_step, model, info)
+                tensorboard_log(total_step, model, info)
 
                 
                 # for each epoch, save best model
@@ -239,7 +240,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                     best_model_wts = copy.deepcopy(model.state_dict())
                     
                     # Every 5 epochs, write model to files 
-                    if((epoch + 1) % 3 == 0):
+                    if((epoch + 1) % 2 == 1 or epoch == 49):
                         print('Saving model to ' + model_file + "...\n")
                         torch.save(best_model_wts, model_file)
                         torch.save(model, "dump_model.pth")

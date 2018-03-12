@@ -106,10 +106,10 @@ class CPD_All_Conv(nn.Module):
         self.conv21 = nn.Conv2d(filt_size1, rank1, 1)
         self.conv22 = nn.Conv2d(rank1, rank1, (3, 1), groups=rank1)
         self.conv23 = nn.Conv2d(rank1, rank1, (1, 3), groups=rank1)
-        self.conv24 = nn.Conv2d(rank1, filt_size2, 1)
+        self.conv24 = nn.Conv2d(rank1, filt_size1, 1)
 
         # 3rd layer decomposition
-        self.conv31 = nn.Conv2d(filt_size2, rank2, 1)
+        self.conv31 = nn.Conv2d(filt_size1, rank2, 1)
         self.conv32 = nn.Conv2d(rank2, rank2, (3, 1), padding=(1,0), groups=rank2)
         self.conv33 = nn.Conv2d(rank2, rank2, (1, 3), padding=(0,1), groups=rank2)
         self.conv34 = nn.Conv2d(rank2, filt_size2, 1)

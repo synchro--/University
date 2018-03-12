@@ -121,8 +121,8 @@ class CPD_All_Conv(nn.Module):
 
         self.relu_on = relu
 
-        rank1 = 30 
-        rank2 = 100
+        rank1 = 10 
+        rank2 = 20
         filt_size1 = 32 
         filt_size2 = 64 
         filt_fc1 = 512

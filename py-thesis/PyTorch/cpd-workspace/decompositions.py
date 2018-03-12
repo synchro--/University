@@ -66,7 +66,7 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
     elif flag == 'cpd':
         rank = ranks[0] # it is a single value
         compression = ((d**2)*T*S) / (rank*(S+2*d+T))
-        if compression <= 3:
+        if compression <= compression_factor:
             rank = ((d**2) * S * T) / (compression_factor * (S +2*d+ T))
             ranks[0] = np.floor(rank).astype(int) 
 
@@ -95,7 +95,6 @@ def estimate_ranks(layer):
     Unfold the 2 modes of the Tensor the decomposition will
     be performed on, and estimates the ranks of the matrices using VBMF
     """
-    '''
     weights = layer.weight.data.numpy()
     unfold_0 = tl.base.unfold(weights, 0)
     unfold_1 = tl.base.unfold(weights, 1)
@@ -106,8 +105,7 @@ def estimate_ranks(layer):
     # Check if the VBMF ranks are small enough
     ranks = choose_compression(
         layer, ranks, compression_factor=10, flag='Tucker2')
-    '''
-    ranks = [54, 29]
+
     return ranks
 
 
@@ -463,6 +461,7 @@ def tucker_decomposition_conv_layer(layer):
     return nn.Sequential(*new_layers)
 
 
+# Tucker e stabile anche senza BNs. 
 def tucker_decomposition_conv_layer_BN(layer):
     """ Gets a conv layer, 
         returns a nn.Sequential object with the Tucker decomposition.
@@ -523,6 +522,53 @@ def tucker_decomposition_conv_layer_BN(layer):
                   core_layer, bn_core, last_layer, bn_last]
     return nn.Sequential(*new_layers)
 
+
+def tucker_xavier(layer):
+    ranks = estimate_ranks(layer)
+    print(layer, "VBMF Estimated ranks", ranks)
+    core, [last, first] = \
+        partial_tucker(layer.weight.data.numpy(),
+                       modes=[0, 1], ranks=ranks, init='svd')
+
+    # A pointwise convolution that reduces the channels from S to R3
+    first_layer = torch.nn.Conv2d(in_channels=first.shape[0],
+                                  out_channels=first.shape[1],
+                                  kernel_size=1,
+                                  stride=layer.stride,
+                                  padding=0,
+                                  dilation=layer.dilation,
+                                  bias=False)
+
+    # A regular 2D convolution layer with R3 input channels
+    # and R3 output channels
+    core_layer = torch.nn.Conv2d(in_channels=core.shape[1],
+                                 out_channels=core.shape[0],
+                                 kernel_size=layer.kernel_size,
+                                 stride=layer.stride,
+                                 padding=layer.padding,
+                                 dilation=layer.dilation,
+                                 bias=False)
+
+    # A pointwise convolution that increases the channels from R4 to T
+    last_layer = torch.nn.Conv2d(in_channels=last.shape[1],
+                                 out_channels=last.shape[0],
+                                 kernel_size=1,
+                                 stride=layer.stride,
+                                 padding=0,
+                                 dilation=layer.dilation,
+                                 bias=True)
+
+    last_layer.bias.data = layer.bias.data
+
+    new_layers = [first_layer, core_layer, last_layer]
+
+        # Xavier init:
+    for l in new_layers:
+        xavier_weights2(l)
+    
+    return nn.Sequential(*new_layers)
+
+    
 
 def cp_xavier_conv_layer(layer, rank):
     """ Gets a conv layer and a target rank, 
