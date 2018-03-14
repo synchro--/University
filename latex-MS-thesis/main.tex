@@ -13,7 +13,7 @@
 11pt, % The default document font size, options: 10pt, 11pt, 12pt
 %oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
 english, % ngerman for German
-singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
+onehalfspacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
 %draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 %liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
@@ -100,7 +100,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Compression of Convolutional Neural Networks with tensor decomposition} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Compression of Convolutional Neural Network using Tensor Decomposition} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Prof. Stefano \textsc{Mattoccia}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Doctor of Philosophy} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -152,21 +152,20 @@ headsepline, % Uncomment to get a line under the header
 \begin{flushright} \large
 \emph{Thesis Supervisor:} \\
 {\supname} \\% Supervisor name - remove the \href bracket to remove the link 
-\emph{\\Thesis Advisor}\\
-Ph.D Matteo Poggi
+\emph{\\Thesis Advisors}\\
+\emph{Ph.D} Matteo Poggi\\ \\
+\emph{Ph.D} Fabio Tosi
+
 
 \end{flushright}
-\end{minipage}\\[3cm]
+\end{minipage}\\[2cm]
 
-\vfill
+%\vfill
 \textit{}\\[0.4cm]
-\groupname\\\deptname\\[2cm] % Research group name and department name
+\groupname\\\deptname\\[1cm] % Research group name and department name
  
-\vfill
 
-\vfill
-
-{\large III Session\\2017/2018}\\[4cm] % Date
+{\large III Session\\2017/2018}\\[2cm] % Date
 %\includegraphics{Logo} % University/department logo - uncomment to place it
  
 \vfill
@@ -179,9 +178,33 @@ Ph.D Matteo Poggi
 %\begin{comment}
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-<<< A pretentious abstract >>>
+
+In recent years, deep neural networks have received lots of attention, been applied to a large number of tasks on which they achieved dramatic accuracy improvements. Among these, Convolutional Neural Networks (CNN) have been the key players for visual recognition tasks. These models combine deep networks with the convolution operation, resulting in millions or even billions of parameters and computations, thus, a fundamental ingredient for their success, have been high-end GPUs.\\
+However, recent developments in fields such as smart wearable and mobile devices, self-driving cars, virtual reality, unmanned drones among many others, have created an unprecedented opportunity for researchers to tackle fundamental challenges with respect to computer vision. For this reason, it is important to deploy deep learning systems on devices with limited resources for real-time applications. \\
+Over the years, the trend for Convolutional Neural Networks saw them grow larger and larger to achieve more impressive performance. For example, the ResNet-50 model\parencite{resnet}, with 50 convolutional layers needs over 95MB memory for storage and much more floating computations to process a single image. Therefore it is crucial, in this context, to investigate new effective ways of both compressing and speeding up these networks. \\
+Recent works in literature have shown that it is indeed possible to shrink a model's parameters without sacrificing its accuracy. This is achievable by exploiting their redundant architecture. A convolutional layer can be seen as a four-dimensional tensor with a specific structure. Because of the latter, new works have proposed tensor decomposition methods as a compression for the CNN's convolutional layers. Following this cue, this thesis intends to deepen the knowledge of the aforementioned applications.\\
+The thesis is structured as follows: Chapter 1 will introduce the problem stated above and the context in which this thesis will operate. Chapter 2 will illustrate the state of the art techniques regarding CNN compression, while Chapter 3 will provide a thorough analysis of the CNNs architecture. \\
+Chapter 4 will then introduce the fundamentals of tensor decomposition and will provide a deep insight into how to apply tensor decomposition on CNNs, ending with a design proposal. Chapter 5 will show, through experiments, how the above-mentioned methods perform on five different models. Finally, Chapter 6 will summarize the work done during the course of this project and will suggest new ideas for future developments. 
+
 \end{abstract}
 %\end{comment}
+
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT PAGE (ITA) 
+%----------------------------------------------------------------------------------------
+\begin{abstract}
+\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+
+Negli ultimi anni, le reti neurali profonde hanno ricevuto molta attenzione, essendo state applicate in un vasto numero di applicazioni con risultati spesso eccezionali. Tra queste, le reti neurali convoluzionali o Convolutional Neural Networks (CNN), hanno avuto un ruolo chiave per i compiti di riconoscimento visivo. Questi modelli combinano reti neurali profonde con l'operazione di convoluzione, risultando in milioni o addirittura miliardi di parametri e di calcoli; pertanto un ingrediente fondamentale per il loro successo sono state le GPU di fascia alta.
+Tuttavia, i recenti sviluppi in settori quali dispositivi indossabili intelligenti e mobili, auto a guida autonoma, realtà virtuale, droni senza pilota e molti altri, hanno creato, per i ricercatori, opportunità senza precedenti di affrontare le sfide fondamentali rispetto alla visione artificiale. Per questo motivo, è importante implementare sistemi di apprendimento profondo (deep learning) su dispositivi con risorse limitate per applicazioni in tempo reale. \\
+Ad esempio, il modello ResNet-50 \parencite{resnet}, una rete con 50 strati convoluzionali, ha bisogno di oltre 95 MB di memoria per l'archiviazione e molto di più per i calcoli necessari a classificare una singola immagine. Pertanto, in questo contesto, è fondamentale indagare su nuovi modi efficaci di comprimere e accelerare queste reti. \\
+I recenti lavori in letteratura hanno dimostrato che è possibile ridurre i parametri di un modello senza sacrificarne l'accuratezza. Ciò è realizzabile sfruttando la loro architettura ridondante. Uno strato convoluzionale, infatti, può essere visto come un tensore quadridimensionale con una struttura specifica.  Seguendo questo spunto, questa tesi intende approfondire la conoscenza delle applicazioni di cui sopra.
+La tesi è strutturata come segue: Il Capitolo 1 introdurrà il problema sopra indicato ed il contesto in cui questa tesi opererà. Il Capitolo 2 illustrerà le tecniche avanzate relative alla compressione delle CNN, mentre il Capitolo 3 fornirà un'analisi approfondita dell'architettura delle CNN. \\
+Il Capitolo 4 introdurrà quindi i fondamenti della decomposizione tensoriale e fornirà una visione approfondita di come poterla applicare su una CNN, terminando con una nuova proposta architetturale. Il Capitolo 5 mostrerà, attraverso diversi risultati sperimentali, come i metodi sopra citati si comportino su cinque modelli diversi. Infine, il capitolo 6 riassumerà il lavoro svolto durante il corso di questo progetto lasciando qualche proposta per possibili sviluppi futuri. 
+
+\end{abstract}
+
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
@@ -189,7 +212,9 @@ Ph.D Matteo Poggi
 
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
+I would like to thank professor Stefano Mattoccia for his patience to supervise this thesis. 
+It is always interesting to get in touch with the high-level research of its projects which, again, made me discover new exciting topics while also bringing a precious level of satisfaction to my work. 
+In this regard, I wish to thank my two advisors, Matteo Poggi and Fabio Tosi, who happens to be also an exquisite friend. 
 \end{acknowledgements}
 
 
@@ -209,8 +234,15 @@ The acknowledgments and the people to thank go here, don't forget to include you
 
 
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
-
+\textbf{SVD} &\textbf{S}ingular \textbf{V}alue \textbf{D}ecomposition\\
+\textbf{HOSVD} &\textbf{H}igher \textbf{O}rder \textbf{S}ingular \textbf{V}alue \textbf{D}ecomposition\\
+\textbf{CPD} & \textbf{C}anonical \textbf{P}olyadic \textbf{D}ecomposition\\
 \textbf{SGD} & \textbf{S}tochastic \textbf{G}radient \textbf{D}escent\\
+\textbf{NN} &\textbf{N}eural \textbf{N}etwork\\
+\textbf{CNN} & \textbf{C}onvolutional \textbf{N}eural \textbf{N}etwork\\
+\textbf{CONV} &\textbf{Conv}olutional layer \\
+\textbf{BN} &\textbf{B}atch \textbf{N}ormaization\\
+\textbf{TD block} &\textbf{T}ensor \textbf{D}ecomposition block\\
 
 \end{abbreviations}
 
@@ -218,7 +250,7 @@ The acknowledgments and the people to thank go here, don't forget to include you
 %----------------------------------------------------------------------------------------
 %	SYMBOLS
 %----------------------------------------------------------------------------------------
-
+\begin{comment}
 \begin{symbols}{lll} % Include a list of Symbols (a three column table)
 
 $a$ & distance & \si{\meter} \\
@@ -230,12 +262,20 @@ $P$ & power & \si{\watt} (\si{\joule\per\second}) \\
 $\omega$ & angular frequency & \si{\radian} \\
 
 \end{symbols}
+\end{comment}
 
 %----------------------------------------------------------------------------------------
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-\dedicatory{For/Dedicated to/To my\ldots} 
+\dedicatory{
+A mio padre, che mi ha insegnato a giocare\\
+A mia zia, che mi ha insegnato la pazienza\\
+A mio nonno, che mi ha insegnato a non prendermi sul serio\\
+A quel cuore che oggi, nonostante tutto, saprebbe battere più forte del mio.\\
+
+
+} 
 
 
 %----------------------------------------------------------------------------------------
@@ -253,8 +293,8 @@ $\omega$ & angular frequency & \si{\radian} \\
 \include{Chapters/Chapter2} 
 \include{Chapters/Chapter3}
 \include{Chapters/Chapter4} 
-%\include{Chapters/Chapter5} 
-% \include{Chapters/Chapter6}
+\include{Chapters/Chapter5} 
+\include{Chapters/Chapter6}
 % \include{Chapters/Chapter7}
 
 %----------------------------------------------------------------------------------------

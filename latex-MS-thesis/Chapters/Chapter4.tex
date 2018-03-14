@@ -49,20 +49,19 @@ The product used in \ref{eq:rank1-tens} is an outer product for vectors and will
 
 \subsection{Tensor fibers \& slices}
 Tensor fibers are very intuitive to represent visually but not as easy to explain. \\
-
 Let $A(i,j,k)$ be a third-order tensor. The mode-1 fiber of index $s,t$  of $A(i,j,k)$ contains all the elements of A, which have the $j=s$ and $k=t$. 
-
+\\
 Intuitively, the \emph{i}-fiber is the "column" that is obtained by fixing one index. Conversely, a tensor \emph{slice} is instead obtained by fixing two indeces. It becomes immediately clear when observing figure \ref{fig:tensor-fibers}. The three different ways in which it is possible to orient a fiber are called \emph{tensor modes}. They are very important to define some basic tensor operation. 
 
 \begin{figure}[h!]
  \centering
- \includegraphics[width=1.0\textwidth]{\path/tensor-mode.jpg} 
+ \includegraphics[width=0.9\textwidth]{\path/tensor-mode.jpg} 
  \caption{Fibers and slices of a tensor according to each mode.}
  \label{fig:tensor-fibers}
 \end{figure}
 
 \pagebreak
-To make things even clearer, here is a snippet code to index fibers and slices in Python: 
+To give another cue on the above, here is a snippet code to index fibers and slices in Python: 
 \begin{lstlisting}[language={Python}]
 In [13]: tensor = numpy.arange(24).reshape(2,3,4) 
 In [14]: tensor
@@ -567,8 +566,8 @@ This decomposition scheme is illustrated in figure \ref{fig:cpd-pass}.
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.15\textwidth]{\path/CPD.jpg} 
- \caption{Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d × d window over all input maps. 
-Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate mpa stack has R  maps, being R the rank of the decomposition. Each of the two-components 
+ \caption[CP decomposition application on a CONV layer.]{Tensor Decompositions for speeding up a generalized convolution. Each box correspond to a feature map stack within a CNN, (frontal sides are spatial dimensions). Arrows show linear mappings and demonstrate how scalar values on the right are computed. Initial full convolution (A) computes each element of the target tensor as a linear combination of the elements of a 3D subtensor that spans a spatial d × d window over all input maps. 
+Jaderberg et al. (B) approximate the initial convolution as a composition of two linear mappings in which the intermediate map stack has R  maps, being R the rank of the decomposition. Each of the two-components 
 computes each target value with a convolution based on a spatial window of size dx1 or 1xd in all input maps. Finally, CP-decomposition (C) by Lebedev et al. approximates the convolution as a composition of four smaller convolutions: the first and the last components compute a standard 1x1 convolution that spans all input maps while the middle ones compute a 1D grouped convolution \textbf{only on one} input map. Each box is mathematically described in equation (\ref{eq:cpd1}-\ref{eq:cpd2})}
  \label{fig:cpd-pass}
 \end{figure}
@@ -592,7 +591,6 @@ There is another way to compute a convolutional layer with CP that has been sugg
 In these scenarios, a simple reshaping of the 4D tensor $K$ of size $(d \times d \times S \times T)$ into a 3D tensor of size $d^2 \times S \times T$ could be helpful. In fact, composing the CP-decomposition with newly shaped tensor will result in three factor matrices of size $d^2 \times R$, $S \times R$ and $T \times R$. The two separable convolution can now be replaced by a single standard $[d \times d]$ convolution, mathematically: 
 
 \begin{equation}
-\label{eq:cpd1}
     U^s(i,j,r) =\sum^{S}_{s=1}=K^s(s,r)U(i,j,s)    
 \end{equation}
 
@@ -604,7 +602,7 @@ In these scenarios, a simple reshaping of the 4D tensor $K$ of size $(d \times d
     V(x,y,t) = \sum_{r=1}^R K^t (t,r) U^{syx}(x,y,r),
 \end{equation}
 
-This process is described in figure \ref{fig:tucker-pass} in the Tucker decomposition section. 
+This process is also described in figure \ref{fig:tucker-pass} in the Tucker decomposition section. 
 
 \pagebreak
 \subsubsection{Summary}
@@ -686,14 +684,14 @@ Figure \ref{fig:tucker-pass} illustrate equation \ref{eq:tucker1}-\ref{eq:tucker
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.15\textwidth]{\path/tucker-pass.jpg} 
- \caption{Tucker-2  Decompositions  for  speeding-up  a generalized convolution. Each box corresponds to a 3-way tensor $X, Z, Z^' and Y$ in equation (\ref{eq:tucker1}-\ref{eq:tucker3}). Arrows represent linear mappings and illustrate how each scalar value on the right is computed. Red tube, green cube and blue tube correspond to 1x1, dxd and 1x1 convolution respectively.}
+ \caption[Tucker decomposition application on a CONV layer]{Tucker-2  Decompositions  for  speeding-up  a generalized convolution. Each box corresponds to a 3-way tensor $X, Z, Z^' and Y$ in equation (\ref{eq:tucker1}-\ref{eq:tucker3}). Arrows represent linear mappings and illustrate how each scalar value on the right is computed. Red tube, green cube and blue tube correspond to 1x1, dxd and 1x1 convolution respectively.}
  \label{fig:tucker-pass}
 \end{figure}
 
 \newpage 
 \subsubsection{Full Tucker}
 As mentioned earlier, Tucker is more flexible compared to CP and there are other ways to explore for Tucker. 
-
+\\
 Instead of truncating the factors, we could compute a full Tucker decomposition and use all the resulting terms. Mathematically, this is described in the following equations:  
 
 
@@ -723,7 +721,7 @@ and finally reshape the output channel:
 \end{equation}
 
 This method will enable a separable 1D convolution instead of a regular $[d \times d]$. However, it seems more complex to model than a 4-way CP-decomposition while also being more computationally expensive (for more details on complexity see the following section). \\
-In a sense, it seems like CP-decomposition is naively best suited to obtain the spatially separable kernels and so be the more aggressive between the two, whilst Tucker is mathematically more flexible and can be more easily adapted to different designs. Hence, for this work the methods that have been employed are CPD and Tucker-2. 
+In a sense, it seems like CP-decomposition is naively best suited to obtain the spatially separable kernels and so to be the more aggressive between the two, whilst Tucker is mathematically more flexible and can be more easily adapted to different designs. Hence, for this work the methods that have been employed are CPD and Tucker-2. 
 \newline 
 
 Moreover, it is possible to combine the two in a gradually more aggressive approach: at first the model can be decomposed using Tucker; if the central regular convolution still have many parameters, it can be decomposed again but with CP this time. This will probably lead to too many layers and would open a vanishing gradient scenario. However, deep residual nets\parencite{resnet} have already shown how to tackle this issue. 
@@ -738,7 +736,7 @@ Standard convolution operation is defined by $STd^2$ parameters i.e, the number 
 
 With their approaches, both in Jaderberg et al.\parencite{jaderberg2014} and Zhang et al. \parencite{zhang2015SVD} drop this complexity down to $Rd(S+T)$. Assuming the required rank is comparable or several times smaller than S and T, that is taking a rank $R\approx \frac{ST}{S+T}$, then the complexity would be reduced by a factor of $d$ times. 
 \newline 
-Following the CP-decomposition proposed by Lebedev et al. \parencite{lebedev2014}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. 
+Following the CP-decomposition proposed by Lebedev et al. \parencite{lebedev}, the complexity drops to $R(S+2d+T)$. In modern architectures, almost always we can assume $d\ll T$, thus $R(S+2d+T) \approx R(S+T)$,  which add another $d$ factor of improvement over Jaderberg et al. and of $d^2$ over the initial convolution. 
 
 
 If we call $\mathbf{K}_{std}$ and $\mathbf{K}_{dec}$ the standard and decomposed convolution operation respectively,  the \emph{compression ratio} can be defined as
@@ -814,7 +812,7 @@ One simple but costly way to predict a good rank is a trial-and-error approach, 
 		\item if the error is less than the threshold i.e., $Err \leq th$, the rank is chosen as the best rank; otherwise increment the rank and restart from 1. 
 	\end{enumerate}
 
-In Tensorlab this is done by a utility function called \texttt{'rankest'}. A simple script to estimate how scalable this method is for large tensors is showed in \ref{AppendixB}. 
+In Tensorlab this is done by a utility function called \texttt{'rankest'}.
 
 In figure \ref{fig:rankest} we can see how this approach does not scale so well with increasing input and output maps dimensions, which are also all not so large i.e., less than 256.
 
@@ -829,7 +827,7 @@ In figure \ref{fig:rankest} we can see how this approach does not scale so well 
 
 \newline 
 \paragraph{iterative compression and fine-tuning}
-A simple solution that has been applied by different authors is an iterative careful manual tuning \parencite{astrid2017} \parencite{lebedev2014} i.e., choosing an arbitrary rank, calculating the accuracy and manually updating the rank according to an elementary rule: the higher is the drop in accuracy caused by its decomposition, the higher is the rank needed by the layer.
+A simple solution that has been applied by different authors is an iterative careful manual tuning \parencite{astrid2017} \parencite{lebedev} i.e., choosing an arbitrary rank, calculating the accuracy and manually updating the rank according to an elementary rule: the higher is the drop in accuracy caused by its decomposition, the higher is the rank needed by the layer.
 \newline 
 In Astrid and Lee \parencite{astrid2017} they define a metric to measure the \emph{sensitivity} of a layer $l$ as:
 \begin{equation}
@@ -838,7 +836,7 @@ In Astrid and Lee \parencite{astrid2017} they define a metric to measure the \em
 that is how much the error of the approximation of one layer's tensor affects the whole network accuracy. The sensitivity is intended to be computed \emph{after} the fine-tuning has been performed. 
 \newline 
 
-In Lebedev et al. \parencite{lebedev2014} the authors compute the relative error $$ Err = \frac{\left \| \mathbf{K'} - \mathbf{K}  \right \|_{F}}{\left \| \mathbf{K} \right \|_{F}}$$ (as shown in step 2 above) of the tensor approximation and how much it does impact accuracy before and after fine-tuning.  
+In Lebedev et al. \parencite{lebedev} the authors compute the relative error $$ Err = \frac{\left \| \mathbf{K'} - \mathbf{K}  \right \|_{F}}{\left \| \mathbf{K} \right \|_{F}}$$ (as shown in step 2 above) of the tensor approximation and how much it does impact accuracy before and after fine-tuning.  
 Once a good rank for a specific layer is found, we can move to the next one. Following this slow but careful process, we will arguably end up with a fair enough compressed version of the original model. 
 
 \subsubsection{Global Analytics VBMF}
@@ -855,7 +853,7 @@ Given the tensor $K$ of size $[S \times T \times d \times d]$ we have to unfold 
 \begin{figure}[h!]
  \centering
  \includegraphics[width=1.0\textwidth]{\path/unfold-vbmf.png} 
- \caption{Mode-1 (top left), mode-2 (top-right), and mode-3 (bottom left) tensor unfolding of a third-order tensor. \textbf{Not shown}: after unfolding, the rank $R$ of the resulting matrices is computed with VBMF.
+ \caption[VBMF rank estimation on CONV layer]{Mode-1 (top left), mode-2 (top-right), and mode-3 (bottom left) tensor unfolding of a third-order tensor. \textbf{Not shown}: after unfolding, the rank $R$ of the resulting matrices is computed with VBMF.
  (Bottom right): Then, given the rank $R$, the Tucker decomposition produces a core tensor $\mathcal{S}$ and  factor matrices $A^(1)$, $A^(2)$ and $A^(3)$ of size $I_1 \times R$ $I_2 \times R$ and $I_3 \times R$ respectively. } 
  \label{fig:vbmf}
 \end{figure}
@@ -914,7 +912,7 @@ Beside the principal algorithm itself, the convergence of the computation for la
 \newline
 
 Basically, the computation of a good CPD is a multi-step approach that relies on a main algorithm (ALS, NLS, unconstrained opt) and a bunch of other methods that help the optimization. 
-A simple test in Tensorlab to compare different algorithms is shown in appendix \ref{AppendixB}, the results can be observed in figure \ref{fig:cp-als-nls}.
+A simple test in Tensorlab to compare different algorithms has been implemented and the results can be observed in figure \ref{fig:cp-als-nls}.
 
 \begin{figure}[h!]
  \centering
@@ -928,7 +926,7 @@ ALS is often faster while being less accurate than NLS. As it will be presented 
 To dig deeper into the optimization details, an exhaustive comparison between four main algorithms is explained in \parencite{WCPD-talk}. Their results on accuracy and timing are reported in figure \ref{fig:cp-comparison}.
 \newline 
 
-It is also interesting to see how these methods depend heavily on the chosen rank $R$. To this aim, a MATLAB script that computes CP-NLS of a relatively large matrix for different values of $R$ is available in appendix \ref{AppendixB}. Results are shown in \ref{fig:rank-loop}. 
+It is also interesting to see how these methods depend heavily on the chosen rank $R$. To this aim, a script to test these methods with respect ot the rank are shown in \ref{fig:rank-loop}. 
 
 Notably, the higest rank leads to a far better minimum of the NLS optimization. However, such values of $R$ are incompatible with a good speeup in convolutions. Thus, between an accurate but costly decomposition and a fast inaccurate one plus retraining, the trade-off discussion seems to fall in favor of the latter.
 
@@ -976,13 +974,13 @@ The concepts of macro and micro-architecture of a CNN have been introduced in ch
 As a matter of fact, regardless of the method (CP/Tucker), the first and the last layer of the decomposition always act as a dimensionality reduction whereas the layers in the middle perform the spatial convolution (more details are explained in section \ref{subsec:cp-summary}. This idea is very close to that of the \emph{Inception-module} firstly introduced by Google in 2014 \parencite{googlenet}. and then widely applied in successive works \parencite{squeeznet}, \parencite{chollet}, \parencite{mobilenets}.  
 \newline
 The nice thing is that this design fits perfectly with the factor matrices of the decomposition.  
-Therefore a general architecture of a \emph{"tensor decomposition block"} (TP-block) can be finally introduced in figure \ref{fig:TP-block}.
+Therefore a general architecture of a \emph{"tensor decomposition block"} (TD-block) can be finally introduced in figure \ref{fig:TD-block}.
 
 \begin{figure}[h!]
  \centering
- \includegraphics[width=.5\textwidth]{\path/TP-block.png} 
- \caption{A generic Tensor Decomposition (TP) block micro-architecture. The first and last layers performs channels squeezing/restoration while the actual convolution is performed inside these two layers. This convolution can be either separable or standard; either way the cross-channel parameters redundancy is exploited. }
- \label{fig:TP-block}
+ \includegraphics[width=.5\textwidth]{\path/TD-block.png} 
+ \caption[Generic tensor decomposition (TD) block.]{A generic Tensor Decomposition (TD) block micro-architecture. The first and last layers performs channels squeezing/restoration while the actual convolution is performed inside these two layers. This convolution can be either separable or standard; either way the cross-channel parameters redundancy is exploited.\\ The $R$-prefix stands for 'rank', which is the only hyper-parameter.}
+ \label{fig:TD-block}
 \end{figure}
 
 \pagebreak
@@ -990,12 +988,12 @@ The type of convolution that is computed in the middle can be either separable o
 \newline 
 As a side note: it can also be pointed out that since this block is not a composition of several regular layers but of smaller parts of a single of them, we could coin the term \emph{nano-architecture} of a convolutional neural network. 
 
-\subsection{TP-block model}
-The original goal of applying tensor decomposition on CNNs is the ability to shrink a pre-trained model without accuracy drop. However, one can easily guess that if a TP-block is a good fit to substitute a whole layer after training, then it will likely be as good if applied from the beginning. 
+\subsection{TD-block model}
+The original goal of applying tensor decomposition on CNNs is the ability to shrink a pre-trained model without accuracy drop. However, one can easily guess that if a TD-block is a good fit to substitute a whole layer after training, then it will likely be as good if applied from the beginning. 
 \newline
 To this aim, it is interesting how \emph{Mobile Nets} \parencite{mobilenets}, that builds upon a similar architecture that exploits channels redundancy, have been included in Tensorflow Lite \parencite{WTFlite}, the mobile-optimized version of the most popular deep learning framework \parencite{tensorflow}, becoming the go-to solution to deploy CNNs on mobile. 
 
-Indeed, in the next chapter several experiments about this approach demonstrate how TP-blocks can perform well when training models from scratch. 
+Indeed, in the next chapter several experiments about this approach demonstrate how TD-blocks can perform well when training models from scratch. 
 \newline 
 
 This suggests \emph{a new way} of building standard CNNs.  
@@ -1010,7 +1008,7 @@ In lights of all the concepts explained in this chapter, it is finally possible 
     
     \item selection of a desired range for compression ratio and speed-up;
     
-    \item selection of the number and connectivity of the layers that the TP-Block should enclose;
+    \item selection of the number and connectivity of the layers that the TD-Block should enclose;
     
     \item according to the first points, selection of the type of the decomposition between CP (more aggressive) and Tucker (more stable); 
     

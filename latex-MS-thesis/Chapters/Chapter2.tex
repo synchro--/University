@@ -246,14 +246,33 @@ The elements of an optimal CNN design are:
 %	SECTION 5
 %--------------------------------------------------------------------
 \section{Low-rank Factorization}
+The convolutional kernel of a convolution layer $W \in R^{s \times t \times d \times d}$ is a 4-D tensor, with the four dimension corresponding to the number of input and output channels and the kernel size respectively (here squared for simplicity). Low rank factorization methods try to find a way to determine an approximate tensor $\hat{W}$ that is close to $W$ but has far less parameters, facilitating the computations. 
+\newline 
 
+This can be done in a variety of ways that all plays on how many layers we want to arrange the decomposed tensor $\hat{W}$. For instance, it can be arranged in 2 layers holding 2 dimensions of the original one, or in 4 by one, or even in asymettric 3 layers decomposition. The former is possible by manipulating the tensor and utilizing different decomposition techniques, such as SVD \citep{zhang2015SVD}, Tucker \citep{Tucker-mobile}, CPD \citep{lebedev} and others.
+\newline
+
+This approach can be embeddable in a decomposition pipeline as: 
+\begin{itemize}
+  \item select an over-parametrized layer; 
+  
+  \item compress the layer with one of the mentioned algorithms; 
+  
+  \item embed the decomposed layer into the model instead of the old one; 
+  
+  \item perform some iteration of fine-tuning to recover the approximation error; 
+  
+  \item start again. 
+\end{itemize}
+
+As these methods will be seen in details in chapter \ref{Chapter4}, we can omit, for the moment, the details. 
 
 
 \paragraph{Considerations}
 \begin{itemize}
-    \item \textbf{Application}: 
+    \item \textbf{Application}: pre-trained models and new architectures, both FC and convolutional layers. 
     
-    \item \textbf{Drawbacks}: . 
+    \item \textbf{Drawbacks}: As we will see, these methods are good candidates to be implemented in a pipeline, i.e. their integration is straightforward. However, tensor decomposition algorithms are expensive and not so easy to play around at first. Besides, the compression happens layer by layer and therefore does not take into account the loss of information related to another layer. Furthermore, training could take many iterations before convergence. 
 \end{itemize}
 
 %--------------------------------------------------------------------
@@ -272,10 +291,12 @@ This is important for the scope of this thesis, as the final goal of this projec
 \section{Discussion}
 The presented methods are orthogonal. It is possible to combine two or three of them together to maximize the compression by applying the best suited technique on a specific scenario. For example, in the case of object detection where both convolution and fully connected layers are needed, it is feasible to compress the former with low-rank factorization and the latter with pruning. 
 Moreover, when a small accuracy drop is tolerable, quantization can also be applied as a final step after the aforementioned methods. 
+\newline 
 
 One pitfall, however, is that most of these methods require non trivial hyper-parameters configurations. Hence, it is not straightforward to combine them as one could get stuck in the hyper-parameters tuning loop before finding the best setup. This is probably due to the early age of these techniques. 
+\newline 
 
 As for this work, since the future goal will be to optimize custom pre-trained models of the VisionLab of the University of Bologna, only two methods are feasible candidates: network pruning and low-rank factorization. Among these, the latter is the only one that provides a possible end-to-end pipeline to the problem. 
 \newline 
 
-Therefore, this thesis will focus on the low-rank factorization technique; specifically, on further developing \emph{tensor decomposition methods}, which do not seem to be fully explored yet and can have promising applications. 
+Therefore, this thesis will focus on the low-rank factorization technique; specifically, on further developing \emph{tensor decomposition methods}, which do not seem to be fully explored yet and could have promising applications. 

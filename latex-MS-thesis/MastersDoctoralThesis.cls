@@ -247,7 +247,8 @@
 %	COLOURS
 %----------------------------------------------------------------------------------------
 
-\usepackage{xcolor} % Required for specifying custom colours
+% \usepackage{xcolor} % Required for specifying custom colours
+\usepackage[table,xcdraw]{xcolor}  %% tabelle colorate 
 
 \colorlet{mdtRed}{red!50!black}
 
@@ -404,6 +405,10 @@ KOMA-script documentation for details.}]{fancyhdr}
 {
 	\vfill\null
 }
+
+
+
+
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS PAGE DESIGN

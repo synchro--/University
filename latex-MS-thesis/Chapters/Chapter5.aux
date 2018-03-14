@@ -1,25 +1,116 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Addestrare un modello allo stato dell'arte}{51}{chapter.482}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Experimental Results \& Analysis}{73}{chapter.281}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{Capitolo5}{{5}{51}{Addestrare un modello allo stato dell'arte}{chapter.482}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Deep Residual Network}{51}{section.483}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Un "Residual Block", all'input viene aggiunto F(x) che \IeC {\`e} il residual\relax }}{51}{figure.caption.487}}
-\newlabel{fig:residual}{{5.1}{51}{Un "Residual Block", all'input viene aggiunto F(x) che è il residual\relax }{figure.caption.487}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Confronto architetture: VGG-Net la pi\IeC {\`u} innovativa della competizione ILSVRC 2014, rete classica a 34 strati (centro), Residual Network a 34 strati (sinistra)\relax }}{53}{figure.caption.488}}
-\newlabel{fig:resnet}{{5.2}{53}{Confronto architetture: VGG-Net la più innovativa della competizione ILSVRC 2014, rete classica a 34 strati (centro), Residual Network a 34 strati (sinistra)\relax }{figure.caption.488}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Implementazione di ResNet di Facebook}{53}{section.489}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Addestramento su CIFAR}{54}{section.532}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Top-1 e Top-5 training accuracy di ResNet sul dataset CIFAR10\relax }}{55}{figure.caption.533}}
-\newlabel{fig:res-train}{{5.3}{55}{Top-1 e Top-5 training accuracy di ResNet sul dataset CIFAR10\relax }{figure.caption.533}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.4}LeNet vs ResNet: confronto}{55}{section.535}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Top-1 e Top-5 validation accuracy di ResNet sul dataset CIFAR10\relax }}{56}{figure.caption.534}}
-\newlabel{fig:res-val}{{5.4}{56}{Top-1 e Top-5 validation accuracy di ResNet sul dataset CIFAR10\relax }{figure.caption.534}{}}
+\newlabel{Chapter5}{{5}{73}{Experimental Results \& Analysis}{chapter.281}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Experimental setup}{73}{section.282}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Tools}{73}{subsection.283}}
+\@writefile{toc}{\contentsline {subsubsection}{Pipeline implementation}{74}{section*.286}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Datasets}{74}{subsection.287}}
+\@writefile{toc}{\contentsline {subsubsection}{CIFAR-10}{74}{section*.288}}
+\@writefile{toc}{\contentsline {subsubsection}{KITTI}{74}{section*.289}}
+\@writefile{toc}{\contentsline {subsubsection}{LeNet1}{75}{section*.290}}
+\@writefile{toc}{\contentsline {subsubsection}{LeNet-Conv}{75}{section*.291}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}LeNet-2}{75}{subsection.293}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces LeNet-Conv architecture. \relax }}{76}{table.caption.292}}
+\newlabel{tab:lenet-conv}{{5.1}{76}{LeNet-Conv architecture. \relax }{table.caption.292}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces LeNet-2 architecture, used in Zhang et al. \parencite {zhang2015SVD}. \relax }}{76}{table.caption.294}}
+\newlabel{tab:lenet2}{{5.2}{76}{LeNet-2 architecture, used in Zhang et al. \parencite {zhang2015SVD}. \relax }{table.caption.294}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces CCNN architecture overview}}{77}{figure.caption.295}}
+\newlabel{fig:CCNN}{{5.1.3}{77}{LeNet-2}{figure.caption.295}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.4}Network-In-Network}{77}{subsection.296}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.5}Core strategy}{77}{subsection.298}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Network in Network architecture. The low rank version is the one by Zhang et al\parencite {zhang2015SVD} \relax }}{78}{figure.caption.297}}
+\newlabel{fig:NIN}{{5.2}{78}{Network in Network architecture. The low rank version is the one by Zhang et al\parencite {zhang2015SVD} \relax }{figure.caption.297}{}}
+\@writefile{toc}{\contentsline {subsubsection}{TD-Block design}{78}{section*.299}}
+\@writefile{toc}{\contentsline {subsubsection}{TD-Block compression}{78}{section*.303}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces The Tensor Decomposition (TD) block proposed in chapter \ref  {Chapter4}. Variations of these block have been tried several times, with ReLU and batch normalization layers in between the three stages.\relax }}{79}{figure.caption.300}}
+\newlabel{fig:bigdata}{{5.3}{79}{The Tensor Decomposition (TD) block proposed in chapter \ref {Chapter4}. Variations of these block have been tried several times, with ReLU and batch normalization layers in between the three stages.\relax }{figure.caption.300}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Weight initialization}{79}{section*.304}}
+\@writefile{toc}{\contentsline {paragraph}{Xavier}{79}{section*.305}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces LeNet-1 with TD-Block architecture}}{80}{table.caption.308}}
+\newlabel{tab:lenet1-cpd}{{5.3}{80}{LeNet-1 with TD-Block architecture}{table.caption.308}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Experiment 1: TD-Design LeNet-1}{80}{section.306}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}TD-Block architecture}{80}{subsection.307}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Original vs. Decomposed}{80}{subsection.309}}
+\newlabel{sublable1}{{\caption@xref {sublable1}{ on input line 358}}{81}{Original vs. Decomposed}{figure.caption.310}{}}
+\newlabel{sublable2}{{\caption@xref {sublable2}{ on input line 359}}{81}{Original vs. Decomposed}{figure.caption.310}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces TD Architectures comparison for training accuracy and training loss.\relax }}{81}{figure.caption.310}}
+\newlabel{fig:TD-comparison}{{5.4}{81}{TD Architectures comparison for training accuracy and training loss.\relax }{figure.caption.310}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}TD configurations comparison}{82}{subsection.311}}
+\@writefile{toc}{\contentsline {paragraph}{RELU effect}{82}{section*.316}}
+\@writefile{toc}{\contentsline {paragraph}{On Xavier init}{82}{section*.317}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces TD Architectures comparison for training accuracy and training loss.\relax }}{83}{figure.caption.315}}
+\newlabel{fig:TD-comparison}{{5.5}{83}{TD Architectures comparison for training accuracy and training loss.\relax }{figure.caption.315}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Accuracy and parameters for the baseline and the different configurations of TD-block models.\relax }}{84}{table.caption.319}}
+\newlabel{tab:td-conf}{{5.4}{84}{Accuracy and parameters for the baseline and the different configurations of TD-block models.\relax }{table.caption.319}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}Overall}{84}{subsection.318}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.5}Future ideas}{84}{subsection.320}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Experiment 2: TD-Compression LeNet-Conv}{85}{section.321}}
+\@writefile{toc}{\contentsline {paragraph}{Decomposition pipeline}{85}{section*.322}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}CP}{85}{subsection.328}}
+\newlabel{sublable1}{{\caption@xref {sublable1}{ on input line 466}}{86}{Decomposition pipeline}{figure.caption.327}{}}
+\newlabel{sublable2}{{\caption@xref {sublable2}{ on input line 467}}{86}{Decomposition pipeline}{figure.caption.327}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces CP-decomposition: the order of the layers decomposition does not affect overall performance.\relax }}{86}{figure.caption.327}}
+\newlabel{fig:order-comparison}{{5.6}{86}{CP-decomposition: the order of the layers decomposition does not affect overall performance.\relax }{figure.caption.327}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces A comprehensive summary of the CP-decomposition on LeNet-Conv. Start indicates the testing accuracy and training loss before decomposing the layer, while the fine-tuned column shows the same metrics after the decomposion+fine-tuning step. In bold the most interesting results. \relax }}{87}{table.caption.329}}
+\newlabel{tab:allconv-cp-results}{{5.5}{87}{A comprehensive summary of the CP-decomposition on LeNet-Conv. Start indicates the testing accuracy and training loss before decomposing the layer, while the fine-tuned column shows the same metrics after the decomposion+fine-tuning step. In bold the most interesting results. \relax }{table.caption.329}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Tucker}{87}{subsection.330}}
+\newlabel{sublable1}{{\caption@xref {sublable1}{ on input line 516}}{88}{Tucker}{figure.caption.331}{}}
+\newlabel{sublable2}{{\caption@xref {sublable2}{ on input line 517}}{88}{Tucker}{figure.caption.331}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Tucker decomposition: most of the layers reach the global minimum very fast. For obvious reasons, the largest layer comprised of 1.18 million parameters takes more time to converge.\relax }}{88}{figure.caption.331}}
+\newlabel{fig:allconv-tucker}{{5.7}{88}{Tucker decomposition: most of the layers reach the global minimum very fast. For obvious reasons, the largest layer comprised of 1.18 million parameters takes more time to converge.\relax }{figure.caption.331}{}}
+\@writefile{toc}{\contentsline {paragraph}{Mixed Decomposition}{88}{section*.332}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Xavier}{88}{subsection.333}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces CP decomposition with Xavier initialization. Convergence as fast as the other methods, but in a smoother way, confirming the benefit of this type of initialization. \relax }}{89}{figure.caption.334}}
+\newlabel{fig:allconv-xavier}{{5.8}{89}{CP decomposition with Xavier initialization. Convergence as fast as the other methods, but in a smoother way, confirming the benefit of this type of initialization. \relax }{figure.caption.334}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}Overall}{89}{subsection.335}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Experiment 3: TD-Compression LeNet-2}{89}{section.336}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}CP}{90}{subsection.337}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.9}{\ignorespaces CP decomposition on LeNet-2. \relax }}{90}{figure.caption.338}}
+\newlabel{fig:zhang-cp-loss}{{5.9}{90}{CP decomposition on LeNet-2. \relax }{figure.caption.338}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Tucker}{90}{subsection.340}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces CP-overall compression results\relax }}{91}{table.caption.339}}
+\newlabel{tab:zhang-cp}{{5.6}{91}{CP-overall compression results\relax }{table.caption.339}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces Tucker overall compression results.\relax }}{91}{table.caption.341}}
+\newlabel{tab:zhang-tucker}{{5.7}{91}{Tucker overall compression results.\relax }{table.caption.341}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Xavier comparison}{91}{subsection.342}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.4}Overall}{91}{subsection.345}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces CP vs. Xavier init comparison for different decomposition of the same layer.\relax }}{92}{figure.caption.343}}
+\newlabel{fig:xavier-vs-cp}{{5.10}{92}{CP vs. Xavier init comparison for different decomposition of the same layer.\relax }{figure.caption.343}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.11}{\ignorespaces Tucker vs. Xavier init comparison for conv2 layer.\relax }}{92}{figure.caption.344}}
+\newlabel{fig:xavier-vs-tucker}{{5.11}{92}{Tucker vs. Xavier init comparison for conv2 layer.\relax }{figure.caption.344}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Experiment 4: TD-Compression NIN}{92}{section.346}}
+\newlabel{}{{\caption@xref {}{ on input line 648}}{93}{CP}{figure.caption.348}{}}
+\newlabel{}{{\caption@xref {}{ on input line 649}}{93}{CP}{figure.caption.348}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.12}{\ignorespaces Training metrics for CP-decomposition of NIN model.\relax }}{93}{figure.caption.348}}
+\newlabel{fig:NIN-cp}{{5.12}{93}{Training metrics for CP-decomposition of NIN model.\relax }{figure.caption.348}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}CP}{93}{subsection.347}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}Tucker}{93}{subsection.350}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.8}{\ignorespaces CP overall results on NIN.\relax }}{94}{table.caption.349}}
+\newlabel{tab:NIN-cp}{{5.8}{94}{CP overall results on NIN.\relax }{table.caption.349}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.13}{\ignorespaces Tucker compression on NIN's three decomopsable layers. Note how bad Xavier init performes on one of them.\relax }}{94}{figure.caption.351}}
+\newlabel{fig:NIN-tucker}{{5.13}{94}{Tucker compression on NIN's three decomopsable layers. Note how bad Xavier init performes on one of them.\relax }{figure.caption.351}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}Overall}{94}{subsection.353}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}Experiment 5: TD-Design CCNN}{94}{section.354}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.9}{\ignorespaces Tucker compression results on NIN.\relax }}{95}{table.caption.352}}
+\newlabel{tab:NIN-tucker}{{5.9}{95}{Tucker compression results on NIN.\relax }{table.caption.352}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.1}TD-Block architecture}{95}{subsection.355}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.10}{\ignorespaces AUC evaluation on 174 images of the KITTI stereo benchmark dataset. The smallest model outperforms the baseline. \relax }}{96}{table.caption.360}}
+\newlabel{tab:CCNN}{{5.10}{96}{AUC evaluation on 174 images of the KITTI stereo benchmark dataset. The smallest model outperforms the baseline. \relax }{table.caption.360}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.2}Training}{96}{subsection.358}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}Evaluation & Results}{96}{section.359}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.1}Discussion}{96}{subsection.362}}
+\newlabel{}{{\caption@xref {}{ on input line 757}}{97}{Evaluation & Results}{figure.caption.361}{}}
+\newlabel{}{{\caption@xref {}{ on input line 758}}{97}{Evaluation & Results}{figure.caption.361}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.14}{\ignorespaces Area Under the Curve (AUC) computed per each test image for the two decomposed models (in green) and the optimal solution (in orange).\relax }}{97}{figure.caption.361}}
+\newlabel{fig:AUC}{{5.14}{97}{Area Under the Curve (AUC) computed per each test image for the two decomposed models (in green) and the optimal solution (in orange).\relax }{figure.caption.361}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.8}Analysis of the results}{98}{section.363}}
 \@setckpt{Chapters/Chapter5}{
-\setcounter{page}{57}
+\setcounter{page}{99}
 \setcounter{equation}{0}
-\setcounter{enumi}{3}
+\setcounter{enumi}{2}
 \setcounter{enumii}{0}
 \setcounter{enumiii}{0}
 \setcounter{enumiv}{0}
@@ -27,13 +118,13 @@
 \setcounter{mpfootnote}{0}
 \setcounter{part}{0}
 \setcounter{chapter}{5}
-\setcounter{section}{4}
+\setcounter{section}{8}
 \setcounter{subsection}{0}
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{4}
-\setcounter{table}{0}
+\setcounter{figure}{14}
+\setcounter{table}{10}
 \setcounter{LT@tables}{1}
 \setcounter{LT@chunks}{1}
 \setcounter{ContinuedFloat}{0}
@@ -41,7 +132,7 @@
 \setcounter{nlinenum}{0}
 \setcounter{subfigure}{0}
 \setcounter{subtable}{0}
-\setcounter{lstnumber}{42}
+\setcounter{lstnumber}{24}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
@@ -51,7 +142,7 @@
 \setcounter{citetotal}{0}
 \setcounter{multicitecount}{0}
 \setcounter{multicitetotal}{0}
-\setcounter{instcount}{52}
+\setcounter{instcount}{0}
 \setcounter{maxnames}{3}
 \setcounter{minnames}{3}
 \setcounter{maxitems}{3}
@@ -150,10 +241,10 @@
 \setcounter{bbx:relatedcount}{0}
 \setcounter{bbx:relatedtotal}{0}
 \setcounter{cbx@tempcnta}{0}
-\setcounter{cbx@tempcntb}{44}
-\setcounter{Item}{22}
-\setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{73}
+\setcounter{cbx@tempcntb}{0}
+\setcounter{Item}{64}
+\setcounter{Hfootnote}{1}
+\setcounter{bookmark@seq@number}{128}
 \setcounter{lstlisting}{0}
 \setcounter{section@level}{1}
 }

@@ -1,119 +1,804 @@
-\chapter{Addestrare un modello allo stato dell'arte} % Main chapter title
-\label{Capitolo5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-\def \path {Figures/C5}
+% Chapter Template
+\chapter{Experimental Results \& Analysis} % Main chapter title
+\label{Chapter5}
+\def \teoria {Figures/teoria}
+\def \path	 {Figures/C5}
+\def \plots  {Figures/plots}
+
+In chapter \ref{Chapter4} the theoretical background of tensor decomposition has been introduced. The way Tucker and CP decomposition can be applied on convolutional layers has suggested a specific micro-architecture, hence the TD-block has been introduced. Following this line, this chapter will show how to apply the TD-block as a building block and as a compression block for five different models. 
+
+
 %--------------------------------------------------------------------
 %	SECTION 1
 %--------------------------------------------------------------------
-\section{Deep Residual Network}
-Menzionata nel Capitolo \ref{Capitolo3} a causa del clamore riscosso per l'incredibilmente bassa percentuale d'errore nella ImageNet Challenge del 2015, la \emph{Deep Residual Network} - o ResNet - è una CNN \emph{molto} profonda presentata da Microsoft Research Asia \parencite{resnet} che ha stravolto tutti i record in classification, detection e localization. 
-\\ 
-L'architettura è modulare: si basa su un blocco detto \emph{"residual block"} (figura \ref{fig:residual}) che viene ripetuto N volte, prima dell'ultimo strato di classificazione. L'idea dietro a questo blocco viene chiamata \emph{residual learning} e funziona così: 
+\section{Experimental setup}
+In this section, we break down the dataset and the five different architectures on which tensor decomposition has been applied. The core strategies of the experiments will be described and motivated. 
+
+
+\subsection{Tools}
+All the experiments have been executed in Ubuntu 17.10 \texttt{Intel(R) Core(TM) i7-4510U @2.00 GHz} cpu for testing and on a \texttt{NVIDIA GeForce 840M} with 2GB of memory for training. Most of the experiments have been implemented in \emph{PyTorch} \parencite{pytorch} motivated by its flexibility and fast prototyping. For example, network surgery and decomposition are more intuitive in PyTorch than other frameworks. Regarding experiment 5 instead, the implementation was done in TensorFlow\parencite{tensoflow} and Keras\parencite{keras}.  
+
+About tensor decomposition, two frameworks have been adopted for the experiments: 
 \begin{enumerate}
-\item l'input $x$ va attraverso una serie \texttt{conv-relu-conv} dando in output un certo $F(x)$;
-\item a questo viene aggiunto l'input originale: $H(x) = F(x) + x$;
-\item $F(x)$ è chiamato residual learning. 
-\end{enumerate}\\ 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=0.6\textwidth]{\path/residual.jpg} 
- \caption{Un "Residual Block", all'input viene aggiunto F(x) che è il residual}
- \label{fig:residual}
-\end{figure}
+    \item \texttt{TensorLab} toolbox for MATLAB \parencite{Wtensorlab}: very comprehensive tool for general tensor computations. It provides a plethora of algorithms and optimizations to compute tensor factorizations. \\ 
+    There are also interesting tools for tensor visualization that could be useful for further investigations on the convolutional layer tensor structure. 
+    
+    \item \texttt{Tensorly} toolbox for Python \parencite{tensorly}: it is a light wrapping around NumPy but provides very few optimizations compared to TensorLab; for instance only ALS and HOOI to compute CP and Tucker respectively. Nevertheless, it gets the job done and easily embeddable into deep learning frameworks, as it is built on NumPy. \\
+    However, for large convolutional layers with many activations (as the first ones) with large dense tensors it can stall or occur in memory errors (it saturates the RAM). 
+\end{enumerate}
 
-Nelle CNN normalmente si passa direttamente da $x$ a $F(x)$, la quale è una rappresentazione completamente nuova che non mantiene l'informazione dell'input originale. La novità qui, invece, consiste nel mantenere queste informazioni lungo tutta la rete; ogni blocco esegue una sorta di fine-tuning delle informazioni apprese negli strati precedenti, e secondo gli autori è più facile ottimizzare un "residual mapping" anziché un "unreferenced mapping". 
+\subsubsection{Pipeline implementation}
+The decomposition pipeline has been implemented as a python extensible class. This 'decomposer' class provides methods for CP, Tucker and Xavier decomposition with different configurations. It also features the possibility to manually select the desired compression ratio for a particular layer. The work supports Pytorch and Keras for now, but will be extended to TensorFlow in the near future.  
+
+\subsection{Datasets}
+Experiments have been conducted on two datasets. As for other compression techniques in literature, a classification dataset, CIFAR10, has been selected as the testbed for most experiments. \\
+Furthermore, the TD-block design has been tested on the KITTI dataset, to learn automaticatic estimation of disparity maps. 
+
+
+\subsubsection{CIFAR-10}
+Although the CIFAR10 is not among the most challenging datasets, it provides a relatively fast way to test new ideas while also being not as trivial as MNIST. 
+
+
+The dataset consists of 60000 color images of size 32×32 pixels divided into 10 different classes, with 6000 images per class. 50000 of the images will be used for the training process and 10000 will be used to test the network. \\
+The 10 classes in the dataset are: airplane, automobile, bird, cat, deer, dog, frog,horse, ship and truck. All those classes are completely mutually exclusive, not as in other datasets. Some examples of those classes can be seen in figure \ref{fig:cifar}. 
+
+The batch size for every training has been set to 32, as a common chioce for this dataset.
+
+\subsubsection{KITTI}
+The KITTI stereo/flow benchmark consists of 194 training image pairs and 195 test image pairs, saved in loss less png format. This dataset is provideds a set of real image pairs to evaluate stereo matching algorithms. Specifically, it will be used to compress CCNN \parencite{WCCNN}, a deep convnet that has been able to infer from scratch an effective confidence measure by only using as input cue the disparity map. 
 \\
-Un esempio della profondità di ResNet è rappresentato in figura \ref{fig:resnet}, dove viene confrontata la versione da 34 strati con la VGG-Network, la rete più profonda che venne presentata 2 anni prima. 
-\newpage 
 
+Since this model is trained on 9$\times $ patches of large input images, training will be performed only 20 images while 174 will act as a test set. Although the size of the patches is relatively small compared to the disparity map, it provides to CCNN enough cues to infer the degree of uncertainty for each point.
+
+\subsubsection{LeNet1}
+This model is a variation on the classic LeNet\parencite{lenet} model from Y.LeCun. It is composed by four convolution layers followed by ReLUs, and two fully-connected layers for the final classification. Max pooling and dropout completes the architecture, which is reported in details in table  \ref{tab:lenet1}. The total number of parameters is $1250858$, i.e. $\approx 1.25$ million. 
+\newline 
+
+This model will be used in order to test the TD-block micro-architecture effectiveness. 
+
+
+\begin{comment}
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[]
+\centering
+\caption{Architecture of LeNet-1}
+\label{lenet1}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{LAYER} & \textbf{CHARACTERISTICS}                    \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 32 filters 3$\times$3, padding=1, stride=1  \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                           \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 32 filters 3 $\times$ 3, padding=0 stride=1 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                           \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2               \\ \hline
+Dropout        & p=0.25                                      \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 64 filters 3 $\times$ 3, padding=1 stride=1 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                           \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 64 filters 3 $\times$ 3, padding=0 stride=1 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                           \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2               \\ \hline
+\rowcolor[HTML]{FFFFFF} 
+Dropout        & p=0.25                                      \\ \hline
+\rowcolor[HTML]{FBF1A2} 
+FC             & 512 units                                   \\ \hline
+\rowcolor[HTML]{FBF1A2} 
+FC             & \#Classes (=10) units                       \\ \hline
+\end{tabular}
+\caption{Architecture of LeNet-1}
+\label{tab:lenet1}
+\end{table}
+\end{comment}
+
+Different models:  LeNet-1 (classic) LeNet-Conv (with fc layers converted in conv)  LeNet-2 (the one used in Zhang et al., metodo maragno) NIN (Network in Network used in Zhang et al.)  
+CCNN (Poggi)
+
+
+\subsubsection{LeNet-Conv}
+The \texttt{LeNet-Conv} model is similar to the previous one with the difference of having convolutional layers as classifiers instead of fully-connected ones. The conversion has been applied as described in chapter \ref{Chapter3}. Additionally it features BatchNorm layers. The whole architecture is depicted in table \ref{tab:lenet-conv}. 
+
+Therefore it has identical accuracy while being fully decomposable. The number of trainable parameters is also the same.  
+
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{LAYER} & \cellcolor[HTML]{FFFFFF}\textbf{CHARACTERISTICS}          \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 32 filters 3$\times$3, padding=1, stride=1                \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                         \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 32 filters 3 $\times$ 3, padding=0 stride=1               \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                         \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2                             \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 64 filters 3 $\times$ 3, padding=1 stride=1               \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                         \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 64 filters 3 $\times$ 3, padding=0 stride=1               \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                         \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2                             \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 512 filters $6 \times 6$, padding=0, stride=1             \\ \hline
+ReLU           & -                                                         \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & \#Classes (=10) filters $1 \times 1$, padding=0, stride=1 \\ \hline
+\rowcolor[HTML]{C3EDF8} 
+BNORM          & eps = 1e-5 momentum=0.1                                   \\ \hline
+\end{tabular}
+\caption{LeNet-Conv architecture. }
+\label{tab:lenet-conv}
+\end{table}
+
+
+
+\subsection{LeNet-2}
+This is another variation on LeNet, with fewer layers with bigger filter sizes and more channels, i.e. it is less deep but wider. This architecture is useful as it was also employed by Zhang et al. \parencite{zhang2015SVD} and hence can be a good measure of comparison between compression methods. 
+
+Table \ref{tab:lenet2} summarizes the full architecture. 
+
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{LAYER} & \cellcolor[HTML]{FFFFFF}\textbf{CHARACTERISTICS} \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 192 filters 5$\times$5 padding=2, stride=1       \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2                    \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 128 filters 5 $\times$ 5, padding=2 stride=1     \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2                    \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 256 filters 3 $\times$ 3, padding=2 stride=1     \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL           & pool size {[}2, 2{]} stride=2                    \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+CONV           & 64 filters 1 $\times$ 1, padding=0 stride=1      \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU           & -                                                \\ \hline
+Dropout        & p=0.5                                            \\ \hline
+\rowcolor[HTML]{FBF1A2} 
+FC             & 256 units                                        \\ \hline
+Dropout        & p=0.5                                            \\ \hline
+\rowcolor[HTML]{FBF1A2} 
+FC             & \#Classes (=10) units                            \\ \hline
+\end{tabular}
+\caption{LeNet-2 architecture, used in Zhang et al. \parencite{zhang2015SVD}. }
+\label{tab:lenet2}
+\end{table}
+
+subsection{CCNN}
+Proposed by Poggi and Mattoccia \parencite{WCCNN} at BMVC 2016, CCNN is a single channel network capable of infering the confidence measure of a pixel just by taking as the only input cue its disparity map. CCNN outperformed state-of-the-art methods with margin peaks of 20\%, being the first method in this specific task to be based on deep learning. 
+\newline 
+
+The architecture of CNN is made of a single channel network that takes as input N×N patches, each one containing disparity values normalized between zero and one, represented by a 1×N×N tensor. 
+
+
+
+The first part of this model is made of $\frac{N-1}{2}$ convolutional layers (with N equals to the patch size), each one followed by a Rectifier Linear Unit (ReLU).
+Each convolutional layer contains F filters of size 3×3. No padding or stride is applied, making the final output of the convolutional layers, a F×1×1 tensor (each layer reduces the initial size N by 2 pixels), directly forwarded to the fully-connected part of the network deploying  two  layers,  made  of L neurons  each,  followed  by  ReLUs  (1).   The  final  layer collapses into a single neuron in charge of the regression. According to a common methodology usually deployed when dealing with deep architectures, the authors replaced  fully-connected layers with convolutional layers made of L 1x1 kernels.  This makes possible to train the network on image patches  as well as to compute a dense confidence map with a single forward of the full resolution image with a 0-padding of $\frac{N-1}{2}$ around it, keeping for the output the same w×h size of the input disparity map due to the absence of pooling operations or stride factors inside the convolutional layers. 
+
+The CCNN architecture is described in figure \ref{fig:CCNN}. 
+
+
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.75\textwidth]{\path/CCNN.png} 
+ \caption[CCNN architecture overview]{Architecture of CCNN to infer the CM from from the raw disparitymap.  It is a single channel network, designed for 9×9 image patches.  Four convolutional layers apply 64 overlapping kernels (stride equal to 1) of size 3×3. Two fully-connected layers made of 100 neurons each (i.e., 100 1×1 convolution kernels) lead to the final regression node.}.}
+ \label{fig:CCNN}
+\end{figure}
+
+
+\subsection{Network-In-Network}
+The Network-In-Network model (NIN) has been proposed in \citep{NIN} as a peculiar model which first leveraged on one-by-one convolution, explained in chapter \ref{Chapter3}. It features a fully-convolutional architecture with three main layers that can be decomposed, conv1, conv4 and conv7. 
+
+The modified version, used also in Zhang et al \parencite{zhang2015SVD}, is depicted in figure \ref{fig:NIN}.
 \begin{figure}[h!]
  \centering
- \includegraphics[width=0.7\textwidth]{\path/resnet.png} 
- \caption{Confronto architetture: VGG-Net la più innovativa della competizione ILSVRC 2014, rete classica a 34 strati (centro), Residual Network a 34 strati (sinistra)}
- \label{fig:resnet}
+ \includegraphics[width=0.65\textwidth]{\path/NIN.png} 
+ \caption{Network in Network architecture. The low rank version is the one by Zhang et al\parencite{zhang2015SVD} }
+ \label{fig:NIN}
 \end{figure}
-\bigskip
-Un'altra ragione per cui ResNet è stupefacente è che la backpropagation funziona meglio a causa delle somme di ogni layer che distribuiscono la derivata lungo la rete. Inoltre, avere queste scorciatoie che non passano attraverso \texttt{conv-relu} aiuta contro il cruciale problema dei \emph{vanishing gradients}. Quando si usano molti layer uno sull'altro si corre il rischio di non riuscire ad ottimizzare l'apprendimento perché l'errore calcolato con la backprop si perde tra i vari strati e dopo alcuni layer arriva un gradiente nullo che non aiuta nell'apprendimento. Per questa ragione anche, il paper di ResNet è importante: ha dimostrato come poter costruire CNN molto profonde (numero di strati > 100) riuscendo a completare l'apprendimento ed avere inoltre risultati allo stato dell'arte. \\
-Tuttavia, altre analisi sul successo di ResNet \parencite{restudy} sostengono il contrario: anche in essa il problema dei vanishing gradients si manifesta dopo \~20 moduli, e quindi la profondità da sola non può essere la caratteristica principale della rete. Suggeriscono invece, che la rete si comporti come un gruppo di "sotto-reti" più piccole che contribuiscono insieme a generare la risposta corretta.\\
-È sicuramente un argomento recente e complesso; per ulteriori dettagli si rimanda alla bibliografia. 
- %--------------------------------------------------------------------
+
+\subsection{Core strategy}
+As previously mentioned, the experiments follow the micro-architecture pattern with the goal of testing the effectiveness of the TD-Block on both new architectures trained from scratch and pre-trained models. 
+
+\subsubsection{TD-Block design}
+As for the model design, different TD-block configurations have been tested. The base model is the one depicted in \ref{fig:td-block}. The middle convolution block can be either separable or regular spatial convolution, depending on the type of decomposition. \\
+Since this is an arbitrary design choice, the following points were weighed the decision: 
+
+\begin{itemize}
+    \item since we are going to train from scratch, there is no particular reconstruction error constraint to recover.
+    
+    \item the goal is to find the most effective way to compress a CNN.
+\end{itemize}
+
+Therefore the type of convolution in the middle have always been the separable one suggested in section $4.3.1$ of chapter \ref{Chapter4}, proposed by Lebedev et al. \parencite{lebedev}. This configuration as a building block, represents an original idea that has not been fully explored, while being also the more aggressive compression. 
+
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=0.5\textwidth]{\path/TD-block.png} 
+ \caption{The Tensor Decomposition (TD) block proposed in chapter \ref{Chapter4}. Variations of these block have been tried several times, with ReLU and batch normalization layers in between the three stages.}
+ \label{fig:bigdata}
+\end{figure}
+
+Two main variations on the original TD-block were tried: 
+\begin{enumerate}[(i)]
+    \item adding a BatchNorm layer between each convolution; 
+    
+    \item adding ReLUs plus BatchNorm between each convolution. 
+\end{enumerate}
+
+This design scheme has been tested on LeNet-1 and CCNN. 
+
+Note that other configuration are possible and will be explored in future work. 
+
+\subsubsection{TD-Block compression}
+For each model, compression has been tried in both the Tucker and CP way, as illustrated in chapter \ref{Chapter4}. 
+
+Given that Tucker decomposition is more conservative, in the experiments most of the time, it represents a good trade-off for fast convergence and good approximation. 
+\newline 
+
+On the contrary, CP-decomposition is more aggressive and during the experiments it has been pushed by enforcing smaller ranks compared to Tucker, and thus getting a more compressed model. As indicated in the framework for tensor decomposition proposed in \ref{subsec:framework} of the previous chapter, sometimes VBMF estimates ranks that are too high, in the sense that it is possible to set a lower rank and then gamble on fine-tuning to recover (in higher time) the same accuracy.  
+
+\subsubsection{Weight initialization}
+As mentioned in chapter \ref{Chapter3}, weight initialization is important to get a faster convergence to the global minimum. The initialization is, in fact, together with the optimizer, the main tool that is able to change how the BackProp algorithm starts and ends through the loss.
+
+
+After decomposing a tensor, the weights need to be adjusted to recover the accuracy; therefore, it is also possible to exploit the structure of the decomposition but initialize the weights in a different way. The former would assume that, since the TD-block is appropriate to substitute that specific layer, a uniform random initialization could also reach a global minimum after few iteration. 
+
+\paragraph{Xavier}
+Xavier initialization makes sure the weights are "just right" (not too large neither too small), keeping them in a reasonable range. Basically, Xavier init selects the adequate standard deviation in order to avoid the well-known issues of vanishing and exploding gradients. 
+
+As suggested for future work by Kim et al. \parencite{Tucker-mobile}, Xavier init has been tried throughout the experiments. 
+
+
+%--------------------------------------------------------------------
 %	SECTION 2
 %--------------------------------------------------------------------
-\section{Implementazione di ResNet di Facebook}
-L'implementazione di ResNet è decisamente complessa ma fortunatamente nella community si rilasciano spesso le implementazioni dei modelli più popolari per stimolare i ricercatori a riprodurre gli esperimenti e migliorare sempre di più lo stato dell'arte. A questo proposito Facebook ha rilasciato il codice per diversi modelli di ResNet da 18-34-50-101-152-200 strati. \\
-Nei seguenti snippet, vi è l'implementazione della scorciatoia identità e del residual block: 
+\section{Experiment 1: TD-Design LeNet-1}
+This experiment aims at discovering the effectiveness of the TD-block design. 
 
-\begin{lstlisting}[language={[5.2]Lua}]
--- The shortcut layer is either identity or 1x1 convolution
-   local function shortcut(nInputPlane, nOutputPlane, stride)
-      local useConv = shortcutType == 'C' or
-         (shortcutType == 'B' and nInputPlane ~= nOutputPlane)
-      if useConv then
-         -- 1x1 convolution
-         return nn.Sequential()
-            :add(Convolution(nInputPlane, nOutputPlane, 1, 1, stride, stride))
-            :add(SBatchNorm(nOutputPlane))
-      elseif nInputPlane ~= nOutputPlane then
-         -- Strided, zero-padded identity shortcut
-         return nn.Sequential()
-            :add(nn.SpatialAveragePooling(1, 1, stride, stride))
-            :add(nn.Concat(2)
-               :add(nn.Identity())
-               :add(nn.MulConstant(0)))
-      else
-         return nn.Identity()
-      end
-   end
 
-   -- The basic residual layer block for 18 and 34 layer network, and the
-   -- CIFAR networks
-   local function basicblock(n, stride)
-      local nInputPlane = iChannels
-      iChannels = n
+Training was done for 50 epochs, with Adam optimizer and a learning rate $\eta = 0.001$ decreasing by 0.1 every 20 epochs. In this way, the baseline model reached an accuracy of $74\%$.  
 
-      local s = nn.Sequential()
-      s:add(Convolution(nInputPlane,n,3,3,stride,stride,1,1))
-      s:add(SBatchNorm(n))
-      s:add(ReLU(true))
-      s:add(Convolution(n,n,3,3,1,1,1,1))
-      s:add(SBatchNorm(n))
+\subsection{TD-Block architecture}
+The modified architecture of LeNet-1 has two main differences: (i) it converts the FC-layers to convolutional ones and (ii) substitutes each of the layer with its corresponding TD-block, with a CP-like configuration. 
+\newline 
 
-      return nn.Sequential()
-         :add(nn.ConcatTable()
-            :add(s)
-            :add(shortcut(nInputPlane, n, stride)))
-         :add(nn.CAddTable(true))
-         :add(ReLU(true))
-   end
-\end{lstlisting}
- 
-Microsoft ha addestrato ResNet per circa 3 settimane su 8 GPU di ultima generazione. Data l'evidente mancanza di hardware opportuno per un'"impresa" del genera si è deciso di utilizzare il modello più piccolo, quello a 18 strati. In apprendice \ref{AppendixB} è mostrata una rappresentazione testuale del modello, ove se ne può apprezzare la complessità e lunghezza. 
+The full decomposed architecture has only 27K parameters, boasting a $45 \times$ compression ratio. The rank has been set differently for the first convolution layers (lower rank) and the last ones (higher rank), with values in the range $[10-40]$ Details about the architecture are reported in table \ref{tab:lenet1-cpd}.
 
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{LAYER} & \textbf{CHARACTERISTICS} \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+TD-Block & $32 \times [1,1] + R \times 3 + 3 \times R + 32 \times [1,1] $ \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU & - \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+TD-Block & $32 \times [1,1] + R \times 3 + 3 \times R + 32 \times [1,1] $ \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU & - \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL & pool size {[}2, 2{]} stride=2 \\ \hline
+Dropout & p=0.25 \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+TD-Block & $64 \times [1,1] + R \times 3 + 3 \times R + 64 \times [1,1] $ \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU & - \\ \hline
+\rowcolor[HTML]{CBCEFB} 
+TD-Block & $64 \times [1,1] + R \times 3 + 3 \times R + 64 \times [1,1] $ \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+ReLU & - \\ \hline
+\rowcolor[HTML]{FFCCC9} 
+POOL & pool size {[}2, 2{]} stride=2 \\ \hline
+\rowcolor[HTML]{FFFFFF} 
+Dropout & p=0.25 \\ \hline
+\rowcolor[HTML]{FBF1A2} 
+TD-Block & $64 \times [1,1] + R \times 6 + 6 \times R + 512 \times [1,1] $ \\ \hline
+\rowcolor[HTML]{FBF1A2} 
+TD-Block & $512 \times [1,1] + R \times 1 + 1 \times R + 10 \times [1,1] $ \\ \hline
+\end{tabular}
+\caption[LeNet-1 with TD-Block architecture]{Architecture of LeNet-1 with CP-like TD-blocks. Each TD-block has four convolution layers. The number of parameters is reported in the characteristics column. Note that, each TD-block has BatchNorm layers between each convolution. }
+\label{tab:lenet1-cpd}
+\end{table}
+
+\subsection{Original vs. Decomposed}
+Training with the same setup leads to the result shown in figure \ref{fig:baseline-TD}. 
+
+\begin{figure}
+    \subfloat{\label{sublable1}\includegraphics[width=.9\textwidth]{\plots/TD-vs-baseline.png} \\
+    \subfloat{\label{sublable2}\includegraphics[width=.9\textwidth]{\plots/TD-vs-baseline-loss.png} 
+    \caption{TD Architectures comparison for training accuracy and training loss.}
+    \label{fig:TD-comparison}
+\end{figure}
+
+Clearly, the TD-block design outperforms the baseline by a significant margin, by reaching an accuracy of $82\%$ against the original $74\%$ of the LeNet-1 model. By looking at the training loss we can see that it also converges faster to a better minimum.  
+
+
+\subsection{TD configurations comparison}
+To avoid confusion the CP-like configuration of the TD-block will have a CP-prefix. That aside, three main configuration of the TD-block were tested:
+
+\begin{enumerate}
+    \item CP-BN: \texttt{CONV-BN-CONV-BN-CONV-BN-CONV-BN}
+    
+    \item CP-BN-RELU: \texttt{CONV-BN-RELU-CONV-BN-RELU-CONV-BN-RELU-CONV-BN-RELU}
+    
+    \item CP-BN-Xavier: same as the CP-BN but with Xavier initialization. 
+\end{enumerate}
+
+As can be notice, the original configuration from Lebedev et al \parencite{lebedev} is missing. The main issue is that in the proposed all TD-block architecture \ref{tab:lenet1-cpd}, the number of convolutional layers skyrockets from 4 to 24 ($\times$ 4, plus the conversion of the FC layers). Therefore, it probably incurs in the vanishing gradient problem, as the training is too slow to converge. 
+\newline 
+
+The comparison between the three proposed configurations is shown in figure. \ref{fig:TD-comparison}
+
+
+\begin{figure}
+    \subfloat{\includegraphics[width=1\textwidth]{\plots/TD-architecture-acc.png} \\
+    \subfloat{\includegraphics[width=1\textwidth]{\plots/TD-architecture-loss.png} 
+    \caption{TD Architectures comparison for training accuracy and training loss.}
+    \label{fig:TD-comparison}
+\end{figure}
+
+\paragraph{RELU effect}: 
+As can be seen, the RELU configuration performs noticeably worse than the other two, which are closely comparable. 
+As also found by F. Chollet in the context of depthwise separable convolution\parencite{chollet}, the absence of non-linearity leads to both faster convergence and better final performance. According to the author, it may be that the depth of the intermediate feature spaces on which spatial convolutions are applied is critical to the usefulness of the non-linearity: for feature spaces with many channels the non linearity is useful to enhance the most important ones, but for shallow ones - the CP-like architecture employs a 1-to-1 channel connection - it becomes possibly harmful, due to a loss of information. 
+
+In other words, when the information contained in the layers is redundant non-linearities helps to extract the important features and squash away the rest; on the other side, the filters in the TD- block are so few that are "all important" and RELU would cut away important information. 
+
+\paragraph{On Xavier init}: 
+Surprisingly, Xavier initialization did not improve the overall performance of the network. At testing time the two configurations were similar with the regular one getting an $82\%$ and the xavier one an $81\%$ of accuracy. This may be due to the heavy batch normalization use amidst the convolutional layers that already helps convergence a lot. \\
+
+
+
+\subsection{Overall} 
+The TD architecture have proven to converge faster and to be able to generalize better than the baseline model, while having only $2\%$ of the original number of parameters. This leads to few observations: 
+    \begin{itemize}
+        \item the very low number of parameters acts as a form of \emph{regularization}, preventing the model to be overly complex, thus avoiding over-fitting. 
+        
+        \item There is a very high percentage of redundancy between the channels of the CNN. This is in line with what has been explained in chapter 3 about network design. 
+        
+        \item There is an exploitable correlation also between the 9 (in this case) values of each kernel. This is a good hint for future applications of separable convolution (see chapter 3, section \ref{subsec:separable}), that will provide an even more effective compression when the kernel size is 5 of higher. \\
+        Differently from the previous point, this architecture has not been exploited yet in literature. 
+        
+        \item FC layers can be converted and then decomposed as well, going from 1.18 millions down to $\approx$8 thousands. The latter, of course, brings most of the compression ratio. 
+    \end{itemize}
+
+Table \ref{tab:td-conf} reports a summary of the results. 
+\newline 
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Model & Parameters & Test Accuracy & $\mathcal{C}_r$ \\ \midrule
+\multicolumn{1}{|c|}{LeNet-1 (baseline)} & \multicolumn{1}{c|}{$\approx$ 1.2 Million} & \multicolumn{1}{c|}{74\%} & \multicolumn{1}{c|}{-} \\ \midrule
+\multicolumn{1}{|c|}{CP-BN} & \multicolumn{1}{c|}{$\approx$ 27K} & \multicolumn{1}{c|}{82\% (+8\%)} & \multicolumn{1}{c|}{45 $\times$} \\ \midrule
+\multicolumn{1}{|c|}{CP-BN-Xavier} & \multicolumn{1}{c|}{$\approx$27K} & \multicolumn{1}{c|}{81\% (+7\%)} & \multicolumn{1}{c|}{45 $\times$} \\ \midrule
+\multicolumn{1}{|c|}{CP-BN-RELU} & \multicolumn{1}{c|}{$\approx$ 27K} & \multicolumn{1}{c|}{77\% (+3\%)} & \multicolumn{1}{c|}{45 $\times$} \\ \bottomrule
+\end{tabular}
+\caption{Accuracy and parameters for the baseline and the different configurations of TD-block models.}
+\label{tab:td-conf}
+\end{table}
+
+This is a promising result and says something about how many parameters in a CNN are actually necessary. Of course, it also depends on the complexity of the dataset, nevertheless a good approximation seems to plausible even for larger models. 
+
+
+\subsection{Future ideas}
+With regard to the loss of information caused by RELU, an idea may be suggested by deep residual networks \ref{subsec:resnet}. By summing up the original input of the TD block to the output, as in Resnet, the loss of information could be recovered. Furthermore, it may even improve overall accuracy. Therefore, a residual learning configuration of the TD-block could be investigated in future work. 
 
 %--------------------------------------------------------------------
 %	SECTION 3
 %--------------------------------------------------------------------
-\section{Addestramento su CIFAR}
-Si è addestrato il modello ResNet-18 su CIFAR10 per circa 160 epoche. I risultati sul training e validation set sono presentati rispettivamente in figura e figura. Sull'asse X vi sono le epoch di training, sull'asse Y la percentuale di errore. 
+\section{Experiment 2: TD-Compression LeNet-Conv}
+In this experiment we are going to actually compress a similar architecture to one trained from scratch in the previous experiment. During the experiments, few questions came out like which layer should be compressed before; in which direction should the compression go and such. The results of this compression could be helpful to setting up guidelines for the future. 
+
+
+\paragraph{Decomposition pipeline}
+Experiments have shown there is no much difference between the order of the decomposition, as long as the decomposition are computed accurately, that is. \\
+
+Basically, four strategies can be outlined: 
+\begin{enumerate}
+    \item \emph{ordered}: from first layer to the last; 
+    
+    \item \emph{reversed}: from last layer to the first; 
+    
+    \item \emph{larger first}: the first layer to be compressed is the one with the highest number of parameter. This can be tricky, but once it is optimized, the other layers should not cause many troubles even with aggressive compression rates. \\
+    The downside of this method is in the pipeline strategy itself. If the compression is performed on each layer subsequently and in an automatic manner (e.g. executed by an automated script) without a supervision, it could result in a bad compression. This is because the largest layer is usually the hardest to be compressed accurately and if the approximation is too harsh, it could be impossible to recover. Consequently, the error propagates on the subsequent compressions as well, resulting, as said, in a drop in accuracy.  
+    
+
+    \item \emph{smaller first} layers get compressed in ascending order of number of parameters. This is probably the safest bet to achieve a good compression. However, it also hides a pitfall. For instance, let A,B and C three convolutional layers with 100K, 700K and 1.7M parameters respectively. Let's say the compression rate has been kept low on A and B in order to do a very aggressive compression only on C (that will contribute more on the overall size), and let C be particularly sensitive to the overall accuracy of the network. In this latter scenario, we could find that the only good approximation of C is a very soft one and thus ending up with very few parameters less than the original model. 
+\end{enumerate}
+
+Results of CP-decomposition in both ordered and reversed way are shown in plots \ref{fig:order-comparison}. As it can be seen, results are almost stackable. 
+
+\begin{figure}
+    \subfloat{\label{sublable1}\includegraphics[width=1\textwidth]{\plots/order-comparison-acc.png} \\
+    \subfloat{\label{sublable2}\includegraphics[width=1\textwidth]{\plots/order-comparison-loss.png} 
+    \caption{CP-decomposition: the order of the layers decomposition does not affect overall performance.}
+    \label{fig:order-comparison}
+\end{figure}
+
+
+
+\subsection{CP}
+Contrary to what usually reported in literature\parencite{lebedev}, Parafac decomposition was comparable to Tucker stability for this experiment. Especially on smaller layers, CP converges very fast (\ref{fig:order-comparison}), as Tucker usually do. 
+\newline 
+
+When dealing with the FC2Conv layer with more than a million parameters, the training is not as smooth but it still converges to a global minimum (loss is 0.19), improving the baseline results by $1\%$ while compressing the whole model by boasting a 29$\times$ compression, with a peak compression rate $\mathcal{C}_r$ of $40\times$ on the larger layer.  
+
+A recap of CP results is in table \ref{tab:allconv-cp-results}. Note the difference between the suggested VBMF rank for the last layer (R=170) and the rank imposed by selecting the desired compression ratio (R=50). 
+
+
+\begin{table}[]
+\begin{center}
+    
+
+\begin{tabular}{@{}l||lllll@{}}
+ \hline
+ \multicolumn{6}{|c|}{\textbf{Parafac Decomposition}} \\
+ \hline
+\toprule
+\textbf{Layer}                                                                             & \textbf{Start}                                                                   & \textbf{Fine-tuned}                                                                           & \textbf{Params}                & \textbf{Compres.}               & \textbf{$\mathcal{C}_r$}                      \\ \midrule
+\multicolumn{1}{|l|}{CONV4}                                                                & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 79\%\\ Loss : 0.193\end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.023\end{tabular}}          & \multicolumn{1}{l|}{36928}            & \multicolumn{1}{l|}{2878}           & \multicolumn{1}{l|}{\textbf{13x}}  \\ \midrule
+\multicolumn{1}{|l|}{CONV(4+3)}                                                            & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.082\end{tabular}}  & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.018\end{tabular}}          & \multicolumn{1}{l|}{18496}            & \multicolumn{1}{l|}{2206}           & \multicolumn{1}{l|}{\textbf{8.5x}} \\ \midrule
+\multicolumn{1}{|l|}{CONV(4+3+2)}                                                          & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 76\%\\ Loss: 0.300\end{tabular}}  & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.033\end{tabular}}          & \multicolumn{1}{l|}{9248}             & \multicolumn{1}{l|}{732}            & \multicolumn{1}{l|}{\textbf{13x}}  \\ \midrule
+\multicolumn{1}{|l|}{CONV(4+3+2+1)}                                                        & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.081\end{tabular}}  & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.033\end{tabular}}          & \multicolumn{1}{l|}{896}              & \multicolumn{1}{l|}{442}            & \multicolumn{1}{l|}{\textbf{2x}}   \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}CONV2FC1\\ Rank=170\end{tabular}}          & \multicolumn{1}{l|}{Loss: 0.738}                                                      & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Acc: 80\%\\ Loss: 0.195\end{tabular}}          & \multicolumn{1}{l|}{1180160}          & \multicolumn{1}{l|}{100472}         & \multicolumn{1}{l|}{\textbf{12x}}  \\ \midrule
+\multicolumn{1}{|l|}{\textbf{\begin{tabular}[c]{@{}l@{}}CONV2FC1 \\ Rank=50\end{tabular}}} & \multicolumn{1}{l|}{\textbf{Loss: 0.981}}                                             & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Acc: 80\%\\ Loss: 0.321\end{tabular}}} & \multicolumn{1}{l|}{\textbf{1180160}} & \multicolumn{1}{l|}{\textbf{29912}} & \multicolumn{1}{l|}{\textbf{40x}}  \\ \midrule
+\textbf{Overall}                                                                           & \textbf{Acc: 79\%}                                                                    & \textbf{Acc: 80\%}                                                                            & \textbf{1252480}                      & \textbf{42922}                      & \textbf{29x}                       \\ \bottomrule
+\end{tabular}
+
+\caption{A comprehensive summary of the CP-decomposition on LeNet-Conv. Start indicates the testing accuracy and training loss before decomposing the layer, while the fine-tuned column shows the same metrics after the decomposion+fine-tuning step. In bold the most interesting results. }
+\label{tab:allconv-cp-results}
+\end{center}
+\end{table}
+
+\subsection{Tucker}
+Tucker achieved similar results but with a weaker compression, probably due to the conservative rank estimation of VBMF. Enforcing of Tucker ranks by selecting a desired compression ratio has been also implemented in the 'decomposer' class but did not achieve the same accuracy of CP at this time. 
+\newline 
+
+Loss and training accuracy can be observed in figure \ref{fig:allconv:tucker}. Training have been done with early stopping, that is why the first layers decomposition stopped around epoch 10, when they actually reach the minimum. The largest layer (FC2CONV) has more than 1 million weights, that is why its convergence takes much more. Nevertheless , the decomposition seems to bring new benefits to the generalization capacity of the model, as reported in the previous experiment. In fact, the overall accuracy on the test set at the end of the decopmosition is of 77\%. 
+ % Overall compression rates are instead reported in table \ref{tab:allconv-tucker}. 
+
+\begin{figure}
+\centering
+    \subfloat{\label{sublable1}\includegraphics[width=.7\textwidth]{\plots/tucker2-acc-allconv.png} \\
+    \subfloat{\label{sublable2}\includegraphics[width=.7\textwidth]{\plots/tucker2-loss-allconv.png} 
+    \caption{Tucker decomposition: most of the layers reach the global minimum very fast. For obvious reasons, the largest layer comprised of 1.18 million parameters takes more time to converge.}
+    \label{fig:allconv-tucker}
+\end{figure}
+
+\paragraph{Mixed Decomposition}: interestengly, it is also possible to mix Tucker and CP in a gradually more aggressive decomposition. This is perfomed by first applying Tucker on the full convolutional layer, and then applying CP decomposition on the central block of the Tucker decomposition. The latter, in fact, features a squared regular spatial convolution that can be further accounted by CP decomposition. This scheme was tried only after the last convergence of Tucker and it managed to reduce the size of the layer by another 5X while showing \emph{no} accuracy drop (i.e. 77\% as before). 
+
+
+\subsection{Xavier}
+It has also tested the CP-Xavier method: applying CP-decomposition architecture first (without computing the actual weights) and initializing with Xavier uniform distribution. %( \texttt{torch.nn.init.xavier_init} for pytorch, and \texttt{tf.contrib.layers.xavier_initializer} for tensorflow). 
+\newline 
+
+Training loss is shown in \ref{fig:allconv-xavier}. Xavier converges as fast as CP in this case but being much smoother, and while fluctuating a bit on testing (77-74-75-77) at the end achieves an optimal accuracy of $79\%$ as Tucker. Hence, this means there is no accuracy drop. 
+
+
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\plots/allconv-xavier-loss.png} 
+ \caption{CP decomposition with Xavier initialization. Convergence as fast as the other methods, but in a smoother way, confirming the benefit of this type of initialization. }
+ \label{fig:allconv-xavier}
+\end{figure}
+
+
+\subsection{Overall}
+This experiment have shown how the order of the decomposition does not affect the final result as long as the approximation can be recovered by fine-tuning for 10 to 50 epochs. Tucker and CP-Xavier had achieved similar results on both compression and accuracy while CP decomposition managed to improve accuracy while having a whopping $\approx 30$ less parameters. 
+
+Overall, all decomposition methods showed promising results. Also, mixed decomposition could represent a combination of Tucker conservative decomposition and CP aggressive one into one pipeline. 
+
+
+%--------------------------------------------------------------------
+%	SECTION 4
+%--------------------------------------------------------------------
+
+\section{Experiment 3: TD-Compression LeNet-2}
+This second LeNet configuration has more dense layers that can be harder to compress but that could also lead to a higher compression rate. In this experiment we will also see how Xavier init compares with CP decomposition with different results compared to the previous experiment. The training of the baseline model have been done without data augmentation (differently from \parencite{zhang2015SVD}) and the baseline model reached an accuracy of 74\% in 50 epochs. That must be kept in mind for comparison results. 
+
+The only layers that have been decomposed are the first three convolutions, in reversed order (conv3-conv2-conv1). However, it must be noted that the last fully-connected layers can be decomposed by applying SVD on its matrices, as explained in chapter \ref{Chapter4}, section \ref{subsec:svd-fc}. 
+
+\subsection{CP}
+CP decomposition performs very well on this network too, confirming the results of the previous experiment. 
+The convergence of all the three decomposition is shown in \ref{fig:zhang-cp-loss}. Interestingly, the decomposition of all three layers converges better than the one of only the second and the one. This may be due to some kind of cross-layer redundancy that can be improved by decomposition only on that specific junction of layers. 
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\plots/zhang-cp-loss.png} 
+ \caption{CP decomposition on LeNet-2. }
+ \label{fig:zhang-cp-loss}
+\end{figure}
+
+
+By compressing the whole model of 4.3$\times$ and the largest layer of over 30$\times$ it is able to achieve an accuracy on the test set of $82\%$, which a +3\% improvement on baseline model. Remarkably, when enforcing a compression rate of 52X on conv3, as reported in \parencite{zhang2015SVD}, CP managed to achieve a 77\% accuracy on the test set, which is still better then baseline. 
+
+More details are shown in table \ref{tab:zhang-cp}. 
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{CP-overall compression results}
+\label{tab:zhang-cp}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Layer                                                                               & Accuracy                                  & $\mathcal{C}_r$                   & Speed-up                           \\ \midrule
+\multicolumn{1}{|l|}{Conv1}                                                         & \multicolumn{1}{l|}{80\% (+6\%)}          & \multicolumn{1}{l|}{4X}           & \multicolumn{1}{l|}{2.3X}          \\ \midrule
+\multicolumn{1}{|l|}{Conv2}                                                         & \multicolumn{1}{l|}{82\% (+8\%)}          & \multicolumn{1}{l|}{31X}          & \multicolumn{1}{l|}{1.7X}          \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Conv3\\ R=VBMF\end{tabular}}        & \multicolumn{1}{l|}{80\% (+6\%)}          & \multicolumn{1}{l|}{25X}          & \multicolumn{1}{l|}{1.2X}          \\ \midrule
+\multicolumn{1}{|l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Conv3\\ R=39\end{tabular}}} & \multicolumn{1}{l|}{\textbf{77\% (+3\%)}} & \multicolumn{1}{l|}{\textbf{52X}} & \multicolumn{1}{l|}{\textbf{1.5X}} \\ \midrule
+\textbf{Overall}                                                                    & \textbf{81\% (+7\%)}                      & \textbf{4.5X}                     & \textbf{3.25X}                     \\ \bottomrule
+\end{tabular}
+\end{table}
+ 
+
+\subsection{Tucker}
+Tucker decomposition improved the accuracy as well, accounting for +6\%. The overall compression ratio is much smaller than CP when both uses VBMF rank estimation. However, Tucker proved to be more stable and training took less iterations than the CP correspectives. Sometimes 5 epochs against 30-40 required by CP. Furthermore, when selecting a very high compression rate, like 63X, on the third convolutional layer, the training managed to converge as well, to a 76\%. The latter is an improving on baseline while providing an aggressive compression as well. 
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{Tucker overall compression results.}
+\label{tab:zhang-tucker}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Layer                                                                                      & Accuracy                                  & $\mathcal{C}_r$                   & Speed-up                           \\ \midrule
+\multicolumn{1}{|l|}{Conv1}                                                                & \multicolumn{1}{l|}{75\% (+1\%)}          & \multicolumn{1}{l|}{0.77X}        & \multicolumn{1}{l|}{2.7X}          \\ \midrule
+\multicolumn{1}{|l|}{Conv2}                                                                & \multicolumn{1}{l|}{79\% (+8\%)}          & \multicolumn{1}{l|}{6.3X}         & \multicolumn{1}{l|}{1.7X}          \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Conv3\\ R3,R4=VBMF\end{tabular}}           & \multicolumn{1}{l|}{80\% (+6\%)}          & \multicolumn{1}{l|}{14.5X}        & \multicolumn{1}{l|}{1.2X}          \\ \midrule
+\multicolumn{1}{|l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Conv3\\ R3=6, R4=41\end{tabular}}} & \multicolumn{1}{l|}{\textbf{76\% (+2\%)}} & \multicolumn{1}{l|}{\textbf{63X}} & \multicolumn{1}{l|}{\textbf{1.5X}} \\ \midrule
+\textbf{Overall}                                                                           & \textbf{80\% (+6\%)}                      & \textbf{3.5X}                     & \textbf{3.25X}                     \\ \bottomrule
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Xavier comparison}
+After several experiments, an interesting point about Xavier init came out. Depending on the quality of the decomposition, CP can converge faster and to a better minimum. This may be due to initial solution, ironically, of the tensor decomposition algorithm itself. An example is shown in figure \ref{fig:xavier-vs-cp}, where two different CP decompositions, A and B, for the same layer converge in different ways; xavier init trajectory is almost identical to B, but inferior to the better A-CP decomposition.
+\
+On the other hand, Tucker decomposition is more stable and converge much faster than a random xavier init. As shown in figure \ref{fig:xavier-vs-tucker}.  
+
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\plots/xavier-vs-cp-loss-conv3.png} 
+ \caption{CP vs. Xavier init comparison for different decomposition of the same layer.}
+ \label{fig:xavier-vs-cp}
+\end{figure}
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\plots/xavier-vs-tucker.png} 
+ \caption{Tucker vs. Xavier init comparison for conv2 layer.}
+ \label{fig:xavier-vs-tucker}
+\end{figure}
+
+
+\subsection{Overall}
+The reported results seem to improve upon the one reported by Zhang et al \parencite{zhang2015SVD}. However, the models may be not fully comparable, due to the lack of data augmentation and the different frameworks. \\
+Noticeably, even with very high compression rates (> 50x) both decomposition techniques managed to achieve an improvement over baseline, with CP getting higher accuracies in the case of such aggressive compression ratios. 
+
+
+%--------------------------------------------------------------------
+%	SECTION 5
+%--------------------------------------------------------------------
+\section{Experiment 4: TD-Compression NIN}
+NIN models introduced in the previous sections, is able to get to 86\% on CIFAR-10 without data augmentation. This specific model can be decomposed only on layer 1, 4 and 7. The other layers are all one-by-one convolutions and thus not suitable for tensor decomposition. 
+
+\subsection{CP}
+CP-decomposition achieved a 5X compression ratio while improving the overall accuracy by 1 point. The training curve in this case was also smooth. Training results are shown in \ref{fig:NIN-cp} while details about compression ratio and overall speedup are reported in table \ref{tab:NIN-cp}.
+
+\begin{figure}
+\centering
+    \subfloat{\label{}\includegraphics[width=1\textwidth]{\plots/NIN-cp-acc.png} \\
+    \subfloat{\label{}\includegraphics[width=1\textwidth]{\plots/NIN-cp-loss.png} 
+    \caption{Training metrics for CP-decomposition of NIN model.}
+    \label{fig:NIN-cp}
+\end{figure}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{CP overall results on NIN.}
+\label{tab:NIN-cp}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Layer                                                                       & Accuracy                         & $\mathcal{C}_r$            & Speed-up                  \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Conv1\\ R=14\end{tabular}}  & \multicolumn{1}{l|}{86\% (+0\%)} & \multicolumn{1}{l|}{4.7X}  & \multicolumn{1}{l|}{2.0X} \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Conv7\\ R=64\end{tabular}}  & \multicolumn{1}{l|}{87\% (+1\%)} & \multicolumn{1}{l|}{12.8X} & \multicolumn{1}{l|}{1.7X} \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Conv4\\ R=100\end{tabular}} & \multicolumn{1}{l|}{86\% (+0\%)} & \multicolumn{1}{l|}{15X}   & \multicolumn{1}{l|}{1.2X} \\ \midrule
+\textbf{Overall}                                                            & \textbf{87\% (+1\%)}             & \textbf{$\sim$5X}          & \textbf{2.5X}             \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Tucker}
+Tucker has proven again to be stable and consistent among the decompositiong. Choosing the ranks with VBMF, it compressed NIN by 2x. Training metrics are shown in figure \ref{fig:NIN-tucker}.  More details are in table \ref{tab:NIN-tucker}.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics[width=1.0\textwidth]{\plots/NIN-tucker.png} 
+ \caption{Tucker compression on NIN's three decomopsable layers. Note how bad Xavier init performes on one of them.}
+ \label{fig:NIN-tucker}
+\end{figure}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{Tucker compression results on NIN.}
+\label{tab:NIN-tucker}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Layer                                                                            & Accuracy                         & $\mathcal{C}_r$           & Speed-up                  \\ \midrule
+\multicolumn{1}{|l|}{Conv1}                                                      & \multicolumn{1}{l|}{86\% (+0\%)} & \multicolumn{1}{l|}{1X}   & \multicolumn{1}{l|}{1.4X} \\ \midrule
+\multicolumn{1}{|l|}{Conv7}                                                      & \multicolumn{1}{l|}{86\% (+0\%)} & \multicolumn{1}{l|}{6.7X} & \multicolumn{1}{l|}{1.7X} \\ \midrule
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Conv3\\ R3,R4=VBMF\end{tabular}} & \multicolumn{1}{l|}{86\% (+0\%)} & \multicolumn{1}{l|}{7.5X} & \multicolumn{1}{l|}{1.2X} \\ \midrule
+\textbf{Overall}                                                                 & \textbf{86\% (+0\%)}             & \textbf{$\sim$2X}         & \textbf{2.5X}             \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Overall}
+With this model CP decomposition got better results, both in compression and in final accuracy. Both methods have shown no drop in accuracy compared to the baseline NIN. 
+
+--------------------------------------------------------------------
+%	SECTION 5
+%--------------------------------------------------------------------
+\section{Experiment 5: TD-Design CCNN}
+With respect to real-time application, an interesting scenario is represented by 3D stereo vision. Stereo vision is a popular technique to infer depth from two or more images. In this field, confidence measures aim at detecting uncertain disparity assignments. From the observation that recurrent local patterns which occurs in disparity maps can tell a correct assignment from a wrong one, CCNN models the confidence formulation as a regression problem by analyzing disparity maps generated by a stereo vision system. 
+\newline 
+
+CCNN has only $\approx 128K$ parameters and generats a full confidence map in only 630 ms, thanks to its fully convolutional architecture. Being already fast and small,  CCNN represents a challenging testbed for tensor decomposition design. Nevertheless, the experiments shows that it can be improved by applying CP-like tensor decomposition blocks.  
+
+\subsection{TD-Block architecture}
+As it is already a fully convolutional architecture, it is relatively easy to re-design CCNN with the TD-block architecture described in section \ref{sec:TD-design}. Thus, the so modeled architecture will feature four TD-blocks made of 4 convolutional layers each, but, differently from the design of experiment 1 \ref{sec:exp1} \emph{without} batch normalization layers in between. 
+\newline 
+
+Two different models were tested:  
+\begin{enumerate}
+    \item CCNN with 4 TD-blocks, one per each convolution layer and the rest of the model unchanged: \texttt{TD-RELU-TD-RELU-TD-RELU-TD-RELU-FC1-FC2-REGRESSION_HEAD}
+    
+    \item CCNN with 4 TD-blocks plus a further decomposition of the FC-Conv layers into a combination of two smaller layers, according to an approximation inspired by singular value decomposition (SVD) \ref{subsec:SVD}.
+    
+\end{enumerate}
+
+For each of the TD-block the compression ratio gain $\mathcal{C}_r$ is given by $$\mathcal{C}_r = \frac{(STd^2}{R(S+2d+T)}$$, 
+where S, T stand for input and output maps dimension and $d$ for the kernel size, respectively and R is the decomposition rank. 
+
+As for the SVD decomposition scheme, the idea is depicted as follows: 
 \\
-La rete da in uscita le 10 classi più probabili; con top1 s'intende quando la classe corretta è la prima più probabile mentre con top5 quando la classe corretta è tra le prime 5 più probabili. \\
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/ResNet-Cifar10-Train.png} 
- \caption{Top-1 e Top-5 training accuracy di ResNet sul dataset CIFAR10}
- \label{fig:res-train}
+Given a FC layer of size $A \times B$, it is possible to divide it into two smaller layers of size $A \times R$ and $R \times B$ respectively. In this way the complexity goes from $S\cdot T$ to $R(S+T)$. Hence, a complexity advantage is guaranteed as long as $R < \frac{S\cdot T}{S+T} $. 
+
+For both schemes, the rank R was set to be equal to 20, resulting in 36K parameters for the first decomposed model and 27K thousand for the second. 
+
+\subsection{Training}
+The network was trained for 14 epochs on $9 \times 9$ patches of the first 20 images of the KITTI stereo dataset, providing approximately 2.6 million samples.\\
+The loss function to minimize is the Binary Cross Entropy (BCE) between the output $o$ and a label $t$ on each sample $i$ of the mini-batch. 
+
+
+\section{Evaluation & Results}
+Evaluation assessment was done by ROC curve analysis, which is commonly used when dealing with confidence measures. After ROC curves are depicted for each image, the Area Under The Curve is then used to evaluate the capability of the confidence measure to distinguish correct disparity assignments from erroneous ones, with respect to the optimatl solution. 
+
+For the two models described above, the evaluation gives optimal results. In fact, both architectures outperforms the baseline as reported in table \ref{tab:CCNN}. Remarkably, the smaller architecture was the best scorer. 
+
+\begin{table}[]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+MODEL                & PARAMS       & AUC (Test Set)  \\ \hline
+CCNN (baseline)      & 128K         & 0.1222          \\ \hline
+TD Design 1          & 36K          & 0.1192          \\ \hline
+\textbf{TD Design 2} & \textbf{27K} & \textbf{0.1186} \\ \hline
+\textit{Optimal}     & -            & \textbf{0.1073} \\ \hline
+\end{tabular}
+\caption{AUC evaluation on 174 images of the KITTI stereo benchmark dataset. The smallest model outperforms the baseline. }
+\label{tab:CCNN}
+\end{table}
+
+For each model, the AUC comparison with the optimal solution is depicted in \ref{fig:AUC}. We can see that the models go very close to the optimal solution.
+
+\begin{figure}
+\centering
+    \subfloat{\label{}\includegraphics[width=1\textwidth]{\plots/AUC-27K.png} \\
+    \subfloat{\label{}\includegraphics[width=1\textwidth]{\plots/AUC-36K.png} 
+    \caption{Area Under the Curve (AUC) computed per each test image for the two decomposed models (in green) and the optimal solution (in orange).}
+    \label{fig:AUC}
 \end{figure}
 
-\begin{figure}[h!]
- \centering
- \includegraphics[width=1.0\textwidth]{\path/ResNet-Cifar10-Val.png} 
- \caption{Top-1 e Top-5 validation accuracy di ResNet sul dataset CIFAR10}
- \label{fig:res-val}
-\end{figure}
 
-\section{LeNet vs ResNet: confronto}
-Nel Capitolo \ref{Capitolo4} si è addestrato uno dei primi modelli di CNN sullo stesso dataset, CIFAR10. La superiorità di ResNet è evidente, raggiunge un'accuratezza di circa il 92-93\% laddove LeNet arrivava appena ad un 73\%. \\
-Questo è dovuto a diversi elementi, ma sicuramente è una riprova del fatto che aumentando il numero di layer di convoluzione si aumenta la ricchezza della rappresentazione delle features delle immagini in ingresso e di conseguenza aumenta la capacità della rete di astrarre e "comprendere" molto meglio le informazioni nelle immagini. \\
-Ogni anno le architetture delle reti subiscono variazioni e vengono introdotte novità dirompenti che generano nuove riflessioni che spingono quest'ambito di ricerca in avanti ad una velocità tale da mantenere il passo con l'industria delle GPU di cui hanno bisogno per essere  realizzate. 
+\subsection{Discussion}
+These last results are surprising, as the baseline had already very few parameters compared to typical CNN architectures. This suggests that, after all, some sorta of redundancy must is present in both the kernels and the channels. It may due to the fact that CCNN process overlapping $9 \times 9$ patches that could contain redundant information that can be exploited by cross-channel pooling, as performed by the TD-block design. 
+
+Moreover, the fewer parameters may act as another form of regularization and thus enhances the generalization capabilities of the network. Further investigations are needed to deeply understand the decomposed architecture's benefits, such as applying a different kind of channel pooling (e.g. varying the stride) and then test if the same results still applies. This is left as future work. 
 
 
 
+\section{Analysis of the results}
+Most experiments have proven that tensor decomposition is a good candidate for the task it has been chosen for. For both Tucker and CP, different type of networks have never shown drop in accuracy. Xavier initialization however, even if sometimes beneficial and easier to implement, did not achieve good results on NIN and LeNet-2 models, compared to an accurate decomposition, that is. 
+\newline
+
+Tucker has been generally more stable than CP, showing faster convergence and thus being more reliable. However, CP decomposition has almost always been a better fit to perform an aggressive decomposition. The latter, though, needs more iterations to converge and thus may not be always feasible to perform. A curios pattern regard that of mixed decompositions that gradually perform conservative and aggressive decomposition, towards which more investigation is needed. 
+\newline 
+
+As for the objectives given in chapter 4 with respect to the TD-block, the expectations have been met in both model compression and model design. This TD-block pattern, managed to improve the accuracy of LeNet-1 by 8\% despite having 45x less parameters. Moreover, it achieved a remarakable result on the CCNN testbed, improving the baseline - which is state-of-the-art - by a fair margin, while having 6x less parameters. 
+
+
+\begin{comment}
+\begin{center}
+\begin{table}[h!]
+
+\centering
+\caption{My caption}
+\label{my-label}
+\begin{tabular}{|l||l|l|l|l|l|}
+ \hline
+ \multicolumn{6}{|c|}{\textbf{Variabili}} \\
+ \hline
+\textbf{Layer}                                                       & \textbf{Start}                                              & \textbf{Fine-tuned}                                                      & \textbf{Params Before} & \textbf{Params After} & \textbf{Impr} \\ \hline
+CONV4                                                                & \begin{tabular}[c]{@{}l@{}}Acc: 79\%\\ Loss : 0.193\end{tabular} & \begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.023\end{tabular}          & 36928                  & 2878                  & \textbf{13x}  \\ \hline
+CONV(4+3)                                                            & \begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.082\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.018\end{tabular}          & 18496                  & 2206                  & \textbf{8.5x} \\ \hline
+CONV(4+3+2)                                                          & \begin{tabular}[c]{@{}l@{}}Acc: 76\%\\ Loss: 0.300\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.033\end{tabular}          & 9248                   & 732                   & \textbf{13x}  \\ \hline
+CONV(4+3+2+1)                                                        & \begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.081\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Acc: 77\%\\ Loss: 0.033\end{tabular}          & 896                    & 442                   & \textbf{2x}   \\ \hline
+\begin{tabular}[c]{@{}l@{}}CONV2FC1\\ Rank=170\end{tabular}          & Loss: 0.738  R=170                                               & \begin{tabular}[c]{@{}l@{}}Acc: 80\%\\ Loss: 0.195\end{tabular}          & 1180160                & 100472                & \textbf{12x}  \\ \hline
+\textbf{\begin{tabular}[c]{@{}l@{}}CONV2FC1 \\ Rank=50\end{tabular}} & \textbf{Loss: 0.981,R=50}                                        & \textbf{\begin{tabular}[c]{@{}l@{}}Acc: 80\%\\ Loss: 0.321\end{tabular}} & \textbf{1180160}       & \textbf{29912}        & \textbf{40x}  \\ \hline
+\textbf{Overall}                                                     & \textbf{Acc: 79\%}                                               & \textbf{Acc: 80\%}                                                       & \textbf{1252480}       & \textbf{42922}        & 29x           \\ \hline
+\end{tabular}
+
+\end{table}
+\end{center}
+\end{comment}
