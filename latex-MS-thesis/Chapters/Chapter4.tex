@@ -35,7 +35,7 @@ Intuitevely, a scalar would be a tensor of \emph{order 0}; a vector of \emph{ord
 
 The intuitive definition can also be used using "\emph{rank}" instead of order, but that may be somewhat misleading since there is a subtle difference. To avoid confusion, the following definitions are introduced: 
 \begin{itemize}
-  \item a tensor of \emph{rank}-1 (or a decomposable tensor \parencite{tensor-hackbusch}) is a tensor that can be written as a product of tensors of the form: 
+  \item a tensor of \emph{rank}-1 (or a decomposable tensor \parencite{tensor-hackbusch2012}) is a tensor that can be written as a product of tensors of the form: 
   \begin{equation}
   \label{eq:rank1-tens}
     T = a \circ b \circ \ldots \circ d  
@@ -971,7 +971,7 @@ Interestingly, faster methods have been proposed in literature \parencite{tucker
 The concepts of macro and micro-architecture of a CNN have been introduced in chapter 3. Taking a closer look to how the decomposed layers are assembled, we can lay out a common pattern that lead us to a generalised decomposition block. 
 \newline 
 
-As a matter of fact, regardless of the method (CP/Tucker), the first and the last layer of the decomposition always act as a dimensionality reduction whereas the layers in the middle perform the spatial convolution (more details are explained in section \ref{subsec:cp-summary}. This idea is very close to that of the \emph{Inception-module} firstly introduced by Google in 2014 \parencite{googlenet}. and then widely applied in successive works \parencite{squeeznet}, \parencite{chollet}, \parencite{mobilenets}.  
+As a matter of fact, regardless of the method (CP/Tucker), the first and the last layer of the decomposition always act as a dimensionality reduction whereas the layers in the middle perform the spatial convolution (more details are explained in section \ref{subsec:cp-summary}. This idea is very close to that of the \emph{Inception-module} firstly introduced by Google in 2014 \parencite{googlenet}. and then widely applied in successive works \parencite{squeezenet}, \parencite{chollet}, \parencite{mobilenets}.  
 \newline
 The nice thing is that this design fits perfectly with the factor matrices of the decomposition.  
 Therefore a general architecture of a \emph{"tensor decomposition block"} (TD-block) can be finally introduced in figure \ref{fig:TD-block}.

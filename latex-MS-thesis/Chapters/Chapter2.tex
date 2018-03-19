@@ -32,7 +32,7 @@ The approaches proposed so far can be classified into four main categories: \emp
 %--------------------------------------------------------------------
 
 \section{Parameter pruning and sharing}
-Pruning was proposed before deep learning became popular, and it has been widely studied in recent years \parencite{brain}. Based on the assumption that lots of parameters in deep networks are unimportant or unnecessary, pruning methods try to remove parameters that are not crucial to the model performance. 
+Pruning was proposed before deep learning became popular, and it has been widely studied in recent years \parencite{brain-damage}. Based on the assumption that lots of parameters in deep networks are unimportant or unnecessary, pruning methods try to remove parameters that are not crucial to the model performance. 
 \newline 
 
 In this way, networks becomes more sparse and thus show few benefits: the sparsity of the structure acts as a regularization technique against over-fitting, hence improving the model generalization; the computations involved in the pruned parameters are omitted, thus the computational complexity can be reduced; finally, sparse parameters require less disk storage since they can be stored in compressed formats. 
@@ -71,7 +71,7 @@ A recent improvement that enabled to prune uninformative weights in a pre-traine
         \item Huffman coding to encode the quantized weights in a loss-less format.  
     \end{enumerate}
 
-By using the former method, Han et. al managed to compress AlexNet by 35$\times$ with no drop in accuracy; this method achieved state-of-the-art  The pipeline of the former is shown in figure \ref{fig:huffman}
+By using the former method, Han et. al managed to compress AlexNet\parancite{alexnet} by 35$\times$ with no drop in accuracy; this method achieved state-of-the-art  The pipeline of the former is shown in figure \ref{fig:huffman}
 
 
 \begin{figure}[h!]

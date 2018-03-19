@@ -253,12 +253,17 @@ Average prediction time 0.196912 313
 ---------------------------------------------------------
 layer 4: rank 50 --> 83% 
 
+conv1 3062
+conv4 29992
+conv7 25920
+
 
 -----------------------------------------------------------
 Tucker 
 
 Weights before: 331776 - Weights after:43974 - Compression ratio: 7.5448
 Weights before: 460800 - Weights after:67964 - Compression ratio: 6.7801 
-
+conv1 parameters=14592
+params: 532843
 rimane sempre su 86% 
 

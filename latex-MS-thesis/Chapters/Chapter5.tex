@@ -16,14 +16,14 @@ In this section, we break down the dataset and the five different architectures 
 
 
 \subsection{Tools}
-All the experiments have been executed in Ubuntu 17.10 \texttt{Intel(R) Core(TM) i7-4510U @2.00 GHz} cpu for testing and on a \texttt{NVIDIA GeForce 840M} with 2GB of memory for training. Most of the experiments have been implemented in \emph{PyTorch} \parencite{pytorch} motivated by its flexibility and fast prototyping. For example, network surgery and decomposition are more intuitive in PyTorch than other frameworks. Regarding experiment 5 instead, the implementation was done in TensorFlow\parencite{tensoflow} and Keras\parencite{keras}.  
+All the experiments have been executed in Ubuntu 17.10 \texttt{Intel(R) Core(TM) i7-4510U @2.00 GHz} cpu for testing and on a \texttt{NVIDIA GeForce 840M} with 2GB of memory for training. Most of the experiments have been implemented in \emph{PyTorch} \parencite{pytorch} motivated by its flexibility and fast prototyping. For example, network surgery and decomposition are more intuitive in PyTorch than other frameworks. Regarding experiment 5 instead, the implementation was done in TensorFlow\parencite{tensorflow} and Keras\parencite{keras}.  
 
 About tensor decomposition, two frameworks have been adopted for the experiments: 
 \begin{enumerate}
-    \item \texttt{TensorLab} toolbox for MATLAB \parencite{Wtensorlab}: very comprehensive tool for general tensor computations. It provides a plethora of algorithms and optimizations to compute tensor factorizations. \\ 
+    \item \texttt{TensorLab} toolbox for MATLAB \parencite{WT	nsorlab}: very comprehensive tool for general tensor computations. It provides a plethora of algorithms and optimizations to compute tensor factorizations. \\ 
     There are also interesting tools for tensor visualization that could be useful for further investigations on the convolutional layer tensor structure. 
     
-    \item \texttt{Tensorly} toolbox for Python \parencite{tensorly}: it is a light wrapping around NumPy but provides very few optimizations compared to TensorLab; for instance only ALS and HOOI to compute CP and Tucker respectively. Nevertheless, it gets the job done and easily embeddable into deep learning frameworks, as it is built on NumPy. \\
+    \item \texttt{Tensorly} toolbox for Python \parencite{Wtensorly}: it is a light wrapping around NumPy but provides very few optimizations compared to TensorLab; for instance only ALS and HOOI to compute CP and Tucker respectively. Nevertheless, it gets the job done and easily embeddable into deep learning frameworks, as it is built on NumPy. \\
     However, for large convolutional layers with many activations (as the first ones) with large dense tensors it can stall or occur in memory errors (it saturates the RAM). 
 \end{enumerate}
 

@@ -237,7 +237,7 @@ The criteria employed to select the winning pixel are vary:
     \item max pooling: the output is the pixel with the highest value.
 \end{itemize}
 
-Among these, the one that proved to be the most effective is \emph{max pooling} \parencite{Wcs231}, figure \ref{fig:maxpool}.
+Among these, the one that proved to be the most effective is \emph{max pooling} \parencite{WCS231layer}, figure \ref{fig:maxpool}.
 
 \begin{figure}[h!]
  \centering
@@ -404,7 +404,7 @@ Throughout experiments the authors found out that the model was able, in a sense
 
 Although this was already a breakthrough on its own, perhaps the most important concept of the work was \emph{dimensionality reduction}. Taking a closer look at figure \ref{fig:inception}, it is easy to notice the presence of diverse $[1 \times 1]$ convolution layers. These layers help to keep the number of parameters reasonably low by performing dimensionality reduction as explained in section \ref{subsec:onebyone}. 
 
-Therefore, GoogLeNet was able to extract many different representations of the input image while avoiding a parameter explosion. Afterwards, different updated version of the inception modules were proposed. \parencite{incpetion3} \parencite{inception4}.
+Therefore, GoogLeNet was able to extract many different representations of the input image while avoiding a parameter explosion. Afterwards, different updated version of the inception modules were proposed. \parencite{inception3} \parencite{inception4}.
 
 \subsection{Residual block}
 Residual blocks were made popular in 2015 as the building block of \emph{deep residual networks} called ResNet, from Microsoft Research Asia \parencite{resnet}. ResNet is a \emph{very} deep CNN,comprising of 152 layers in its original version, which imposed itself as state of the art in all ILVSRC competition categories: classification, detection and localization. 
@@ -431,7 +431,7 @@ Residual learning changed the state of the art by suggesting some new ideas:
 
 
 \subsection{Fire module}
-The Fire module was recently proposed within the SqueezeNet model by Iandola et al. 2017 \parencite{squeezenet}, which reached AlexNet like\parencite{AlexNet} accuracy on ImageNet while being \emph{50X} smaller. 
+The Fire module was recently proposed within the SqueezeNet model by Iandola et al. 2017 \parencite{squeezenet}, which reached AlexNet like\parencite{alexnet} accuracy on ImageNet while being \emph{50X} smaller. 
 
 The design principles followed by the authors constitutes an interesing insights to achieve high accuracy with low number of parameters:
 \begin{itemize}

@@ -104,7 +104,7 @@ def estimate_ranks(layer):
 
     # Check if the VBMF ranks are small enough
     ranks = choose_compression(
-        layer, ranks, compression_factor=10, flag='Tucker2')
+        layer, ranks, compression_factor=30, flag='Tucker2')
 
     return ranks
 
