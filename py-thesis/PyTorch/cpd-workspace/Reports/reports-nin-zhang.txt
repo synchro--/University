@@ -1,0 +1,269 @@
+### NEW REPORTS #####
+--------------------------------------
+LENET ZHANG 
+Starting test accuracy: 74% 
+Starting training loss: 0.276
+Starting training accuracy: 0.913
+Avg preiction time: 0.166
+Params: 1415498
+----------------------------------------------------------------------------
+LenetZhang (
+  (conv1): Sequential (
+    (0): Conv2d (3, 2, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((2, 3, 1, 1),), parameters=6
+    (1): Conv2d (2, 15, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((15, 2, 5, 5),), parameters=750
+    (2): Conv2d (15, 96, kernel_size=(1, 1), stride=(1, 1)), weights=((96, 15, 1, 1), (96,)), parameters=1536
+  ), weights=((2, 3, 1, 1), (15, 2, 5, 5), (96, 15, 1, 1), (96,)), parameters=2292
+  (conv2): Sequential (
+    (0): Conv2d (96, 49, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((49, 96, 1, 1),), parameters=4704
+    (1): Conv2d (49, 13, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((13, 49, 5, 5),), parameters=15925
+    (2): Conv2d (13, 128, kernel_size=(1, 1), stride=(1, 1)), weights=((128, 13, 1, 1), (128,)), parameters=1792
+  ), weights=((49, 96, 1, 1), (13, 49, 5, 5), (128, 13, 1, 1), (128,)), parameters=22421
+  (conv3): Sequential (
+    (0): Conv2d (128, 29, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((29, 128, 1, 1),), parameters=3712
+    (1): Conv2d (29, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 29, 5, 5),), parameters=39150
+    (2): Conv2d (54, 256, kernel_size=(1, 1), stride=(1, 1)), weights=((256, 54, 1, 1), (256,)), parameters=14080
+  ), weights=((29, 128, 1, 1), (54, 29, 5, 5), (256, 54, 1, 1), (256,)), parameters=56942
+  (conv4): Conv2d (256, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 256, 1, 1), (64,)), parameters=16448
+)
+###################
+Number of trainable params: 363073
+
+
+-----------------------------------------------------------------------------
+TUCKER2 - VBMF     Compression   Ratio       Time for Speedup
+conv1     7296   >  4380         1.66           0.074100
+conv2     307328 >  32168        9.5            0.078551 
+conv3     819456 >  36776        22             0.201896
+conv4     16448  > 
+fc1       262400 > 
+
+Accuracies: 
+75
+75
+77
+
+Overall: 
+Training complete in 118m 20s questo è quello con 3/25 - 40/25 - 40/25
+Accuracy of the network on the 10000 test images: 77 %
+Average prediction time 0.076565 313
+
+
+Compression: 354742 4x    Speedup 2.18x
+Size in MB:  
+
+######################################
+Tucker wt. enforced ranks
+
+2/15 --> 13/49 ---> 25/54 
+avg speed 0.052749 --> speedup 3.14x
+75-73-75 ---> layer 2 è critico 
+
+
+######################################
+NEW TUCKER 
+
+LenetZhang (
+  (conv1): Sequential (
+    (0): Conv2d (3, 3, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((3, 3, 1, 1),), parameters=9
+    (1): Conv2d (3, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 3, 5, 5),), parameters=4050
+    (2): Conv2d (54, 96, kernel_size=(1, 1), stride=(1, 1)), weights=((96, 54, 1, 1), (96,)), parameters=5280
+  ), weights=((3, 3, 1, 1), (54, 3, 5, 5), (96, 54, 1, 1), (96,)), parameters=9339
+  (conv2): Sequential (
+    (0): Conv2d (96, 29, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((29, 96, 1, 1),), parameters=2784
+    (1): Conv2d (29, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 29, 5, 5),), parameters=39150
+    (2): Conv2d (54, 128, kernel_size=(1, 1), stride=(1, 1)), weights=((128, 54, 1, 1), (128,)), parameters=7040
+  ), weights=((29, 96, 1, 1), (54, 29, 5, 5), (128, 54, 1, 1), (128,)), parameters=48974
+  (conv3): Sequential (
+    (0): Conv2d (128, 29, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((29, 128, 1, 1),), parameters=3712
+    (1): Conv2d (29, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 29, 5, 5),), parameters=39150
+    (2): Conv2d (54, 256, kernel_size=(1, 1), stride=(1, 1)), weights=((256, 54, 1, 1), (256,)), parameters=14080
+  ), weights=((29, 128, 1, 1), (54, 29, 5, 5), (256, 54, 1, 1), (256,)), parameters=56942
+  (conv4): Conv2d (256, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 256, 1, 1), (64,)), parameters=16448
+  (fc1): Linear(in_features=1024, out_features=256), weights=((256, 1024), (256,)), parameters=262400
+  (fc2): Linear(in_features=256, out_features=10), weights=((10, 256), (10,)), parameters=2570
+  (relu): ReLU(inplace), weights=(), parameters=0
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (dropout_1): Dropout(p=0.5), weights=(), parameters=0
+  (dropout_2): Dropout(p=0.5), weights=(), parameters=0
+  (thres): Threshold (0, 1e-06), weights=(), parameters=0
+)
+###################
+DEC: Number of trainable params: 396673LenetZhang (
+  (conv1): Sequential (
+    (0): Conv2d (3, 3, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((3, 3, 1, 1),), parameters=9
+    (1): Conv2d (3, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 3, 5, 5),), parameters=4050
+    (2): Conv2d (54, 96, kernel_size=(1, 1), stride=(1, 1)), weights=((96, 54, 1, 1), (96,)), parameters=5280
+  ), weights=((3, 3, 1, 1), (54, 3, 5, 5), (96, 54, 1, 1), (96,)), parameters=9339
+  (conv2): Sequential (
+    (0): Conv2d (96, 29, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((29, 96, 1, 1),), parameters=2784
+    (1): Conv2d (29, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 29, 5, 5),), parameters=39150
+    (2): Conv2d (54, 128, kernel_size=(1, 1), stride=(1, 1)), weights=((128, 54, 1, 1), (128,)), parameters=7040
+  ), weights=((29, 96, 1, 1), (54, 29, 5, 5), (128, 54, 1, 1), (128,)), parameters=48974
+  (conv3): Sequential (
+    (0): Conv2d (128, 29, kernel_size=(1, 1), stride=(1, 1), bias=False), weights=((29, 128, 1, 1),), parameters=3712
+    (1): Conv2d (29, 54, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False), weights=((54, 29, 5, 5),), parameters=39150
+    (2): Conv2d (54, 256, kernel_size=(1, 1), stride=(1, 1)), weights=((256, 54, 1, 1), (256,)), parameters=14080
+  ), weights=((29, 128, 1, 1), (54, 29, 5, 5), (256, 54, 1, 1), (256,)), parameters=56942
+  (conv4): Conv2d (256, 64, kernel_size=(1, 1), stride=(1, 1)), weights=((64, 256, 1, 1), (64,)), parameters=16448
+  (fc1): Linear(in_features=1024, out_features=256), weights=((256, 1024), (256,)), parameters=262400
+  (fc2): Linear(in_features=256, out_features=10), weights=((10, 256), (10,)), parameters=2570
+  (relu): ReLU(inplace), weights=(), parameters=0
+  (pool): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), dilation=(1, 1)), weights=(), parameters=0
+  (dropout_1): Dropout(p=0.5), weights=(), parameters=0
+  (dropout_2): Dropout(p=0.5), weights=(), parameters=0
+  (thres): Threshold (0, 1e-06), weights=(), parameters=0
+)
+
+###################
+DEC: Number of trainable params: 396673
+Files already downloaded and verified
+Files already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+
+conv1     7296   > 9339                 TOT 396673 - Compression ratio  - 0.070518 - 80% 25 epochs 
+conv2     307328 > Weights after:48974  TOT  - Compression ratio: 6.27 - 0.60275  - 75% 25 epochs
+conv3     819456 > Weights after:56942  TOT  - Compression ratio: 14.5x - 0.130760 - 79% 50 epochs  
+conv4     16448  > hard to converge
+fc1       262400 > 
+
+## Overall: 
+Starting test accuracy: 74%             compressed: 80% 
+Avg preiction time: 0.166               compressed: 0.051   3.25 X
+Params: 1415498                         compressed: 396K    3.56 X
+
+
+accuracy 75 su primo layer molto stabile 
+accuracy 75->79 dal 25 a 30esima epoch, su layer 3 quello grosso 
+accuracy 80% !!! at the end of the last training 
+
+
+#######################################
+CP - Rank // 3
+conv1     7296   >                     TOT 328348 - Compression ratio 10X - 0.070518 - 80% 50 epochs 
+conv2     307328 > Weights after:9828  TOT 334666 - Compression ratio: 31X - 0.60275  - 82% 50/60 epochs
+conv3     819456 > Weights after:33490 TOT 630810 - Compression ratio: 25X - 0.130760 - 80% in accuracy! 
+conv4     16448  > hard to converge
+fc1       262400 > 
+
+
+Accuracy of the network on the 10000 test images: 80 %
+Average prediction time 0.070518
+
+-------------------------------------------
+CP with VBMF : 
+conv1 r=13  1783  params 
+conv2 r=85  34640 params 
+conv3 r=219 88369 params 
+
+TOT Params 406209
+
+---------------------------------------
+
+
+
+--------------------------------------
+
+NIN without BN
+Starting test accuracy: 74% 
+Starting training loss: 0.554 
+Avg prediction time 0.298
+Params: 1004042
+
+--------------------------------------
+BASELINE 
+Keras Classic Model:
+params: 1250858
+test accuracy: 74%
+test speed: 0.0398
+
+--------------------------------------
+Params: 27224:
+3: CPD ALL CONV wt. BN + Residual (NO relu No xavier)
+Accuracy of the network on the 10000 test images: 81 %
+Average prediction time 0.103136 313
+
+
+---------------------------------------
+ 1: CPD ALL CONV with BN + ReLU + residual nets NO xavier
+ Accuracy of the network on the 10000 test images: 74 %
+ Average prediction time 0.118877 313
+
+
+--------------------------------------
+ 2: CPD ALL CONV with BN xavier + residual nets NO ReLU()
+ Accuracy of the network on the 10000 test images: 82 %
+ Average prediction time 0.099441 313
+
+
+
+
+--------------------------------------
+NIN wt. BN 
+Training complete in 523m 32s
+Best val Acc: 0.923156
+
+Starting test accuracy: 86% 
+Starting training loss: 0.215
+Avg prediction time 0.400459 
+Params: 1007242
+
+
+
+Prediction time for batch 310: 0.194582 
+Accuracy of the network on the 10000 test images: 86 %
+Average prediction time 0.197648 313
+
+
+Accuracy of plane : 86 %
+Accuracy of   car : 97 %
+Accuracy of  bird : 76 %
+Accuracy of   cat : 71 %
+Accuracy of  deer : 81 %
+Accuracy of   dog : 82 %
+Accuracy of  frog : 90 %
+Accuracy of horse : 89 %
+Accuracy of  ship : 94 %
+Accuracy of truck : 95 %
+
+#######################################
+CP - Rank // 3
+conv1     7296   > 
+conv2     307328 > 
+conv3     819456 > 
+conv4     16448  > rank 100 560K params 86% quindi buona
+conv7            > 300K parametri in meno, con rank 20 8K params accuracy 83%, 0.18 time  MA QUI CON RELU 
+fc1       262400 > 
+
+--------------------------------------------------------
+Compressed with CPD: only conv DxD
+layer 7: rank 64 
+layer 4: rank 100 
+layer 1: rank 14    
+Accuracy of the network on the 10000 test images: 86 %
+Average prediction time 0.182376 313
+Number of trainable params:  258664
+
+---> AFTER FINE TUNING!!! <---
+Accuracy of the network on the 10000 test images: 87 %
+Average prediction time 0.196912 313
+
+
+---------------------------------------------------------
+layer 4: rank 50 --> 83% 
+
+conv1 3062
+conv4 29992
+conv7 25920
+
+
+-----------------------------------------------------------
+Tucker 
+
+Weights before: 331776 - Weights after:43974 - Compression ratio: 7.5448
+Weights before: 460800 - Weights after:67964 - Compression ratio: 6.7801 
+conv1 parameters=14592
+params: 532843
+rimane sempre su 86% 
+

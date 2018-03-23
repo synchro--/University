@@ -26,12 +26,24 @@ import copy
 
 # Train and Validation
 def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=50):
-    model_file='s_val.pth'
-    since = time.time()
     use_gpu = torch.cuda.is_available()
+    if use_gpu:
+        model.cuda()
+    since = time.time()
+
+    # switching optimizer after a certain thresh
+    switched_opt = False
+
+    # Here we store the best model
+    model_file = 's_trained.pth'
     best_model_wts = copy.deepcopy(model.state_dict())
+
+    # Statistics
     best_acc = 0.0
-    train_loss_to_plot = 10    
+    best_loss = 5.0
+    total_step = 0.0
+
+    model.train(True)  # Set model to training mode
 
     for epoch in range(epochs):
         print('Epoch {}/{}'.format(epoch+1, epochs))
@@ -155,14 +167,21 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
         model.cuda()
     since = time.time()
 
+    # switching optimizer after a certain thresh
     switched_opt = False
+
     # Here we store the best model
     model_file = 's_trained.pth'
     best_model_wts = copy.deepcopy(model.state_dict())
+
     # Statistics
+    # train 
     best_acc = 0.0
     best_loss = 5.0
     total_step = 0.0
+    # test
+    best_test_acc = 0.0
+    current_test_acc = 0.0 
 
     model.train(True)  # Set model to training mode
     
@@ -255,10 +274,15 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                 ## Every 5 epochs, test model
                 if((epoch + 1) % 5 == 0):
                     print("Testing...")
-                    quick_test_cifar(testloader, model)
+                    current_test_acc = quick_test_cifar(testloader, model)
+                    # update accuracy wt. ternary assignment
+                    best_test_acc = current_test_acc if current_test_acc > best_test_acc else best_test_acc
+                    
                     # switch back model 
                     model.train(True)  # Set model to training mode
                     model.cuda() 
+
+                
 
                 ## EARLY STOPPING ##
                 if best_loss <= loss_threshold and epoch >= 5:
@@ -485,3 +509,5 @@ def quick_test_cifar(testloader, model):
           (100 * correct / total))
     print("Average prediction time %.6f %d" %
           (float(total_time) / (i + 1), i + 1))
+
+    return correct/total

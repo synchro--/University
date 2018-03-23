@@ -8,29 +8,10 @@ from logger import Logger
 from torch.optim import lr_scheduler
 import argparse
 
-########################################################################
-# The output of torchvision datasets are PILImage images of range [0, 1].
-# We transform them to Tensors of normalized range [-1, 1]
+import dataset # Load datasets 
 
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-])
-
-trainset = torchvision.datasets.CIFAR10(
-    root='./data', train=True, download=False, transform=transform)
-trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=32, shuffle=True, num_workers=2)
-
-testset = torchvision.datasets.CIFAR10(
-    root='./data', train=False, download=False, transform=transform)
-testloader = torch.utils.data.DataLoader(
-    testset, batch_size=32, shuffle=False, num_workers=2)
-
-classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
-########################################################################
-# Let us show some of the training images, for fun.
+trainloader = dataset.cifar10_trainloader(augment=False)
+testloader = dataset.cifar10_testloader()
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -62,11 +43,9 @@ retrain = False
 # net = torch.load(model_file)
 # net = NIN_BN() 
 # net = CPD_All_Conv(relu=False)
-# net.xavier_init()
-# net = Keras_Cifar_classic()
-# 
-# GPU
+net = Keras_Cifar_classic()
 
+# GPU
 if args.model: 
     net = torch.load(args.model)
 if args.state: 
@@ -89,8 +68,8 @@ import torch.optim as optim
 
 criterion = nn.CrossEntropyLoss()
 
-# optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9, nesterov=True)
-optimizer = optim.Adam(net.parameters(), lr=0.0001)
+optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9, nesterov=True)
+# optimizer = optim.Adam(net.parameters(), lr=0.0001)
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
 ########################################################################
@@ -104,7 +83,7 @@ if args.val:
     net = train_model_val(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=25)
 else: 
     dataloaders = {'train': trainloader, 'test': testloader}
-    net = train_test_model(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=25)
+    net = train_test_model(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=50)
 
 # dump_model_weights(net)
 

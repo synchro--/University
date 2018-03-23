@@ -237,8 +237,8 @@ def load_cpd_weights(filename):
 
 # def save_best_model(best_avg, current_avg, )
 
-
-def xavier_weights2(layer):
+# this works 
+def xavier_init_layer(layer):
         if isinstance(layer, nn.BatchNorm2d):
             layer.weight.data.fill_(1)
             layer.bias.data.zero_()
@@ -246,14 +246,15 @@ def xavier_weights2(layer):
             torch.nn.init.xavier_uniform(layer.weight)
 
 
-def xavier_weights(self): 
+def xavier_init_net(self): 
     for m in self.modules(): 
-        if isinstance(m, nn.Conv2d):
-            torch.nn.init.xavier_uniform(m.weight)
-        else: 
+        if isinstance(m, nn.BatchNorm2d):
             m.weight.data.fill_(1)
             m.bias.data.zero_()
+        else:
+            torch.nn.init.xavier_uniform(m.weight)
 
+'''
 # Xavier init for custom NN modules
 def xavier_init_net(self):
     for m in self.modules():
@@ -272,7 +273,7 @@ def xavier_init(layer):
     else:
         n = layer.kernel_size[0] * layer.kernel_size[1] * layer.out_channels
         layer.weight.data.normal_(0, math.sqrt(2. / n))
-
+'''
 
 """
 Create train, valid, test iterators for CIFAR-10 [1].

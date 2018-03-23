@@ -164,6 +164,7 @@ class CPD_All_Conv(nn.Module):
 
 
 
+    # Da riscrivere tutto 
     def resnet_forward(self, x):
         num_classes = 10
 
