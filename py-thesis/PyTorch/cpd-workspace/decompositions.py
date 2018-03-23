@@ -26,7 +26,7 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
     Returns: 
         the newly estimated rank according to desired compression
     '''
-    # format is [OUT, IN, k1, k2]
+    # PyTorch format is [OUT, IN, k1, k2]
     weights= layer.weight.data.numpy()
     T = weights.shape[0]
     S = weights.shape[1]
@@ -36,14 +36,7 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
         compression = ((d**2)*S*T) / ((S*ranks[0] + ranks[0]*ranks[1] * (d**2) + T*ranks[1]) )
         ranks[0] = ranks[0] * 3
         print(compression)
-
-
-        '''
-        if compression == 2.812156719150494:
-            ranks[1] = 13 
-            ranks[0] = 49 
-            return ranks 
-        '''
+    
         # compression must be 2 or more, otherwise arbitrary ranks will be chosen!
         if compression <= 2: 
             while compression <= compression_factor:         

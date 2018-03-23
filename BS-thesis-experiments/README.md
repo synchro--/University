@@ -1,2 +1,5 @@
-Here's some work concerning with my dissertation project on Deep Learning.
-[Totally incomplete for now] 
+### Outdated 
+This repo is outdated and will be probably deleted soon. 
+Here's some experiment concerning my BS dissertation project on Deep Learning. 
+Incomplete for now. 
+ 

@@ -157,7 +157,7 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
     return model
 
 
-# Train without a validation folder
+# Train without a validation but testing every X epochs 
 def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_threshold=0.3, epochs=25):
     trainloader = dataloader['train']
     testloader = dataloader['test']
@@ -184,6 +184,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
     # test
     best_test_acc = 0.0
     current_test_acc = 0.0 
+    plateau_counter = 0 
 
     model.train(True)  # Set model to training mode
     
@@ -288,6 +289,10 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                     current_test_acc = quick_test_cifar(testloader, model)
                     # update accuracy wt. ternary assignment
                     best_test_acc = current_test_acc if current_test_acc > best_test_acc else best_test_acc
+                    if current_test_acc > best_test_acc:
+                        best_test_acc = current_test_acc
+                    else:
+                        plateau_counter += 1
                     
                     # switch back model 
                     model.train(True)  # Set model to training mode
@@ -296,7 +301,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                 
 
                 ## EARLY STOPPING ##
-                if best_loss <= loss_threshold and epoch >= 5:
+                if (plateau_counter > 5) or (best_loss <= loss_threshold and epoch >= 5):
                     print('EARLY STOPPING!')
                     time_elapsed = time.time() - since
                     print('Training complete in {:.0f}m {:.0f}s'.format(
