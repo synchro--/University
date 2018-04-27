@@ -17,12 +17,14 @@
 #
 #
 
+
 import tensorly as tl
 from tensorly.decomposition import parafac, partial_tucker
 import numpy as np
 import torch
 import torch.nn as nn
 from VBMF import VBMF
+
 import collections 
 
 
@@ -35,7 +37,7 @@ class Decomposer(object):
         """
         Decomposer module to abstract tensor decomposition methods for 
         Convolutional Neural Networks. 
-        
+
         Major Features 
         -----------
         - TD block configuration
@@ -66,7 +68,6 @@ class Decomposer(object):
         _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
         _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
         ranks = [diag_0.shape[0], diag_1.shape[1]]
-        
         
         if compression_factor: 
             # Check if the VBMF ranks are small enough
@@ -99,13 +100,13 @@ class Decomposer(object):
         rank=max(diag_0.shape[0], diag_1.shape[1])
         print('VBMF estimated rank:', rank)
         ranks=[rank, rank]
+        
         # choose desired compression 
         if compression_factor:
             rank, _=choose_compression(layer, ranks, 
             compression_factor=compression_factor, flag='cpd')
         return rank
         
-    
     
     # NB. ideally this should not even have the rank option and be more 
     #     intuitive to use. 
@@ -143,7 +144,7 @@ class Decomposer(object):
         """
         first_pointwise, separable_vertical, 
         separable_horizontal, last_pointwise = _cp_decomposition(self, layer, rank, offline, filename)
-    
+        
         # create BatchNorm layers wrt to decomposed layers weights
         bn_first = nn.BatchNorm2d(first.shape[1])
         bn_vertical = nn.BatchNorm2d(vertical.shape[1])
@@ -381,7 +382,9 @@ class Decomposer(object):
             xavier_weights2(l)
     
         return nn.Sequential(*new_layers)
-    
+        
+        
+
     ##################### private utils #######################################
     ###########################################################################
     
@@ -659,3 +662,4 @@ class Decomposer(object):
                           last_pointwise_weights)
     
         return [first_pointwise, separable_vertical, separable_horizontal, last_pointwise]
+
