@@ -24,7 +24,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="")
     parser.add_argument("--state", type=str, default="")
-    parser.add_argument("--opt", type=str, default="Adam") 
     parser.add_argument("--validation", dest="val", action="store_true")
     parser.add_argument('--ranks', nargs='+', dest="ranks",
                             default=[20, 30, 40],
@@ -46,9 +45,8 @@ retrain = False
 # net = Net()
 # net = torch.load(model_file)
 # net = NIN_BN() 
-# net = CPD_All_Conv(int(args.ranks[0]), int(args.ranks[1]), int(args.ranks[2]), relu=False)
+net = CPD_All_Conv(int(args.ranks[0]), int(args.ranks[1]), int(args.ranks[2]), relu=False)
 # net = Keras_Cifar_classic()
-net = LenetZhang()
 
 # GPU
 if args.model: 
@@ -73,14 +71,9 @@ import torch.optim as optim
 
 criterion = nn.CrossEntropyLoss()
 
-if args.opt == 'Adam': 
-    optimizer = optim.Adam(net.parameters(), lr=0.001)
-    exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.1)
-
-else:
-    print('Using SGD for smaller improvements...') 
-    optimizer = optim.SGD(net.parameters(), lr=0.1e-4, momentum=0.9, nesterov=True)
-    exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+# optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9, nesterov=True)
+optimizer = optim.Adam(net.parameters(), lr=0.001)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.1)
 
 ########################################################################
 # 4. Train the network

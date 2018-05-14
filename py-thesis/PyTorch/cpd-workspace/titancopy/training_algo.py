@@ -276,7 +276,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                     local_minima_loss = best_loss
                     if step_loss - local_minima_loss < 0.020:
                         counter += 1
-                        if counter >= 5 and not switched_opt: 
+                        if counter >= 5: 
                             print('Stuck in local minima. Switching to SGD wt Nesterov Momentum...')
                             optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True)
                             switched_opt = True
