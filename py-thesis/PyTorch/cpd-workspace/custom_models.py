@@ -117,7 +117,7 @@ class CPD_Zhang(nn.Module):
                 torch.nn.init.xavier_uniform(m.weight)
 
     def __init__(self, rank1, rank2, rankFC, relu=False):
-        super(CPD_All_Conv, self).__init__()
+        super(CPD_Zhang, self).__init__()
 
         self.relu_on = relu
 
@@ -129,43 +129,46 @@ class CPD_Zhang(nn.Module):
         filt_size3 = 256 # also fc2 
         filt_size4 = 64
 
-        filt_fc1 = 1024
-        last_kernel_sz = 6  # should be 6 or 5 according to previous padding
+        filt_fc1 = 256
+        last_kernel_sz = 7  # should be 6 or 5 according to previous padding
         num_classes = 10
 
         # 1st layer decomposition
         self.conv11 = nn.Conv2d(3, rank1, 1)
-        self.conv12 = nn.Conv2d(rank1, rank1, (3, 1),
-                                padding=(1, 0), groups=rank1)
-        self.conv13 = nn.Conv2d(rank1, rank1, (1, 3),
-                                padding=(0, 1), groups=rank1)
+        self.conv12 = nn.Conv2d(rank1, rank1, (5, 1),
+                                padding=(2, 0), groups=rank1)
+        self.conv13 = nn.Conv2d(rank1, rank1, (1, 5),
+                                padding=(0, 2), groups=rank1)
         self.conv14 = nn.Conv2d(rank1, filt_size1, 1)
 
         # 2nd layer decomposition
         self.conv21 = nn.Conv2d(filt_size1, rank1, 1)
-        self.conv22 = nn.Conv2d(rank1, rank1, (3, 1), groups=rank1)
-        self.conv23 = nn.Conv2d(rank1, rank1, (1, 3), groups=rank1)
-        self.conv24 = nn.Conv2d(rank1, filt_size1, 1)
+        self.conv22 = nn.Conv2d(rank1, rank1, (5, 1), groups=rank1)
+        self.conv23 = nn.Conv2d(rank1, rank1, (1, 5), groups=rank1)
+        self.conv24 = nn.Conv2d(rank1, filt_size2, 1)
 
         # 3rd layer decomposition
-        self.conv31 = nn.Conv2d(filt_size1, rank2, 1)
-        self.conv32 = nn.Conv2d(rank2, rank2, (3, 1),
-                                padding=(1, 0), groups=rank2)
-        self.conv33 = nn.Conv2d(rank2, rank2, (1, 3),
-                                padding=(0, 1), groups=rank2)
-        self.conv34 = nn.Conv2d(rank2, filt_size2, 1)
+        self.conv31 = nn.Conv2d(filt_size2, rank2, 1)
+        self.conv32 = nn.Conv2d(rank2, rank2, (5, 1),
+                                padding=(2, 0), groups=rank2)
+        self.conv33 = nn.Conv2d(rank2, rank2, (1, 5),
+                                padding=(0, 2), groups=rank2)
+        self.conv34 = nn.Conv2d(rank2, filt_size3, 1)
 
         # 4th layer decomposition
-        self.conv41 = nn.Conv2d(filt_size2, rank2, 1)
-        self.conv42 = nn.Conv2d(rank2, rank2, (3, 1), groups=rank2)
-        self.conv43 = nn.Conv2d(rank2, rank2, (1, 3), groups=rank2)
-        self.conv44 = nn.Conv2d(rank2, filt_size2, 1)
+        self.conv41 = nn.Conv2d(filt_size3, rank2, 1)
+        self.conv42 = nn.Conv2d(rank2, rank2, (5, 1), 
+                                padding=(2,0), groups=rank2)
+        self.conv43 = nn.Conv2d(rank2, rank2, (1, 5), 
+                                padding=(0,2), groups=rank2)
+        self.conv44 = nn.Conv2d(rank2, filt_size4, 1)
 
         # Regularization
         self.pool = nn.MaxPool2d(2, 2)
-        self.dropout_1 = nn.Dropout2d(0.25)
-        self.dropout_2 = nn.Dropout2d(0.25)
-        self.relu = nn.ReLU()
+        self.dropout_1 = nn.Dropout2d(0.5)
+        self.dropout_2 = nn.Dropout2d(0.5)
+        self.relu = nn.ReLU(inplace=True)
+        self.thres = nn.Threshold(0, 1e-6)
 
         # Normalization
         self.bn_11 = nn.BatchNorm2d(rank1)
@@ -176,17 +179,17 @@ class CPD_Zhang(nn.Module):
         self.bn_21 = nn.BatchNorm2d(rank1)
         self.bn_22 = nn.BatchNorm2d(rank1)
         self.bn_23 = nn.BatchNorm2d(rank1)
-        self.bn_24 = nn.BatchNorm2d(filt_size1)
+        self.bn_24 = nn.BatchNorm2d(filt_size2)
 
         self.bn_31 = nn.BatchNorm2d(rank2)
         self.bn_32 = nn.BatchNorm2d(rank2)
         self.bn_33 = nn.BatchNorm2d(rank2)
-        self.bn_34 = nn.BatchNorm2d(filt_size2)
+        self.bn_34 = nn.BatchNorm2d(filt_size3)
 
         self.bn_41 = nn.BatchNorm2d(rank2)
         self.bn_42 = nn.BatchNorm2d(rank2)
         self.bn_43 = nn.BatchNorm2d(rank2)
-        self.bn_44 = nn.BatchNorm2d(filt_size2)
+        self.bn_44 = nn.BatchNorm2d(filt_size4)
 
         self.bn_51 = nn.BatchNorm2d(rankFC)
         self.bn_52 = nn.BatchNorm2d(rankFC)
@@ -321,7 +324,7 @@ class CPD_Zhang(nn.Module):
 # Network defined as CP-Decomposed architecture
 class CPD_All_Conv(nn.Module):
     
-    def xavier_weights(self):
+    def xavier_init(self):
         for m in self.modules():
             if isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
@@ -410,7 +413,7 @@ class CPD_All_Conv(nn.Module):
         self.conv2fc2 = nn.Conv2d(filt_fc1, num_classes, 1)
 
 
-
+    # SBAGLIATO, DA RIVEDERE
     def resnet_forward(self, x):
         num_classes = 10
 

@@ -1,10 +1,10 @@
 '''
 A personal collection of PyTorch utils for Deep Learning.
-To split eventually into different modules
+To split eventually into different modules. 
+---------
 A. Salman 
 '''
-
-
+# pytorch 
 from torch.nn.modules.module import _addindent
 import torch
 import torch.nn as nn
@@ -34,7 +34,8 @@ def to_var(x):
         x = x.cuda()
     return Variable(x)
 
- # ============ TensorBoard logging ============#
+
+ # ============ TensorBoard logging ============ #
 def tensorboard_log(steps, model, info, dir='./logs'):
     logger = Logger(dir)
 
@@ -52,7 +53,7 @@ def tensorboard_log(steps, model, info, dir='./logs'):
                 tag + '/grad', to_np(value.grad), steps)
     '''
 
-
+'''
 def log_csv(step, acc, loss, val=0, file='cifar10.csv'):
     with open(file, 'a') as out:
         out.write("%d,%.3f,%.3f\n" % (step, acc, loss))
@@ -69,6 +70,7 @@ def log_compression(layer_weights, compression_factor, file='compression.txt'):
         out.write("Weights before: %d - Weights after:%d - Compression ratio: %.4f\n" %
                   (layer_weights.size, (layer_weights.size / compression_factor), compression_factor))
         out.close()
+'''
 
 
 def get_layer_bias(layer, numpy=True):
@@ -129,8 +131,6 @@ def set_layer_weights(layer, tensor):
     layer.weight.data = torch.from_numpy(np.float32(tensor))
 
 # Summary of a model, as in Keras .summary() method
-
-
 def torch_summarize(model, show_weights=True, show_parameters=True):
     """Summarizes torch model by showing trainable parameters and weights."""
 
@@ -162,6 +162,10 @@ def torch_summarize(model, show_weights=True, show_parameters=True):
 
 
 
+###################################################
+#### HELPER TO SAVE/LOAD .mat files to use with 
+#### Matlab Tensorlab toolbox
+#### TODO: integrate it in the decomposer class
 
 # Helper function to save weights in MAT format
 def save_weigths_to_mat(allweights, save_dir):

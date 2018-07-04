@@ -33,7 +33,7 @@ def choose_compression(layer, ranks, compression_factor=2, flag='Tucker2'):
     d = weights.shape[2]
 
     if flag == 'Tucker2':
-        compression = ((d**2)*S*T) / ((S*ranks[0] + ranks[0]*ranks[1] * (d**2) + T*ranks[1]) )
+        compression = ((d**2) *S* T) / ((S*ranks[0] + ranks[0]*ranks[1] * (d**2) + T*ranks[1]) )
         ranks[0] = ranks[0] * 3
         print(compression)
     

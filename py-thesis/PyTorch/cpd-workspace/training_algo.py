@@ -15,6 +15,7 @@ from torchvision import datasets, models
 
 # PyTorch Utils 
 from pytorch_utils import *
+from logger import Logger
 
 # Generic 
 import numpy as np
@@ -22,6 +23,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 import copy
+
 
 
 # Train and Validation
@@ -161,6 +163,7 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
 def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_threshold=0.3, epochs=25):
     trainloader = dataloader['train']
     testloader = dataloader['test']
+    logger = Logger(log_dir='.') 
 
     use_gpu = torch.cuda.is_available()
     if use_gpu:
@@ -195,6 +198,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
         # scheduler.step()
         running_loss = 0.0
         running_corrects = 0
+
         # Iterate over data.
         for step, data in enumerate(trainloader, 0):
             # get the input batch
@@ -202,15 +206,14 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
 
             # wrap them in Variable
             if use_gpu:
-                inputs = Variable(inputs.cuda())
-                labels = Variable(labels.cuda())
+                inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
             else:
                 inputs, labels = Variable(inputs), Variable(labels)
 
             # zero the parameter gradients
             optimizer.zero_grad()
 
-            # forward
+            # forward - compute loss - backward step - update step
             outputs = model(inputs)
             loss = criterion(outputs, labels)
             loss.backward()
@@ -248,9 +251,9 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
 
                 # (2) Log CSV file
                 print('logging...')
-                log_csv(total_step, info['accuracy'], info['loss'])
+                logger.log_csv(total_step, info['accuracy'], info['loss'])
                 # (3) Tensorboard specific logging
-                tensorboard_log(total_step, model, info)
+                logger.tensorboard_log(total_step, model, info)
 
                 
                 # for each epoch, save best model
@@ -293,6 +296,9 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                         best_test_acc = current_test_acc
                     else:
                         plateau_counter += 1
+                    
+                    #log test val 
+                    logger.log_test(total_step, best_test_acc)
                     
                     # switch back model 
                     model.train(True)  # Set model to training mode

@@ -48,7 +48,8 @@ retrain = False
 # net = NIN_BN() 
 # net = CPD_All_Conv(int(args.ranks[0]), int(args.ranks[1]), int(args.ranks[2]), relu=False)
 # net = Keras_Cifar_classic()
-net = LenetZhang()
+# net = LenetZhang()
+net = CPD_Zhang(int(args.ranks[0]), int(args.ranks[1]), int(args.ranks[2]), relu=False)
 
 # GPU
 if args.model: 
