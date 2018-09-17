@@ -5,6 +5,11 @@
 *test
 *train
 *events* 
+*settings.json*
+
+#Python 
+*.whl
+
 
 #Pytorch 
 *.pth*
@@ -12,6 +17,7 @@
 *.mat*
 *inferno*
 *original-repo*
+*torchsample*
 
 # Keras models 
 *.h5

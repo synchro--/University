@@ -10,7 +10,7 @@ import argparse
 
 import dataset # Load datasets 
 
-trainloader = dataset.cifar10_trainloader(augment=False)
+trainloader = dataset.cifar10_trainloader(augment=True)
 testloader = dataset.cifar10_testloader()
 
 import matplotlib.pyplot as plt
@@ -98,6 +98,6 @@ else:
 
 # dump_model_weights(net)
 
-net.train(False)
 torch.save(net, "just_TR.pth")
+net.train(False)
 test_model_cifar10(testloader, net)

@@ -9,3 +9,7 @@ Release a library to perform tensor decomposition on every CNNs.
 - MobileNets decomposed 
 - Add procedure to train on CIFAR100 
 - Test the decomposer class 
+
+Conviene fare un metodo _make_block che crea un modulo diviso per 4 oppure creare direttamente la rete in maniera normale e poi usare il decomposer con xavier init? 
+
+cosi uno definisce la sua rete in maniera normale e poi passa tutti i layer di convoluzione al decomposer che restituisce un modello totalmente decomposto con xavier init. 

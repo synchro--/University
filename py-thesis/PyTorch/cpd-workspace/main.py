@@ -37,6 +37,7 @@ num_classes = 10
 # VGG16 based network for classifying between dogs and cats.
 # After training this will be an over parameterized network,
 # with potential to shrink it.
+
 class ModifiedVGG16Model(torch.nn.Module):
     def __init__(self, model=None):
         super(ModifiedVGG16Model, self).__init__()
@@ -59,6 +60,8 @@ class ModifiedVGG16Model(torch.nn.Module):
         x = self.classifier(x)
         return x
 
+### Trainer ### 
+############### 
 class Trainer:
     def __init__(self, train_path, test_path, model, optimizer):
         # self.train_data_loader = dataset.loader(train_path)
@@ -113,6 +116,7 @@ class Trainer:
         for i, (batch, label) in enumerate(self.train_data_loader):
             self.train_batch(batch.cuda(), label.cuda())
 
+### get args ###
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="")
@@ -139,7 +143,6 @@ def get_args():
 def decompose_model_seq(model, layer_name, model_file):
     print(model)
     model.cpu()
-    complete_name = ""
     for i, (name, conv_layer) in enumerate(model.named_modules()):
         ## for sequential nets, 'in' is sufficient
         ## as long as there are not 2 homonimous layers
@@ -155,8 +158,8 @@ def decompose_model_seq(model, layer_name, model_file):
                 rank = cp_ranks(conv_layer)
                 print('rank: ', rank)
 
-                # decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=False)
-                decomposed = cp_xavier_conv_layer(conv_layer, rank)
+                decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=False)
+                # decomposed = cp_xavier_conv_layer(conv_layer, rank)
             else:
                 
                 decomposed = tucker_decomposition_conv_layer(conv_layer)
@@ -195,7 +198,7 @@ def decompose_model(model, layer_name, model_file):
                             matlab=True  
                         else: 
                             matlab = False 
-                        decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=matlab)
+                        decomposed = cp_decomposition_conv_layer_BN(conv_layer, rank, matlab=False)
                         # decomposed = cp_xavier_conv_layer(conv_layer, rank)
                     else:
                         decomposed = tucker_decomposition_conv_layer(conv_layer)

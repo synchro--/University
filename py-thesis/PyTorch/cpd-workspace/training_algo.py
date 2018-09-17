@@ -294,6 +294,8 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                     best_test_acc = current_test_acc if current_test_acc > best_test_acc else best_test_acc
                     if current_test_acc > best_test_acc:
                         best_test_acc = current_test_acc
+                        # zero the plateau counter
+                        plateau_counter = 0 
                     else:
                         plateau_counter += 1
                     
