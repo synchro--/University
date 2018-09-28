@@ -13,11 +13,11 @@ from torch.autograd import Variable
 import torchvision
 from torchvision import datasets, models
 
-# PyTorch Utils 
+# PyTorch Utils
 from pytorch_utils import *
 from logger import Logger
 
-# Generic 
+# Generic
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -25,12 +25,10 @@ import os
 import copy
 
 
-
 # Train and Validation
-def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=50):
-    use_gpu = torch.cuda.is_available()
-    if use_gpu:
-        model.cuda()
+def train_model_val(model, dataloaders, criterion, optimizer, scheduler, epochs=50):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
     since = time.time()
 
     # switching optimizer after a certain thresh
@@ -42,7 +40,7 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
 
     # Statistics
     best_acc = 0.0
-    best_loss = 5.0
+    best_loss = 100.0
     total_step = 0.0
 
     model.train(True)  # Set model to training mode
@@ -67,20 +65,14 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
             for i,batch in enumerate(dataloaders[phase]):
                 # get the inputs
                 inputs, labels = batch
-
-                # wrap them in Variable
-                if use_gpu:
-                    inputs = Variable(inputs.cuda())
-                    labels = Variable(labels.cuda())
-                else:
-                    inputs, labels = Variable(inputs), Variable(labels)
+                inputs, labels = inputs.to(device), labels.to(device)
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
 
                 # forward
                 outputs = model(inputs)
-                _, preds = torch.max(outputs.data, 1)
+                _, preds = torch.max(outputs, 1)
                 loss = criterion(outputs, labels)
 
                 # backward + optimize only if in training phase
@@ -90,26 +82,29 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
 
                 # statistics
                 # loss * batch_size
-                running_loss += loss.data[0]
+                running_loss += loss.item()
                 running_corrects += torch.sum(preds == labels.data)
-                total+= inputs.size(0)
+                total += inputs.size(0)
 
             batch_size = inputs.size(0) # len(batch) or dataloader[phase].batch_size
             epoch_loss = running_loss / i+1
-            epoch_acc = 100* running_corrects / (total)
+            epoch_acc = 100 * running_corrects/total
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
 
+               # progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+# % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+
             if phase == 'train':
                 train_loss_to_plot = epoch_loss
-            
-            else: 
+
+            else:
                 # ============ Logging ============#
                 # (1) Log the scalar values
                 info={
                     'loss': train_loss_to_plot, #train loss
-                    'accuracy': epoch_acc #val accuracy 
+                    'accuracy': epoch_acc #val accuracy
                 }
 
                 # (2) Log CSV file
@@ -128,9 +123,9 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
                 best_model_wts = copy.deepcopy(model.state_dict())
                 torch.save(model.state_dict(), model_file)
                 torch.save(model, "dump_model.pth")
-            
+
             ## Switch to SGD + Nesterov
-            if train_loss_to_plot<= 0.6 and not switched_opt:
+            if train_loss_to_plot <= 0.6 and not switched_opt:
                 print('Switching to SGD wt Nesterov Momentum...')
                 optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True)
                 switched_opt = True
@@ -139,7 +134,7 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
             if train_loss_to_plot <= 0.150 and epoch >= 5:
                 print('EARLY STOPPING!')
                 print(train_loss_to_plot)
-                time_elapsed=time.time() - since
+                time_elapsed = time.time() - since
                 print('Training complete in {:.0f}m {:.0f}s'.format(
                     time_elapsed // 60, time_elapsed % 60))
                 print('Best val Acc: {:4f}'.format(best_acc))
@@ -159,15 +154,13 @@ def train_model_val(dataloaders, model, criterion, optimizer, scheduler, epochs=
     return model
 
 
-# Train without a validation but testing every X epochs 
+# Train without a validation but testing every X epochs
 def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_threshold=0.3, epochs=25):
     trainloader = dataloader['train']
     testloader = dataloader['test']
-    logger = Logger(log_dir='.') 
-
-    use_gpu = torch.cuda.is_available()
-    if use_gpu:
-        model.cuda()
+    logger = Logger(log_dir='.')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
     since = time.time()
 
     # switching optimizer after a certain thresh
@@ -178,19 +171,21 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
     best_model_wts = copy.deepcopy(model.state_dict())
 
     # Statistics
-    # train 
+
+    # train
     best_acc = 0.0
-    best_loss = 5.0
+    best_loss = 100.0
     total_step = 0.0
-    local_minima_loss = 0.0 
+    local_minima_loss = 0.0
     counter = 0
+
     # test
     best_test_acc = 0.0
-    current_test_acc = 0.0 
-    plateau_counter = 0 
+    current_test_acc = 0.0
+    plateau_counter = 0
 
     model.train(True)  # Set model to training mode
-    
+
     for epoch in range(epochs):
         print('Epoch {}/{}'.format(epoch + 1, epochs))
         print('-' * 10)
@@ -203,12 +198,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
         for step, data in enumerate(trainloader, 0):
             # get the input batch
             inputs, labels = data
-
-            # wrap them in Variable
-            if use_gpu:
-                inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
-            else:
-                inputs, labels = Variable(inputs), Variable(labels)
+            inputs, labels = inputs.to(device), labels.to(device)
 
             # zero the parameter gradients
             optimizer.zero_grad()
@@ -219,15 +209,15 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
             loss.backward()
             optimizer.step()
             # Compute accuracy
-            preds = outputs.cpu().data.max(1)[1]
-            #_, preds = torch.max(outputs.data, 1)
+            # preds = outputs.cpu().data.max(1)[1]
+            _, preds = torch.max(outputs.data, 1)
             #  running_corrects = (labels.float() == preds.float().squeeze().mean())
 
             # statistics
             # loss * batch_size
-            running_loss += loss.data[0]
+            running_loss += loss.item()
             # compute accuracy
-            batch_correct = preds.eq(labels.cpu().data).sum()
+            batch_correct = preds.eq(labels.data).sum()
             batch_size = labels.size(0)
             running_corrects += batch_correct / batch_size
             # running_corrects += torch.sum(preds == labels.data)
@@ -255,7 +245,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                 # (3) Tensorboard specific logging
                 logger.tensorboard_log(total_step, model, info)
 
-                
+
                 # for each epoch, save best model
                 if best_loss > step_loss:
                     print('loss improved from %.3f to %.3f'
@@ -263,28 +253,28 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                     best_loss = step_loss
                     best_acc = step_acc
                     best_model_wts = copy.deepcopy(model.state_dict())
-                    
-                    # Every 5 epochs, write model to files 
+
+                    # Every 5 epochs, write model to files
                     if((epoch + 1) % 2 == 1 or epoch == 49):
                         print('Saving model to ' + model_file + "...\n")
                         torch.save(best_model_wts, model_file)
                         torch.save(model, "dump_model.pth")
-                  
+
                     ## Switch to SGD + Nesterov
                     if best_loss <= 0.6 and not switched_opt:
                         print('Switching to SGD wt Nesterov Momentum...')
                         optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True)
                         switched_opt = True
-                else: 
+                else:
                     # if it stagnates in local minima
                     local_minima_loss = best_loss
                     if step_loss - local_minima_loss < 0.020:
                         counter += 1
-                        if counter >= 5 and not switched_opt: 
+                        if counter >= 5 and not switched_opt:
                             print('Stuck in local minima. Switching to SGD wt Nesterov Momentum...')
                             optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True)
                             switched_opt = True
-                 
+
 
                 ## Every 5 epochs, test model
                 if((epoch + 1) % 5 == 0):
@@ -295,18 +285,18 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                     if current_test_acc > best_test_acc:
                         best_test_acc = current_test_acc
                         # zero the plateau counter
-                        plateau_counter = 0 
+                        plateau_counter = 0
                     else:
                         plateau_counter += 1
-                    
-                    #log test val 
-                    logger.log_test(total_step, best_test_acc)
-                    
-                    # switch back model 
-                    model.train(True)  # Set model to training mode
-                    model.cuda() 
 
-                
+                    #log test val
+                    logger.log_test(total_step, best_test_acc)
+
+                    # switch back model
+                    model.train(True)  # Set model to training mode
+                    model.cuda()
+
+
 
                 ## EARLY STOPPING ##
                 if (plateau_counter > 5) or (best_loss <= loss_threshold and epoch >= 5):
@@ -335,17 +325,15 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
 
 # Train without a validation folder
 def train_model(trainloader, model, criterion, optimizer, scheduler, loss_threshold=0.3, epochs=25):
-    use_gpu = torch.cuda.is_available()
-    if use_gpu: 
-        model.cuda() 
-    model.train(True)  # Set model to training mode
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
     since = time.time()
 
-    switched_opt = False 
+    switched_opt = False
     # Here we store the best model
     model_file = 's_trained.pth'
     best_model_wts = copy.deepcopy(model.state_dict())
-    # Statistics 
+    # Statistics
     best_acc = 0.0
     best_loss = 5.0
     total_step = 0.0
@@ -361,13 +349,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
         for step, data in enumerate(trainloader, 0):
             # get the input batch
             inputs, labels = data
-
-            # wrap them in Variable
-            if use_gpu:
-                inputs = Variable(inputs.cuda())
-                labels = Variable(labels.cuda())
-            else:
-                inputs, labels = Variable(inputs), Variable(labels)
+            inputs, labels = inputs.to(device), labels.to(device)
 
             # zero the parameter gradients
             optimizer.zero_grad()
@@ -384,7 +366,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
 
             # statistics
             # loss * batch_size
-            running_loss += loss.data[0]
+            running_loss += loss.item()
 	        # compute accuracy
             batch_correct = preds.eq(labels.cpu().data).sum()
             batch_size = labels.size(0)
@@ -408,7 +390,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
                     'accuracy': step_acc
                 }
 
-                # (2) Log CSV file 
+                # (2) Log CSV file
                 log_csv(total_step, info['accuracy'], info['loss'])
                 # (3) Tensorboard specific logging
                 # tensorboard_log(total_step, model, info)
@@ -419,7 +401,7 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
                         % (best_loss, step_loss))
                     best_loss = step_loss
                     best_acc = step_acc
-                    
+
                     if((epoch+1) % 5 == 0):
                         print("Testing...")
 
@@ -428,20 +410,20 @@ def train_model(trainloader, model, criterion, optimizer, scheduler, loss_thresh
                         torch.save(model.state_dict(), model_file)
                         torch.save(model, "dump_model.pth")
 
-                    ## Switch to SGD + Nesterov 
+                    ## Switch to SGD + Nesterov
                     if best_loss <= 0.6 and not switched_opt:
                         print('Switching to SGD wt Nesterov Momentum...')
-                        optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True) 
+                        optimizer = optim.SGD(model.parameters(), lr=1e-4, momentum=0.9, nesterov=True)
                         switched_opt = True
-                
-                ## EARLY STOPPING ## 
+
+                ## EARLY STOPPING ##
                 if best_loss <= loss_threshold and epoch >= 500:
                     print('EARLY STOPPING!')
                     time_elapsed = time.time() - since
                     print('Training complete in {:.0f}m {:.0f}s'.format(
                         time_elapsed // 60, time_elapsed % 60))
                     print('Best val Acc: {:4f}'.format(best_acc))
-                    
+
                     # load best model weights
                     model.load_state_dict(best_model_wts)
                     return model
@@ -466,35 +448,34 @@ def test_model_cifar10(testloader, model):
                'dog', 'frog', 'horse', 'ship', 'truck')
     correct = 0
     total = 0
-    total_time = 0 
+    total_time = 0
     model.eval()
-    model.cpu() 
+    model.cpu()
 
-    for i, (batch, labels) in enumerate(testloader):
-        batch = batch
-        inputs = Variable(batch, volatile=True)
-        t0 = time.time() 
+    for i, (inputs, labels) in enumerate(testloader):
+        t0 = time.time()
         outputs = model(inputs)
-        t1 = time.time() 
-        if i % 10 == 9 or i == 0:  
+        t1 = time.time()
+        if i % 10 == 9 or i == 0:
             print('Prediction time for batch %d: %.6f ' % (i+1, t1-t0))
-        
+
         if i != 0:
             total_time = total_time + (t1 - t0)
-        _, predicted = torch.max(outputs.data, 1)
-        correct += (predicted == labels.cpu()).sum()      
+        _, predicted = torch.max(outputs, 1)
+        correct += (predicted == labels.cpu()).sum()
         total += labels.size(0)
 
     print('Accuracy of the network on the 10000 test images: %d %%' %
           (100 * correct / total))
-    print("Average prediction time %.6f %d" % (float(total_time)/(i + 1), i + 1))   
+    print("Average prediction time %.6f %d" % (float(total_time)/(i + 1), i + 1))
 
     class_correct = list(0. for i in range(10))
     class_total = list(0. for i in range(10))
     for data in testloader:
         images, labels = data
-        outputs = model(Variable(images, volatile=True))
-        _, predicted = torch.max(outputs.data, 1)
+        outputs = model(images)
+        _, predicted = torch.max(outputs, 1)
+        #_, predicted = torch.max(outputs.data, 1)
         c = (predicted == labels).squeeze()
         for i in range(4):
             label = labels[i]
@@ -506,7 +487,7 @@ def test_model_cifar10(testloader, model):
               (classes[i], 100 * class_correct[i] / class_total[i]))
 
 
-# without class scores 
+# without class scores
 def quick_test_cifar(testloader, model):
     classes = ('plane', 'car', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck')

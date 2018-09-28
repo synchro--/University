@@ -1,10 +1,10 @@
 '''
 A personal collection of PyTorch utils for Deep Learning.
-To split eventually into different modules. 
+To split eventually into different modules.
 ---------
-A. Salman 
+A. Salman
 '''
-# pytorch 
+# pytorch
 from torch.nn.modules.module import _addindent
 import torch
 import torch.nn as nn
@@ -75,11 +75,11 @@ def log_compression(layer_weights, compression_factor, file='compression.txt'):
 
 def get_layer_bias(layer, numpy=True):
     '''
-        Return weights of the given layer. 
+        Return weights of the given layer.
     Args:
-        numpy: bool. Defalt true. If false return weights as torch array. 
+        numpy: bool. Defalt true. If false return weights as torch array.
     '''
-    
+
     print('Retrieving weights of size: ' +
           str(layer.bias.data.cpu().numpy().shape))
     if numpy:
@@ -90,9 +90,9 @@ def get_layer_bias(layer, numpy=True):
 
 def set_layer_bias(layer, tensor):
     '''
-    Set specified tensor as the layer weights. If sizes don't match raise exception. 
-    Args: 
-        layer: the specified layer 
+    Set specified tensor as the layer weights. If sizes don't match raise exception.
+    Args:
+        layer: the specified layer
         tensor: tensor as an ndarray (Numpy)
     '''
     if not(layer.bias.numpy().shape == tensor.shape):
@@ -103,9 +103,9 @@ def set_layer_bias(layer, tensor):
 
 def get_layer_weights(layer, numpy=True):
     '''
-        Return weights of the given layer. 
+        Return weights of the given layer.
     Args:
-        numpy: bool. Defalt true. If false return weights as torch array. 
+        numpy: bool. Defalt true. If false return weights as torch array.
     '''
 
     print('Retrieving weights of size: ' +
@@ -118,9 +118,9 @@ def get_layer_weights(layer, numpy=True):
 
 def set_layer_weights(layer, tensor):
     '''
-    Set specified tensor as the layer weights. If sizes don't match raise exception. 
-    Args: 
-        layer: the specified layer 
+    Set specified tensor as the layer weights. If sizes don't match raise exception.
+    Args:
+        layer: the specified layer
         tensor: tensor as an ndarray (Numpy)
     '''
     if not(layer.weight.data.numpy().shape == tensor.shape):
@@ -130,40 +130,9 @@ def set_layer_weights(layer, tensor):
 
     layer.weight.data = torch.from_numpy(np.float32(tensor))
 
-# Summary of a model, as in Keras .summary() method
-def torch_summarize(model, show_weights=True, show_parameters=True):
-    """Summarizes torch model by showing trainable parameters and weights."""
-
-    tmpstr = model.__class__.__name__ + ' (\n'
-    for key, module in model._modules.items():
-        # if it contains layers let call it recursively to get params and
-        # weights
-        if type(module) in [
-            torch.nn.modules.container.Container,
-            torch.nn.modules.container.Sequential
-        ]:
-            modstr = torch_summarize(module)
-        else:
-            modstr = module.__repr__()
-        modstr = _addindent(modstr, 2)
-
-        params = sum([np.prod(p.size()) for p in module.parameters()])
-        weights = tuple([tuple(p.size()) for p in module.parameters()])
-
-        tmpstr += '  (' + key + '): ' + modstr
-        if show_weights:
-            tmpstr += ', weights={}'.format(weights)
-        if show_parameters:
-            tmpstr += ', parameters={}'.format(params)
-        tmpstr += '\n'
-
-    tmpstr = tmpstr + ')'
-    return tmpstr
-
-
 
 ###################################################
-#### HELPER TO SAVE/LOAD .mat files to use with 
+#### HELPER TO SAVE/LOAD .mat files to use with
 #### Matlab Tensorlab toolbox
 #### TODO: integrate it in the decomposer class
 
@@ -241,7 +210,7 @@ def load_cpd_weights(filename):
 
 # def save_best_model(best_avg, current_avg, )
 
-# this works 
+# this works
 def xavier_init_layer(layer):
         if isinstance(layer, nn.BatchNorm2d):
             layer.weight.data.fill_(1)
@@ -250,13 +219,118 @@ def xavier_init_layer(layer):
             torch.nn.init.xavier_uniform(layer.weight)
 
 
-def xavier_init_net(self): 
-    for m in self.modules(): 
+def xavier_init_net(self):
+    for m in self.modules():
         if isinstance(m, nn.BatchNorm2d):
             m.weight.data.fill_(1)
             m.bias.data.zero_()
         else:
             torch.nn.init.xavier_uniform(m.weight)
+
+
+'''
+Init layer paramaters,
+see: https://github.com/kuangliu/pytorch-cifar/blob/master/utils.py
+'''
+def init_params(net):
+    for m in net.modules():
+        if isinstance(m, nn.Conv2d):
+            init.kaiming_normal(m.weight, mode='fan_out')
+            if m.bias:
+                init.constant(m.bias, 0)
+        elif isinstance(m, nn.BatchNorm2d):
+            init.constant(m.weight, 1)
+            init.constant(m.bias, 0)
+        elif isinstance(m, nn.Linear):
+            init.normal(m.weight, std=1e-3)
+            if m.bias:
+                init.constant(m.bias, 0)
+
+
+## Progress Bar vars ##
+
+_, term_width = os.popen('stty size', 'r').read().split()
+term_width = int(term_width)
+
+TOTAL_BAR_LENGTH = 65.
+last_time = time.time()
+begin_time = last_time
+
+## xlua-like progress bar
+def progress_bar(current, total, msg=None):
+    global last_time, begin_time
+    if current == 0:
+        begin_time = time.time()  # Reset for new bar.
+
+    cur_len = int(TOTAL_BAR_LENGTH*current/total)
+    rest_len = int(TOTAL_BAR_LENGTH - cur_len) - 1
+
+    sys.stdout.write(' [')
+    for i in range(cur_len):
+        sys.stdout.write('=')
+    sys.stdout.write('>')
+    for i in range(rest_len):
+        sys.stdout.write('.')
+    sys.stdout.write(']')
+
+    cur_time = time.time()
+    step_time = cur_time - last_time
+    last_time = cur_time
+    tot_time = cur_time - begin_time
+
+    L = []
+    L.append('  Step: %s' % format_time(step_time))
+    L.append(' | Tot: %s' % format_time(tot_time))
+    if msg:
+        L.append(' | ' + msg)
+
+    msg = ''.join(L)
+    sys.stdout.write(msg)
+    for i in range(term_width-int(TOTAL_BAR_LENGTH)-len(msg)-3):
+        sys.stdout.write(' ')
+
+    # Go back to the center of the bar.
+    for i in range(term_width-int(TOTAL_BAR_LENGTH/2)+2):
+        sys.stdout.write('\b')
+    sys.stdout.write(' %d/%d ' % (current+1, total))
+
+    if current < total-1:
+        sys.stdout.write('\r')
+    else:
+        sys.stdout.write('\n')
+    sys.stdout.flush()
+
+def format_time(seconds):
+    days = int(seconds / 3600/24)
+    seconds = seconds - days*3600*24
+    hours = int(seconds / 3600)
+    seconds = seconds - hours*3600
+    minutes = int(seconds / 60)
+    seconds = seconds - minutes*60
+    secondsf = int(seconds)
+    seconds = seconds - secondsf
+    millis = int(seconds*1000)
+
+    f = ''
+    i = 1
+    if days > 0:
+        f += str(days) + 'D'
+        i += 1
+    if hours > 0 and i <= 2:
+        f += str(hours) + 'h'
+        i += 1
+    if minutes > 0 and i <= 2:
+        f += str(minutes) + 'm'
+        i += 1
+    if secondsf > 0 and i <= 2:
+        f += str(secondsf) + 's'
+        i += 1
+    if millis > 0 and i <= 2:
+        f += str(millis) + 'ms'
+        i += 1
+    if f == '':
+        f = '0ms'
+    return f
 
 '''
 # Xavier init for custom NN modules

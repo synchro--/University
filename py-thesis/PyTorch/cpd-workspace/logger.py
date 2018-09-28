@@ -1,25 +1,27 @@
 # Code referenced from https://gist.github.com/gyglim/1f8dfb1b5c82627ae3efcfbbadb9f514
 import tensorflow as tf
 import numpy as np
-import scipy.misc 
+import scipy.misc
 import scipy.io as sio
 try:
     from StringIO import StringIO  # Python 2.7
 except ImportError:
     from io import BytesIO         # Python 3.x
 
+import torch
 
-
-# Defines utils functions to log info for Tensorboard 
+# Defines utils functions to log info for Tensorboard
 # Integrated new functions to log to simple custom .csv files
 class Logger(object):
-    
+
     def __init__(self, log_dir):
         """Create a summary writer logging to log_dir."""
         self.writer = tf.summary.FileWriter(log_dir)
 
     def scalar_summary(self, tag, value, step):
         """Log a scalar variable."""
+        if isinstance(value, torch.Tensor):
+            value = value.item()
         summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
         self.writer.add_summary(summary, step)
 
@@ -45,7 +47,7 @@ class Logger(object):
         # Create and write Summary
         summary = tf.Summary(value=img_summaries)
         self.writer.add_summary(summary, step)
-        
+
     def histo_summary(self, tag, values, step, bins=1000):
         """Log a histogram of the tensor of values."""
 
@@ -73,12 +75,12 @@ class Logger(object):
         summary = tf.Summary(value=[tf.Summary.Value(tag=tag, histo=hist)])
         self.writer.add_summary(summary, step)
         self.writer.flush()
-    
+
     def log_csv(self, step, acc, loss, val=0, file='cifar10.csv'):
         with open(file, 'a') as out:
             out.write("%d,%.3f,%.3f\n" % (step, acc, loss))
             out.close()
-        
+
     def log_test(self, step, val=0, file='test.csv'):
         with open(file, 'a') as out:
             out.write("%d,%.3f\n" % (step, val))
@@ -91,9 +93,9 @@ class Logger(object):
             out.close()
 
     def tensorboard_log(self, steps, model, info):
-        for tag, value in info.items(): 
+        for tag, value in info.items():
             self.scalar_summary(tag, value, steps)
-    
+
         # (2) Log values and gradients of the parameters (histogram)
         # too slow, for now leave commented
         '''
