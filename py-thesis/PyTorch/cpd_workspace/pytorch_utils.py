@@ -23,6 +23,9 @@ import scipy.io as sio
 import os
 import time
 import math
+import sys
+import json
+import shutil
 
 
 def to_np(x):
@@ -35,7 +38,62 @@ def to_var(x):
     return Variable(x)
 
 
+def save_dict_to_json(d, json_path):
+    """Saves dict of floats in json file
+
+    Args:
+        d: (dict) of float-castable values (np.float, int, float, etc.)
+        json_path: (string) path to json file
+    """
+    with open(json_path, 'w') as f:
+        # We need to convert the values to float for json (it doesn't accept np.array, np.float, )
+        d = {k: float(v) for k, v in d.items()}
+        json.dump(d, f, indent=4)
+
+
+def save_checkpoint(state, is_best, checkpoint):
+    """Saves model and training parameters at checkpoint + 'last.pth.tar'. If is_best==True, also saves
+    checkpoint + 'best.pth.tar'
+
+    Args:
+        state: (dict) contains model's state_dict, may contain other keys such as epoch, optimizer state_dict
+        is_best: (bool) True if it is the best model seen till now
+        checkpoint: (string) folder where parameters are to be saved
+    """
+    filepath = os.path.join(checkpoint, 'last.pth.tar')
+    if not os.path.exists(checkpoint):
+        print("Checkpoint Directory does not exist! Making directory {}".format(checkpoint))
+        os.mkdir(checkpoint)
+    else:
+        print("Saving file to: " + filepath)
+    torch.save(state, filepath)
+    if is_best:
+        shutil.copyfile(filepath, os.path.join(checkpoint, 'best.pth.tar'))
+
+
+def load_checkpoint(checkpoint, model, optimizer=None):
+    """Loads model parameters (state_dict) from file_path. If optimizer is provided, loads state_dict of
+    optimizer assuming it is present in checkpoint.
+
+    Args:
+        checkpoint: (string) filename which needs to be loaded
+        model: (torch.nn.Module) model for which the parameters are loaded
+        optimizer: (torch.optim) optional: resume optimizer from checkpoint
+    """
+    if not os.path.exists(checkpoint):
+        raise("File doesn't exist {}".format(checkpoint))
+    checkpoint = torch.load(checkpoint)
+    model.load_state_dict(checkpoint['state_dict'])
+
+    if optimizer:
+        optimizer.load_state_dict(checkpoint['optim_dict'])
+
+    return checkpoint
+
  # ============ TensorBoard logging ============ #
+ # da eliminare
+
+
 def tensorboard_log(steps, model, info, dir='./logs'):
     logger = Logger(dir)
 
@@ -52,6 +110,7 @@ def tensorboard_log(steps, model, info, dir='./logs'):
             logger.histo_summary(
                 tag + '/grad', to_np(value.grad), steps)
     '''
+
 
 '''
 def log_csv(step, acc, loss, val=0, file='cifar10.csv'):
@@ -132,9 +191,9 @@ def set_layer_weights(layer, tensor):
 
 
 ###################################################
-#### HELPER TO SAVE/LOAD .mat files to use with
-#### Matlab Tensorlab toolbox
-#### TODO: integrate it in the decomposer class
+# HELPER TO SAVE/LOAD .mat files to use with
+# Matlab Tensorlab toolbox
+# TODO: integrate it in the decomposer class
 
 # Helper function to save weights in MAT format
 def save_weigths_to_mat(allweights, save_dir):
@@ -142,7 +201,6 @@ def save_weigths_to_mat(allweights, save_dir):
         name = os.path.join(save_dir, "conv" + str(
             idx) + ".mat")  # conv1.mat, conv2.mat, ...
         sio.savemat(name,  {'weights': weights})
-
 
 
 def dump_model_weights(model, save_dir='./dumps'):
@@ -185,38 +243,37 @@ def dump_layer_weights(layer, filename="weights.mat", save_dir='dumps/'):
 
 
 def load_cpd_weights(filename):
-        import scipy.io as sio
-        import os
+    import scipy.io as sio
+    import os
 
-        if not os.path.isfile(filename):
-            print("ERROR: .mat file not found")
-            return
+    if not os.path.isfile(filename):
+        print("ERROR: .mat file not found")
+        return
 
-        # load struct 'cpd_s' from file
-        mat_contents = sio.loadmat(filename)['cpd_s']
+    # load struct 'cpd_s' from file
+    mat_contents = sio.loadmat(filename)['cpd_s']
 
-      #  bias = mat_contents['bias'][0][0][0]  # retrieve bias weights
-        cpd = mat_contents['weights'][0][0]  # cell of 4 tensors
+  #  bias = mat_contents['bias'][0][0][0]  # retrieve bias weights
+    cpd = mat_contents['weights'][0][0]  # cell of 4 tensors
 
-        f_last  = cpd[0][0]
-        f_first = cpd[0][1]
-        f_vertical = cpd[0][2]
-        f_horizontal = cpd[0][3]
-        print('Loaded cpd weights succesfully.')
+    f_last = cpd[0][0]
+    f_first = cpd[0][1]
+    f_vertical = cpd[0][2]
+    f_horizontal = cpd[0][3]
+    print('Loaded cpd weights succesfully.')
 
-        return f_last, f_first, f_vertical, f_horizontal   #  , bias
-
+    return f_last, f_first, f_vertical, f_horizontal  # , bias
 
 
 # def save_best_model(best_avg, current_avg, )
 
 # this works
 def xavier_init_layer(layer):
-        if isinstance(layer, nn.BatchNorm2d):
-            layer.weight.data.fill_(1)
-            layer.bias.data.zero_()
-        else:
-            torch.nn.init.xavier_uniform(layer.weight)
+    if isinstance(layer, nn.BatchNorm2d):
+        layer.weight.data.fill_(1)
+        layer.bias.data.zero_()
+    else:
+        torch.nn.init.xavier_uniform(layer.weight)
 
 
 def xavier_init_net(self):
@@ -232,19 +289,21 @@ def xavier_init_net(self):
 Init layer paramaters,
 see: https://github.com/kuangliu/pytorch-cifar/blob/master/utils.py
 '''
+
+
 def init_params(net):
     for m in net.modules():
         if isinstance(m, nn.Conv2d):
-            init.kaiming_normal(m.weight, mode='fan_out')
+            nn.init.kaiming_normal(m.weight, mode='fan_out')
             if m.bias:
-                init.constant(m.bias, 0)
+                nn.init.constant(m.bias, 0)
         elif isinstance(m, nn.BatchNorm2d):
-            init.constant(m.weight, 1)
-            init.constant(m.bias, 0)
+            nn.init.constant(m.weight, 1)
+            nn.init.constant(m.bias, 0)
         elif isinstance(m, nn.Linear):
-            init.normal(m.weight, std=1e-3)
+            nn.init.normal(m.weight, std=1e-3)
             if m.bias:
-                init.constant(m.bias, 0)
+                nn.init.constant(m.bias, 0)
 
 
 ## Progress Bar vars ##
@@ -256,7 +315,9 @@ TOTAL_BAR_LENGTH = 65.
 last_time = time.time()
 begin_time = last_time
 
-## xlua-like progress bar
+# xlua-like progress bar
+
+
 def progress_bar(current, total, msg=None):
     global last_time, begin_time
     if current == 0:
@@ -300,6 +361,7 @@ def progress_bar(current, total, msg=None):
         sys.stdout.write('\n')
     sys.stdout.flush()
 
+
 def format_time(seconds):
     days = int(seconds / 3600/24)
     seconds = seconds - days*3600*24
@@ -331,6 +393,7 @@ def format_time(seconds):
     if f == '':
         f = '0ms'
     return f
+
 
 '''
 # Xavier init for custom NN modules

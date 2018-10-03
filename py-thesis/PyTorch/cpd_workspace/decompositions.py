@@ -317,7 +317,8 @@ def cp_decomposition_conv_layer_BN(layer, rank, matlab=False):
             'dumps/TODO.mat')
 
     else:
-        # Using the SVD init gives better results, but stalls for large matrices.
+        # using a random initializaer is better for very large matrices 
+        # SVD is a bit quicker on smaller ones 
         if size >= 256:
             print("Init random")
             last, first, vertical, horizontal = parafac(
@@ -562,7 +563,7 @@ def tucker_xavier(layer):
     return nn.Sequential(*new_layers)
 
     
-
+# NB THIS DOES NOT MAKE MUCH SENSE 
 def cp_xavier_conv_layer(layer, rank):
     """ Gets a conv layer and a target rank, 
         returns a nn.Sequential object with the decomposition """

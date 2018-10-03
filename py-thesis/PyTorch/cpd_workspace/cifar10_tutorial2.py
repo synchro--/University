@@ -58,7 +58,7 @@ Using ``torchvision``, it’s extremely easy to load CIFAR10.
 import torch
 import torchvision
 import torchvision.transforms as transforms
-import dataset 
+import dataset
 
 ########################################################################
 # The output of torchvision datasets are PILImage images of range [0, 1].
@@ -70,8 +70,8 @@ transform = transforms.Compose(
 
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                         download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
-                                          shuffle=True, num_workers=0)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=32,
+                                          shuffle=True, num_workers=2, pin_memory=True)
 
 # trainloader = dataset.cifar10_trainloader(augment=True)
 
@@ -138,10 +138,12 @@ class Net(nn.Module):
         return x
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 net = Net()
-from torchsummary import summary 
+net = net.to(device)
 
-print(summary(net))
+from torchsummary import summary
+print(summary(net, (3, 32, 32)))
 
 ########################################################################
 # 3. Define a Loss function and optimizer
@@ -160,11 +162,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 # This is when things start to get interesting.
 # We simply have to loop over our data iterator, and feed the inputs to the
 # network and optimize.
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-net = net.to(device)
-epochs = 10
+epochs = 2
 for epoch in range(epochs):  # loop over the dataset multiple times
 
     running_loss = 0.0
@@ -214,6 +212,8 @@ print('GroundTruth: ', ' '.join('%5s' % classes[labels[j]] for j in range(4)))
 ########################################################################
 # Okay, now let us see what the neural network thinks these examples above are:
 
+# inference on CPU
+net = net.cpu()
 outputs = net(images)
 
 ########################################################################

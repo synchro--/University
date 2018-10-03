@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy as np 
+import numpy as np
 import pylab
 import glob
 import sys
@@ -38,9 +38,7 @@ step = []
 acc = []
 loss = []
 
-
-    
-for i, filename in enumerate(sorted(glob.iglob('*.csv'))): 
+for i, filename in enumerate(sorted(glob.iglob('*.csv'))):
         print(filename)
         methods.append(filename.split('.')[0])
         steps, A, L = np.loadtxt(filename, delimiter=",",
