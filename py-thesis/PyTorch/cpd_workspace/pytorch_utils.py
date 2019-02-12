@@ -37,6 +37,64 @@ def to_var(x):
         x = x.cuda()
     return Variable(x)
 
+# Set of utils taken from CS231 Stanford Class
+
+
+class Params():
+    """Class that loads hyperparameters from a json file.
+
+    Example:
+    ```
+    params = Params(json_path)
+    print(params.learning_rate)
+    params.learning_rate = 0.5  # change the value of learning_rate in params
+    ```
+    """
+
+    def __init__(self, json_path):
+        with open(json_path) as f:
+            params = json.load(f)
+            self.__dict__.update(params)
+
+    def save(self, json_path):
+        with open(json_path, 'w') as f:
+            json.dump(self.__dict__, f, indent=4)
+
+    def update(self, json_path):
+        """Loads parameters from json file"""
+        with open(json_path) as f:
+            params = json.load(f)
+            self.__dict__.update(params)
+
+    @property
+    def dict(self):
+        """Gives dict-like access to Params instance by `params.dict['learning_rate']"""
+        return self.__dict__
+
+
+class RunningAverage():
+    """A simple class that maintains the running average of a quantity
+
+    Example:
+    ```
+    loss_avg = RunningAverage()
+    loss_avg.update(2)
+    loss_avg.update(4)
+    loss_avg() = 3
+    ```
+    """
+
+    def __init__(self):
+        self.steps = 0
+        self.total = 0
+
+    def update(self, val):
+        self.total += val
+        self.steps += 1
+
+    def __call__(self):
+        return self.total/float(self.steps)
+
 
 def save_dict_to_json(d, json_path):
     """Saves dict of floats in json file
@@ -178,9 +236,10 @@ def get_layer_weights(layer, numpy=True):
 def set_layer_weights(layer, tensor):
     '''
     Set specified tensor as the layer weights. If sizes don't match raise exception.
+
     Args:
-        layer: the specified layer
-        tensor: tensor as an ndarray (Numpy)
+        layer: (torch.nn.Module) the specified layer
+        tensor: (numpy array) tensor as an ndarray (Numpy)
     '''
     if not(layer.weight.data.numpy().shape == tensor.shape):
         print(layer.weight.data.numpy().shape)
@@ -197,6 +256,15 @@ def set_layer_weights(layer, tensor):
 
 # Helper function to save weights in MAT format
 def save_weigths_to_mat(allweights, save_dir):
+    """
+    Helper function to save model weights to .mat files 
+    So that they can be used inside Maltab tensor toolboxes like 
+    Tensorlab. 
+
+    Args:
+        allweights: (list) a list in which each member is itself a list containing a pair of values [weights, bias] for each layer
+        save_dir: (string) directory to save the files. 
+    """
     for idx, weights in enumerate(allweights):
         name = os.path.join(save_dir, "conv" + str(
             idx) + ".mat")  # conv1.mat, conv2.mat, ...

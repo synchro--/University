@@ -8,7 +8,7 @@ from logger import Logger
 from torch.optim import lr_scheduler
 import argparse
 
-from datasets import dataset # Load datasets
+from dataloaders import dataset  # Load datasets
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,6 +17,7 @@ from training_algo import *
 from models.custom_models import *
 from torchsummary import summary
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="")
@@ -24,10 +25,11 @@ def get_args():
     parser.add_argument("--opt", type=str, default="Adam")
     parser.add_argument("--validation", dest="val", action="store_true")
     parser.add_argument('--ranks', nargs='+', dest="ranks",
-                            default=[20, 30, 40],
-                            help="Specify the rank of each layer")
+                        default=[20, 30, 40],
+                        help="Specify the rank of each layer")
     args = parser.parse_args()
     return args
+
 
 args = get_args()
 
@@ -38,9 +40,11 @@ model_file = 'm_finetuned.pth'
 model_weights = 's_trained.pth'
 retrain = False
 
-## 1. load datasets
-trainloader = dataset.cifar10_trainloader(batch_size = 32, num_workers = 0, augment=True, pin_memory=True)
-testloader = dataset.cifar10_testloader(batch_size = 32, num_workers = 0)
+# 1. load datasets
+trainloader = dataset.cifar10_trainloader(
+    batch_size=32, num_workers=0, augment=True, pin_memory=True)
+testloader = dataset.cifar10_testloader(batch_size=32, num_workers=0)
+
 
 class Net(nn.Module):
     def __init__(self):
@@ -67,8 +71,8 @@ class Net(nn.Module):
 # net = torch.load(model_file)
 # net = NIN_BN()
 # net = CPD_All_Conv(int(args.ranks[0]), int(args.ranks[1]), int(args.ranks[2]), relu=False)
-net = Keras_Cifar_classic()
-# net = LenetZhang()
+# net = Keras_Cifar_classic()
+net = LenetZhang()
 # net = CPD_Zhang(int(args.ranks[0]), int(args.ranks[1]), int(args.ranks[2]), relu=False)
 
 # GPU
@@ -100,7 +104,8 @@ if args.opt == 'Adam':
 
 else:
     print('Using SGD for smaller improvements...')
-    optimizer = optim.SGD(net.parameters(), lr=0.1e-4, momentum=0.9, nesterov=True)
+    optimizer = optim.SGD(net.parameters(), lr=0.1e-4,
+                          momentum=0.9, nesterov=True)
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
 ########################################################################
@@ -109,12 +114,14 @@ else:
 
 if args.val:
     loaders = get_train_valid_loader(data_dir='./data', batch_size=32, augment=False,
-                                    random_seed=7)
+                                     random_seed=7)
     dataloaders = {'train': loaders[0], 'val': loaders[1]}
-    net = train_model_val(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=25)
+    net = train_model_val(dataloaders, net, criterion,
+                          optimizer, exp_lr_scheduler, epochs=25)
 else:
     dataloaders = {'train': trainloader, 'test': testloader}
-    net = train_test_model(dataloaders, net, criterion, optimizer, exp_lr_scheduler, epochs=50)
+    net = train_test_model(dataloaders, net, criterion,
+                           optimizer, exp_lr_scheduler, epochs=50)
 
 # dump_model_weights(net)
 

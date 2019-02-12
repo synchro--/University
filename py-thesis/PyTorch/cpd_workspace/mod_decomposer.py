@@ -1,8 +1,4 @@
 # For now, it is only a set of functions.
-#  TODO:
-#  decomposition methods return directly the new decomposed model, i.e. the logic is encapsulated
-#  but this would require to do retraining between each decomposition and comunicating that to the user.
-#
 #   The ranks are estimated with a Python implementation of VBMF
 #   https://github.com/CasvandenBogaard/VBMF
 #
@@ -23,6 +19,8 @@ from VBMF import VBMF
 import collections
 from logger import Logger
 from pytorch_utils import *
+
+logger = Logger('./logs')
 
 """
 Decomposer module to abstract tensor decomposition methods for
@@ -47,13 +45,13 @@ def estimate_tucker_ranks(layer, compression_factor=0):
     Unfold the 2 modes of the specified layer tensor, on which the decomposition
     will be performed, and estimates the ranks of the matrices using VBMF.
     Args:
-        layer: the layer that will be decomposed
-        compression_factor: preferred compression factor to be enforced over
+        layer: (torch.nn.Conv2d) the layer that will be decomposed
+        compression_factor: (double or int) preferred compression factor to be enforced over
                             the rank estimation of VBMF, i.e. if VBMF estimated ranks
                             are too high for the desired compression, they will be
-                            iteratively divided until they reach the compression rate.
+                            iteratively divided by a constant factor K until they reach compression rate Cr >= desired compression rate.
     Returns:
-        estimated ranks = [R3, R4]
+        ranks: (list) the estimated ranks [R3, R4]
     """
     weights = layer.weight.data.numpy()
     unfold_0 = tl.base.unfold(weights, 0)
@@ -61,12 +59,12 @@ def estimate_tucker_ranks(layer, compression_factor=0):
     _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
     _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
     ranks = [diag_0.shape[0], diag_1.shape[1]]
+    print('VBMF estimated ranks: ' + str(ranks))
 
     if compression_factor:
         # Check if the VBMF ranks are small enough
         ranks = _choose_compression(layer, ranks,
                                     compression_factor, flag='Tucker2')
-
     return ranks
 
 
@@ -75,11 +73,11 @@ def estimate_cp_ranks(layer, compression_factor=0):
     Unfold the 2 modes of the specified layer tensor, on which the decomposition
     will be performed, and estimates the ranks of the matrices using VBMF
     Args:
-        layer: the layer that will be decomposed
-        compression_factor: preferred compression factor to be enforced over
+        layer: (torch.nn.Conv2d) the layer that will be decomposed
+        compression_factor: (double or int) preferred compression factor to be enforced over
                             the rank estimation of VBMF
     Returns:
-        estimated rank R
+        rank: (int) the estimated rank R
     """
     weights = layer.weight.data.numpy()
     unfold_0 = tl.base.unfold(weights, 0)
@@ -88,10 +86,10 @@ def estimate_cp_ranks(layer, compression_factor=0):
     _, diag_0, _, _ = VBMF.EVBMF(unfold_0)
     _, diag_1, _, _ = VBMF.EVBMF(unfold_1)
     #_, diag_2, _, _ = VBMF.EVBMF(unfold_2)
-    print(diag_0.shape[0])
-    print(diag_1.shape[1])
+    print('Mode-1 Rank: ' + str(diag_0.shape[0]))
+    print('Mode-2 Rank:' + str(diag_1.shape[1]))
     rank = max(diag_0.shape[0], diag_1.shape[1])
-    print('VBMF estimated rank:', rank)
+    print('VBMF estimated rank (max):', str(rank))
     if rank == 0:
         rank = 10
     ranks = [rank, rank]
@@ -102,16 +100,13 @@ def estimate_cp_ranks(layer, compression_factor=0):
                                       compression_factor, flag='cpd')
     return rank
 
-
-# NB. There should be another version of the function which takes only the layer
-# and tries to use the best possible rank
 def pytorch_cp_layer_decomposition(layer, compression=0, offline=False, filename=''):
     """
         Gets a conv layer and a target rank, and returns a nn.Sequential
         compressed CNN.
         Args:
-            layer: the conv layer to decompose
-            compression: desired compression factor for the CP-decomposition. This parameter 
+            layer: (torch.nn.Conv2d) the conv layer to decompose
+            compression: desired compression factor for the CP-decomposition. This parameter
             will influence the value of the rank of the decomposition. At default it seeks the best
             tradeoff between compression and accuracy
             offline: bool, if true the weights will be loaded from the file
@@ -153,6 +148,25 @@ def pytorch_cp_layer_decomposition_BN(layer, rank=0, offline=False, filename='')
     new_layers = [first_pointwise, bn_first, separable_vertical, bn_vertical,
                   separable_horizontal, bn_horizontal,  last_pointwise,
                   bn_last]
+    return nn.Sequential(*new_layers)
+
+
+def pytorch_tucker_layer_decomposition(layer, compression=0, offline=False, filename=''):
+    """
+        Gets a conv layer and a target rank, and returns a nn.Sequential
+        compressed CNN.
+        Args:
+            layer: the conv layer to decompose
+            rank: the rank of the CP-decomposition
+            offline: bool, if true the weights will be loaded from the file
+                        specified in file name
+            filename: string, file from which we have to load the weights.
+
+        Returns:
+            The compressed CNN model.
+    """
+    ranks = estimate_tucker_ranks(layer, compression_factor=compression)
+    new_layers = _tucker_layer_decomposition(layer, ranks)
     return nn.Sequential(*new_layers)
 
 
@@ -232,22 +246,7 @@ def conv1x1_SVD_compression(layer, trunc=15):
 '''
 # NB. ideally this should not even have the rank option and be more
 #     intuitive to use.
-def pytorch_tucker_decomposition( layer, rank, offline=False, filename=''):
-    """
-        Gets a conv layer and a target rank, and returns a nn.Sequential
-        compressed CNN.
-        Args:
-            layer: the conv layer to decompose
-            rank: the rank of the CP-decomposition
-            offline: bool, if true the weights will be loaded from the file
-                        specified in file name
-            filename: string, file from which we have to load the weights.
 
-        Returns:
-            The compressed CNN model.
-    """
-    new_layers = _tucker_decomposition_conv_layer( layer)
-    return nn.Sequential(*new_layers)
 
 
 def pytorch_tucker_decomposition_BN( layer, rank, offline=False, filename=''):
@@ -447,7 +446,7 @@ def _choose_compression(layer, ranks, compression_factor=2, flag='Tucker2', fram
         print('compression factor for layer {} : {}'.format(
             weights.shape, compression))
         # Log compression factors and number of weights
-        log_compression(weights, compression)
+        logger.log_compression(weights, compression)
 
     # for CPD things are easier, since it depends on a single rank R.
     # hence, we set R get the desired compression and floor it.
@@ -463,11 +462,11 @@ def _choose_compression(layer, ranks, compression_factor=2, flag='Tucker2', fram
             print('compression factor for layer {} : {}'.format(
                 weights.shape, compression_factor))
             # Log compression factors and number of weights
-            log_compression(weights, compression_factor)
+            logger.log_compression(weights, compression_factor)
 
         else:
             # Log the standard compression
-            log_compression(weights, compression)
+            logger.log_compression(weights, compression)
             print('compression factor for layer {} : {}'.format(
                 weights.shape, compression))
     else:
@@ -596,7 +595,7 @@ def _cp_decomposition(layer, rank, offline=False, filename=''):
     return [first_pointwise, separable_vertical, separable_horizontal, last_pointwise]
 
 
-def _tucker_decomposition(layer, rank, offline=False, filename=''):
+def _tucker_layer_decomposition(layer, ranks, offline=False, filename=''):
     """ Gets a conv layer and a target rank and
         returns a nn.Sequential object with the decomposition
         Args:
@@ -610,8 +609,8 @@ def _tucker_decomposition(layer, rank, offline=False, filename=''):
             The compressed 3 layers that substitutes the original one.
     """
 
-    print('[Decomposer]: computing Tucker decomposition of the layer {} with rank {}'.format(
-        layer, rank))
+    print('[Decomposer]: computing Tucker decomposition of the layer {} with ranks {},{}'.format(
+        layer, ranks[0], ranks[1]))
 
     # THIS SHOULD BE ENHANCED BY USING A SUBPROCESS CALL
     # WHICH CALLS THE MATLAB SCRIPT AND RETRIEVE THE RESULT

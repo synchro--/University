@@ -175,7 +175,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
     # Here we store the best model
     dirname = os.path.dirname(__file__)
     wts_filename = 'checkpoints/just_trained.pth.tar'
-    model_filename = 'models/just_trained.pth'
+    model_filename = 'checkpoints/best.pth'
     best_model_wts = copy.deepcopy(model.state_dict())
 
     # Statistics
@@ -225,6 +225,7 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
             # loss * batch_size
             running_loss += loss.item()
             # compute accuracy
+            # .item() for pytorch >= 0.4
             batch_correct = preds.eq(labels.data).sum().item()
             batch_size = labels.size(0)
             running_corrects += batch_correct / batch_size
@@ -257,6 +258,10 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
                 # (3) Tensorboard specific logging
                 logger.tensorboard_log(total_step, model, metrics)
 
+                # save checkpoint
+                save_checkpoint(model.state_dict(),
+                                (step_loss < best_loss), 'checkpoints/')
+
                 # for each epoch, save best model
                 if best_loss > step_loss:
                     print('loss improved from %.3f to %.3f'
@@ -267,10 +272,10 @@ def train_test_model(dataloader, model, criterion, optimizer, scheduler, loss_th
 
                     # Every X epochs, write model to files
                     if((epoch + 1) % 2 == 1 or epoch == 49):
-                        print('Saving model state to ' +
-                              wts_filename + "...\n")
-                        torch.save(best_model_wts, os.path.join(
-                            dirname, wts_filename))
+                        print('Saving model to ' +
+                              model_filename + "...\n")
+                        # torch.save(best_model_wts, os.path.join(
+                        #    dirname, wts_filename))
                         torch.save(model, os.path.join(
                             dirname, model_filename))
 
@@ -516,10 +521,9 @@ def quick_test_cifar(testloader, model):
     model.cpu()
 
     for i, (batch, labels) in enumerate(testloader):
-        batch = batch
         # inputs = Variable(batch, volatile=True) # not needed Pytorch 4.0
         t0 = time.time()
-        outputs = model(inputs)
+        outputs = model(batch)
         t1 = time.time()
 
         if i != 0:
