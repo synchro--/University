@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.9.4'
+    id 'application'
+}
+
+group = 'booking'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+def grpcVersion = '1.62.2'
+def protobufVersion = '3.25.3'
+
+dependencies {
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc {}
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+application {
+    mainClass = 'booking.BookingClient'
+}
+
+tasks.register('runServer', JavaExec) {
+    group = 'application'
+    description = 'Start the gRPC booking server on port 50051'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'booking.BookingServer'
+}
+
+tasks.register('runClient', JavaExec) {
+    group = 'application'
+    description = 'Start the interactive gRPC booking client'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'booking.BookingClient'
+}

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "booking.grpc";
+option java_outer_classname = "BookingProto";
+
+package booking;
+
+// Mirrors the legacy Prenotazione RMI DTO (view/delete only).
+message Booking {
+  string id = 1;
+  int32 num_people = 2;
+  string booking_type = 3;
+  string vehicle = 4;
+  string plate = 5;
+  string image_file = 6;
+}
+
+message DeleteBookingRequest {
+  string id = 1;
+}
+
+// result: 0 = ok, 1 = image file delete error, 2 = unknown id
+message DeleteBookingResponse {
+  int32 result = 1;
+}
+
+message ListBookingsRequest {
+  string booking_type = 1;
+  int32 min_people = 2;
+}
+
+message ListBookingsResponse {
+  repeated Booking bookings = 1;
+}
+
+service BookingService {
+  rpc DeleteBooking(DeleteBookingRequest) returns (DeleteBookingResponse);
+  rpc ListBookings(ListBookingsRequest) returns (ListBookingsResponse);
+}

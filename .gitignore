@@ -1,24 +1,52 @@
-*.png 
-*.jpg 
+*.png
+*.jpg
 *data*
 *batch*
 *test
 *train
-*events* 
+*events*
 *settings.json*
 
-#Python 
+# Python
 *.whl
+__pycache__/
+*.py[cod]
 
-
-#Pytorch 
+# PyTorch / Keras artifacts
 *.pth*
-*__pycache__*
+*.h5
+*.hdf5
 *.mat*
 *inferno*
 *original-repo*
 *torchsample*
 
-# Keras models 
-*.h5
-*.hdf5
+# Torch7 / experiment outputs
+*.t7
+*.net
+*.net.old
+*.backup
+
+# Logs and dumps
+logs/
+**/logs/
+dumps/
+**/dumps/
+dumps-cifar/
+*.log
+*.log.*
+texput.log
+
+# LaTeX build junk (keep committed PDFs like MS-thesis.pdf)
+*.aux
+*.synctex.gz
+**/Chapters/build/
+
+# Archives / binaries
+*.zip
+*.exe
+*.class
+
+# Gradle (keep wrapper jar; ignore local cache)
+.gradle/
+build/
