@@ -1,4 +1,4 @@
-# MS thesis (unified)
+# MS thesis
 
 Master's thesis on CNN compression via CP/Tucker decompositions — LaTeX write-up, Python/PyTorch experiments, and legacy Torch7/TensorLab code.
 
