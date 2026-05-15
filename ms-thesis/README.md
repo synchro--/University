@@ -25,7 +25,3 @@ Editable LaTeX: `main.tex`, `Chapters/`, `Appendices/`, `Figures/`, `bibliografi
 | `notes/` | `Note.txt`, `Torch Notes - 2014.txt`, `keras-thesis.code-workspace` |
 
 Training logs, weights, and large CSV dumps were removed from the repo to keep clones small; regenerate from `experiments/models/` if needed.
-
-## Related (unchanged)
-
-[`progetto-SI-tex/`](../progetto-SI-tex/) — earlier BSc “Sistemi Intelligenti” project report (separate from this MS thesis).
